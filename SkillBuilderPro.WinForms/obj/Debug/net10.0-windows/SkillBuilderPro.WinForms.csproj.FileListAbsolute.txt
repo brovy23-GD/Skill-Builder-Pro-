@@ -19,3 +19,4 @@ C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.WinForms\obj\Debug\n
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.WinForms\obj\Debug\net10.0-windows\SkillBuilderPro.pdb
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.WinForms\obj\Debug\net10.0-windows\SkillBuilderPro.WinForms.genruntimeconfig.cache
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.WinForms\obj\Debug\net10.0-windows\ref\SkillBuilderPro.dll
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.WinForms\obj\Debug\net10.0-windows\SkillBuilderPro.WinForms.sourcelink.json
