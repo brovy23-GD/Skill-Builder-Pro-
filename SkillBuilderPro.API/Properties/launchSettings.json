@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SkillBuilderPro.API": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62977;http://localhost:62978"
+    }
+  }
+}

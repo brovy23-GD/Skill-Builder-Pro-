@@ -1,0 +1,12 @@
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\bin\Debug\net8.0\SkillBuilderPro.Core.deps.json
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\bin\Debug\net8.0\SkillBuilderPro.Core.dll
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\bin\Debug\net8.0\SkillBuilderPro.Core.pdb
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.csproj.AssemblyReference.cache
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.AssemblyInfoInputs.cache
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.AssemblyInfo.cs
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.csproj.CoreCompileInputs.cache
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.dll
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\refint\SkillBuilderPro.Core.dll
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.pdb
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\ref\SkillBuilderPro.Core.dll
