@@ -19,6 +19,7 @@ namespace SkillBuilderPro.WinForms.Services
                 case "softball": return GetSoftballDrills();
                 case "football": return GetFootballDrills();
                 case "soccer": return GetSoccerDrills();
+                case "hockey": return GetHockeyDrills();
                 default: return new List<Drill>();
             }
         }
@@ -31,6 +32,7 @@ namespace SkillBuilderPro.WinForms.Services
             all.AddRange(GetSoftballDrills());
             all.AddRange(GetFootballDrills());
             all.AddRange(GetSoccerDrills());
+            all.AddRange(GetHockeyDrills());
             return all;
         }
         /// <summary>
@@ -421,6 +423,81 @@ namespace SkillBuilderPro.WinForms.Services
                 new Drill { Id=Guid.NewGuid(), Name="Zigzag Sprint", Description="Run diagonal lines at high speed", SkillCategory="Speed & Agility", Sport="Soccer", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
                 new Drill { Id=Guid.NewGuid(), Name="Reaction Sprint", Description="React to coach's signal with sprint", SkillCategory="Speed & Agility", Sport="Soccer", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
             };
+        }                   // ─── HOCKEY ──────────────────────────────────────────────────────
+        private static List<Drill> GetHockeyDrills()
+        {
+            return new List<Drill>
+            {
+                // SHOOTING
+                new Drill { Id=Guid.NewGuid(), Name="Wrist Shot Reps", Description="Quick-release wrist shots to corners", SkillCategory="Shooting", Sport="Hockey", Difficulty=1, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Snap Shot", Description="Rapid snap release off the blade", SkillCategory="Shooting", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Slap Shot Power", Description="Full wind-up shot for maximum power", SkillCategory="Shooting", Sport="Hockey", Difficulty=2, Duration=25, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="One-Timer", Description="Shoot pass directly without stopping puck", SkillCategory="Shooting", Sport="Hockey", Difficulty=3, Duration=25, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Backhand Shot", Description="Elevate puck off the backhand", SkillCategory="Shooting", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Shot in Stride", Description="Release shot without breaking skating stride", SkillCategory="Shooting", Sport="Hockey", Difficulty=3, Duration=25, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Tip-In Deflections", Description="Redirect point shots in front of net", SkillCategory="Shooting", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Five-Hole Targeting", Description="Shoot between goalie's pads", SkillCategory="Shooting", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Top-Shelf Accuracy", Description="Pick upper corners over the glove", SkillCategory="Shooting", Sport="Hockey", Difficulty=3, Duration=25, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Rebound Finish", Description="Bury loose pucks around the crease", SkillCategory="Shooting", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                // STICK HANDLING
+                new Drill { Id=Guid.NewGuid(), Name="Figure-8 Puck Control", Description="Handle puck in figure-8 around cones", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Toe Drag Series", Description="Pull puck across body with toe of blade", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=3, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Quick Hands Box", Description="Rapid side-to-side puck movement in tight box", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Puck Protection", Description="Shield puck from defender with body", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Head-Up Handling", Description="Stickhandle while scanning ice, not puck", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Obstacle Weave", Description="Handle puck through cone maze at speed", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Backhand-Forehand Rolls", Description="Rapid blade rolls side to side", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=1, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="One-Hand Control", Description="Control puck with top hand only", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=3, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Deke Sequence", Description="Chain fakes to beat defender one-on-one", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=3, Duration=25, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Stationary Rapid Fire", Description="Max-speed stickhandling in place", SkillCategory="Stick Handling", Sport="Hockey", Difficulty=1, Duration=10, DateCreated=DateTime.Now },
+                // SKATING
+                new Drill { Id=Guid.NewGuid(), Name="Crossover Circuits", Description="Powerful crossovers around circles", SkillCategory="Skating", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Edge Work Ladder", Description="Inside and outside edge control drills", SkillCategory="Skating", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Backward Skating", Description="Speed and control skating backward", SkillCategory="Skating", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Tight Turns", Description="Full-speed turns in small radius", SkillCategory="Skating", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Quick Starts", Description="Explosive first three strides", SkillCategory="Skating", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Hockey Stops", Description="Hard stops both directions", SkillCategory="Skating", Sport="Hockey", Difficulty=1, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Transition Pivots", Description="Forward-to-backward pivots at speed", SkillCategory="Skating", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Stride Lengthening", Description="Full extension power strides", SkillCategory="Skating", Sport="Hockey", Difficulty=1, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Lateral Mohawks", Description="Open-hip lateral skating movement", SkillCategory="Skating", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Blue Line Sprints", Description="Repeated line-to-line speed bursts", SkillCategory="Skating", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                // PASSING
+                new Drill { Id=Guid.NewGuid(), Name="Tape-to-Tape Pass", Description="Crisp flat passes to teammate's blade", SkillCategory="Passing", Sport="Hockey", Difficulty=1, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Saucer Pass Targets", Description="Elevated pass over sticks landing flat", SkillCategory="Passing", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Give-and-Go Reps", Description="Pass, skate to space, receive return", SkillCategory="Passing", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Backhand Pass", Description="Accurate passes off the backhand", SkillCategory="Passing", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Breakout Pass", Description="First pass out of defensive zone", SkillCategory="Passing", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Stretch Pass", Description="Long pass to streaking forward", SkillCategory="Passing", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="One-Touch Passing", Description="Redirect pass immediately without settling", SkillCategory="Passing", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Moving Target Pass", Description="Lead a skating teammate accurately", SkillCategory="Passing", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Board Bank Pass", Description="Use boards to pass around defender", SkillCategory="Passing", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Cross-Ice Feed", Description="Hard pass across the slot for one-timer", SkillCategory="Passing", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                // DEFENSE
+                new Drill { Id=Guid.NewGuid(), Name="Gap Control", Description="Maintain proper distance on rushing forward", SkillCategory="Defense", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Stick Lift", Description="Lift opponent's stick to steal puck", SkillCategory="Defense", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Poke Check Timing", Description="Jab puck away without lunging", SkillCategory="Defense", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Body Positioning", Description="Angle attacker to outside lane", SkillCategory="Defense", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Shot Blocking", Description="Safe technique to block shooting lanes", SkillCategory="Defense", Sport="Hockey", Difficulty=3, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Net-Front Battle", Description="Clear opponents from front of crease", SkillCategory="Defense", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Backcheck Sprint", Description="Sprint back to disrupt the rush", SkillCategory="Defense", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Corner Containment", Description="Pin puck carrier along the boards", SkillCategory="Defense", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Zone Coverage", Description="Rotate and cover in defensive zone", SkillCategory="Defense", Sport="Hockey", Difficulty=3, Duration=25, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Breakout Support", Description="Support puck retrieval under pressure", SkillCategory="Defense", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                // SPEED & AGILITY
+                new Drill { Id=Guid.NewGuid(), Name="Line-to-Line Sprints", Description="Max-speed skating between lines", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Stop-and-Start Bursts", Description="Hard stop then explosive restart", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Cone Agility Weave", Description="Skate tight pattern through cones", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Ladder Footwork (Off-Ice)", Description="Rapid feet through agility ladder", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=1, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Jump Rope (Off-Ice)", Description="Rope skipping for foot speed", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=1, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Box Jumps (Off-Ice)", Description="Explosive lower-body power", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Reaction Starts", Description="Sprint on coach's whistle from stillness", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Circle Acceleration", Description="Build to top speed around face-off circles", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=2, Duration=20, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Lateral Bounds (Off-Ice)", Description="Side-to-side explosive jumps", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=2, Duration=15, DateCreated=DateTime.Now },
+                new Drill { Id=Guid.NewGuid(), Name="Zigzag Transition", Description="Diagonal skating with pivots at each cone", SkillCategory="Speed & Agility", Sport="Hockey", Difficulty=3, Duration=20, DateCreated=DateTime.Now },
+            };
         }
-    }
-}
+
+    };
+}        
+    
+

@@ -1,6 +1,5 @@
-using SkillBuilderPro.WinForms.Models;
-using System;
 using System.Collections.Generic;
+using SkillBuilderPro.WinForms.Models;
 
 namespace SkillBuilderPro.WinForms
 {
@@ -13,170 +12,255 @@ namespace SkillBuilderPro.WinForms
                 new User
                 {
                     FullName = "Michael Jordan",
-                    Email = "michael.jordan@nba.com",
-                    Role = "Athlete",
+                    Email = "michael.jordan@basketball.com",
+                    Password = "",
+                    Phone = "000-000-0023",
                     Sport = "Basketball",
-                    TargetArea = "Defensive Intensity & Clutch Shooting",
+                    TargetArea = "Shooting",
                     ExperienceLevel = "Advanced",
-                    Age = 63,
-                    Phone = "000-000-0000",
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 35,
                     Height = 6.6,
                     Weight = 216,
                     Team = "Chicago Bulls",
-                    Bio = "Basketball legend known for clutch performance."
+                    Bio = "The G.O.A.T. Six rings, six Finals MVPs, zero Game 7s needed. The standard every competitor is measured against.",
+                    JerseyNumber = 23,
+                    Goal = "Maintain championship form"
                 },
 
                 new User
                 {
                     FullName = "Kobe Bryant",
-                    Email = "kobe.bryant@nba.com",
-                    Role = "Athlete",
+                    Email = "kobe.bryant@basketball.com",
+                    Password = "",
+                    Phone = "000-000-0024",
                     Sport = "Basketball",
-                    TargetArea = "Clutch Shooting & Footwork",
+                    TargetArea = "Footwork",
                     ExperienceLevel = "Advanced",
-                    Age = 41,
-                    Phone = "000-000-0000",
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 32,
                     Height = 6.6,
                     Weight = 212,
                     Team = "Los Angeles Lakers",
-                    Bio = "One of the greatest competitors in NBA history."
+                    Bio = "Mamba Mentality personified. 4 a.m. workouts, surgical footwork, and a killer instinct that never blinked.",
+                    JerseyNumber = 24,
+                    Goal = "Master complete offensive control"
                 },
 
                 new User
                 {
-                    FullName = "Cristiano Ronaldo",
-                    Email = "cristiano.ronaldo@soccer.com",
-                    Role = "Athlete",
-                    Sport = "Soccer",
-                    TargetArea = "Ball Control & Finishing",
+                    FullName = "Babe Ruth",
+                    Email = "babe.ruth@baseball.com",
+                    Password = "",
+                    Phone = "000-000-0003",
+                    Sport = "Baseball",
+                    TargetArea = "Hitting",
                     ExperienceLevel = "Advanced",
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
                     Age = 39,
-                    Phone = "000-000-0000",
                     Height = 6.2,
-                    Weight = 183,
-                    Team = "Portugal National Team",
-                    Bio = "Soccer icon known for elite athleticism."
+                    Weight = 215,
+                    Team = "New York Yankees",
+                    Bio = "The Sultan of Swat. Called his shot and cashed it. Rewrote the record book and changed the game forever.",
+                    JerseyNumber = 3,
+                    Goal = "Drive the ball with power"
                 },
 
                 new User
                 {
-                    FullName = "Allie Rovy",
-                    Email = "allie.rovy@softball.com",
+                    FullName = "Ken Griffey Jr.",
+                    Email = "ken.griffeyjr@baseball.com",
+                    Password = "",
+                    Phone = "000-000-0024",
+                    Sport = "Baseball",
+                    TargetArea = "Hitting",
+                    ExperienceLevel = "Advanced",
                     Role = "Athlete",
-                    Sport = "Softball",
-                    TargetArea = "Outfield: Drop Step + Over-The-Shoulder Catch",
-                    ExperienceLevel = "Intermediate",
-                    Age = 14,
-                    Phone = "000-000-0000",
-                    Height = 5.4,
-                    Weight = 110,
-                    Team = "Oak Lawn Softball",
-                    Bio = "Strong outfielder with great instincts."
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 35,
+                    Height = 6.3,
+                    Weight = 195,
+                    Team = "Seattle Mariners",
+                    Bio = "The Kid. The prettiest left-handed swing baseball has ever seen, 630 home runs, and a backwards hat full of Gold Gloves.",
+                    JerseyNumber = 24,
+                    Goal = "Drive the ball with power and confidence"
                 },
 
                 new User
                 {
                     FullName = "Aubrey Rovy",
                     Email = "aubrey.rovy@softball.com",
-                    Role = "Athlete",
+                    Password = "",
+                    Phone = "000-000-0000",
                     Sport = "Softball",
-                    TargetArea = "Softball Hitting: Weight Load + Explosive Hip Rotation",
+                    TargetArea = "Hitting",
                     ExperienceLevel = "Intermediate",
-                    Age = 16,
-                    Phone = "000-000-0000",
-                    Height = 5.5,
-                    Weight = 115,
-                    Team = "Oak Lawn Softball",
-                    Bio = "Power hitter with excellent mechanics."
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 13,
+                    Height = 5.6,
+                    Weight = 125,
+                    Team = "Oak Lawn",
+                    Bio = "Power at the plate, precision in her mechanics. When she squares one up, outfielders just turn and watch.",
+                    JerseyNumber = 3,
+                    Goal = "Improve hitting consistency"
                 },
 
                 new User
                 {
-                    FullName = "Kaleigh Rovy",
-                    Email = "kaleigh.rovy@softball.com",
-                    Role = "Athlete",
+                    FullName = "Allie Rovy",
+                    Email = "allie.rovy@softball.com",
+                    Password = "",
+                    Phone = "000-000-0001",
                     Sport = "Softball",
-                    TargetArea = "Softball Infield: Ground Ball Footwork + Quick Release",
-                    ExperienceLevel = "Beginner",
-                    Age = 12,
-                    Phone = "000-000-0000",
-                    Height = 5.0,
-                    Weight = 95,
-                    Team = "Oak Lawn Softball",
-                    Bio = "Developing infielder with great potential."
+                    TargetArea = "Fielding",
+                    ExperienceLevel = "Intermediate",
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 14,
+                    Height = 5.6,
+                    Weight = 125,
+                    Team = "Oak Lawn Juniors",
+                    Bio = "Sweet swing, never off the bases, and nothing drops in her outfield. Pure athlete with a Gold Glove ceiling.",
+                    JerseyNumber = 2,
+                    Goal = "Increase power"
                 },
 
                 new User
                 {
-                    FullName = "Kevin Hart",
-                    Email = "kevin.hart@baseball.com",
-                    Role = "Athlete",
-                    Sport = "Baseball",
-                    TargetArea = "Bunting: Pivot + Zone Control",
-                    ExperienceLevel = "Beginner",
-                    Age = 45,
-                    Phone = "000-000-0000",
-                    Height = 5.4,
-                    Weight = 140,
-                    Team = "Beginner Baseball",
-                    Bio = "Comedian learning baseball fundamentals."
-                },
-
-                new User
-                {
-                    FullName = "Elon Musk",
-                    Email = "elon.musk@football.com",
-                    Role = "Athlete",
+                    FullName = "Tom Brady",
+                    Email = "tom.brady@football.com",
+                    Password = "",
+                    Phone = "000-000-0012",
                     Sport = "Football",
-                    TargetArea = "Conditioning: Bear Crawl + Fumble Recovery",
-                    ExperienceLevel = "Beginner",
-                    Age = 52,
-                    Phone = "000-000-0000",
-                    Height = 6.2,
-                    Weight = 190,
-                    Team = "Beginner Football",
-                    Bio = "Tech entrepreneur exploring football training."
+                    TargetArea = "Passing",
+                    ExperienceLevel = "Advanced",
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 35,
+                    Height = 6.4,
+                    Weight = 225,
+                    Team = "New England Patriots",
+                    Bio = "Seven rings. Pick 199 turned greatest of all time through preparation, precision, and ice in the fourth quarter.",
+                    JerseyNumber = 12,
+                    Goal = "Increase passing accuracy"
                 },
 
                 new User
                 {
-                    FullName = "Ariana Grande",
-                    Email = "ariana.grande@soccer.com",
+                    FullName = "Walter Payton",
+                    Email = "walter.payton@football.com",
+                    Password = "",
+                    Phone = "000-000-0034",
+                    Sport = "Football",
+                    TargetArea = "Conditioning",
+                    ExperienceLevel = "Advanced",
                     Role = "Athlete",
-                    Sport = "Soccer",
-                    TargetArea = "Agility: Ladder Drill + Burst Acceleration",
-                    ExperienceLevel = "Beginner",
+                    IsActive = true,
+                    PhotoPath = "",
                     Age = 31,
-                    Phone = "000-000-0000",
-                    Height = 5.3,
-                    Weight = 105,
-                    Team = "Beginner Soccer",
-                    Bio = "Singer learning soccer agility drills."
+                    Height = 5.10,
+                    Weight = 200,
+                    Team = "Chicago Bears",
+                    Bio = "Sweetness. Never ran out of bounds, never missed the hill workout, never gave a defender a clean shot.",
+                    JerseyNumber = 34,
+                    Goal = "Build competitive conditioning"
                 },
 
                 new User
                 {
-                    FullName = "Bill Gates",
-                    Email = "bill.gates@baseball.com",
+                    FullName = "Lionel Messi",
+                    Email = "lionel.messi@soccer.com",
+                    Password = "",
+                    Phone = "000-000-0010",
+                    Sport = "Soccer",
+                    TargetArea = "Dribbling",
+                    ExperienceLevel = "Advanced",
                     Role = "Athlete",
-                    Sport = "Baseball",
-                    TargetArea = "Agility: Ickey Shuffle + Reaction Start",
-                    ExperienceLevel = "Beginner",
-                    Age = 68,
-                    Phone = "000-000-0000",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 34,
+                    Height = 5.7,
+                    Weight = 148,
+                    Team = "Argentina",
+                    Bio = "Eight Ballon d'Ors and a World Cup. The ball obeys him like it's on a string — vision, touch, and finishing from another planet.",
+                    JerseyNumber = 10,
+                    Goal = "Create and finish more attacking chances"
+                },
+
+                new User
+                {
+                    FullName = "Neymar Jr.",
+                    Email = "neymar.jr@soccer.com",
+                    Password = "",
+                    Phone = "000-000-0011",
+                    Sport = "Soccer",
+                    TargetArea = "Footwork",
+                    ExperienceLevel = "Advanced",
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 31,
+                    Height = 5.9,
+                    Weight = 150,
+                    Team = "Brazil",
+                    Bio = "Joga bonito in human form. Feet faster than the defender's thoughts and the audacity to try what nobody else would.",
+                    JerseyNumber = 11,
+                    Goal = "Improve quickness and creativity"
+                },
+
+                new User
+                {
+                    FullName = "Connor Bedard",
+                    Email = "connor.bedard@hockey.com",
+                    Password = "",
+                    Phone = "000-000-0098",
+                    Sport = "Hockey",
+                    TargetArea = "Shooting",
+                    ExperienceLevel = "Advanced",
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 20,
                     Height = 5.10,
-                    Weight = 170,
-                    Team = "Beginner Baseball",
-                    Bio = "Tech billionaire learning baseball footwork."
+                    Weight = 190,
+                    Team = "Chicago Blackhawks",
+                    Bio = "The face of the franchise. A release so quick goalies are beat before they flinch — generational shooter, future of Chicago hockey.",
+                    JerseyNumber = 98,
+                    Goal = "Improve shot power and scoring touch"
+                },
+
+                new User
+                {
+                    FullName = "Wayne Gretzky",
+                    Email = "wayne.gretzky@hockey.com",
+                    Password = "",
+                    Phone = "000-000-0099",
+                    Sport = "Hockey",
+                    TargetArea = "Passing",
+                    ExperienceLevel = "Advanced",
+                    Role = "Athlete",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 30,
+                    Height = 6.0,
+                    Weight = 185,
+                    Team = "Edmonton Oilers",
+                    Bio = "The Great One. Skated to where the puck was going. Owns more assists than anyone else has points.",
+                    JerseyNumber = 99,
+                    Goal = "Create more scoring opportunities"
                 }
             };
         }
-
-        public static User GetDummyUserByIndex(int index)
-        {
-            var users = GetAllDummyUsers();
-            return users[index];
-        }
     }
 }
-

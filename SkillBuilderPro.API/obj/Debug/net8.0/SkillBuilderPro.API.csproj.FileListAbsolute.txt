@@ -114,6 +114,7 @@ C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.API\obj\Debug\net8.0
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.API\obj\Debug\net8.0\SkillBuilderPro.API.csproj.CoreCompileInputs.cache
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.API\obj\Debug\net8.0\SkillBuilderPro.API.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.API\obj\Debug\net8.0\SkillBuilderPro.API.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.API\obj\Debug\net8.0\SkillBuilderPro.API.sourcelink.json
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.API\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.API\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.API\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json

@@ -9,7 +9,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="LockerRoomForm.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Update="LoginCredentialsForm.cs">
       <SubType>Form</SubType>

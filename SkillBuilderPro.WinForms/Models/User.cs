@@ -21,6 +21,8 @@ namespace SkillBuilderPro.WinForms.Models
         public double Weight { get; set; }
         public string Team { get; set; }
         public string Bio { get; set; }
+
+        public int JerseyNumber { get; set; }
+        public string Goal { get; set; }
     }
 }
-

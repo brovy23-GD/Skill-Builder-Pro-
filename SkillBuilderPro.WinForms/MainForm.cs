@@ -1,12 +1,8 @@
-using SkillBuilderPro.WinForms.Models;
+﻿using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Services;
 using SkillBuilderPro.WinForms.Theming;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
+using System.Net.Sockets;
 
 namespace SkillBuilderPro.WinForms
 {
@@ -19,6 +15,7 @@ namespace SkillBuilderPro.WinForms
     {
         private readonly User _user;
         private readonly bool _isDemoMode;
+        public User? NextUser { get; private set; }
 
         // Layout
         private Panel headerPanel;
@@ -87,28 +84,34 @@ namespace SkillBuilderPro.WinForms
             headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 84,
+                Height = 120,
                 BackColor = theme.Panel
             };
 
-            headerPanel.Controls.Add(new Label
+            // TITLE
+            Label titleLabel = new Label
             {
                 Text = "SKILL BUILDER PRO",
                 ForeColor = theme.Text,
-                Font = new Font("Segoe UI", 19F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 18F, FontStyle.Bold),   // cleaner + more modern
                 AutoSize = true,
-                Location = new Point(20, 12)
-            });
+                Location = new Point(22, 20)                       // sits in top third
+            };
 
-            headerPanel.Controls.Add(new Label
+            // SUBTITLE (Sport + Focus)
+            Label subtitleLabel = new Label
             {
-                Text = $"Welcome {_user.FullName}   |   Sport: {_user.Sport}   |   Focus: {_user.TargetArea}",
+                Text = $"Sport: {_user.Sport}   |   Focus: {_user.TargetArea}",
                 ForeColor = theme.Text,
-                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 12F, FontStyle.Regular),  // balanced with title
                 AutoSize = true,
-                Location = new Point(22, 50)
-            });
+                Location = new Point(22, 60)                          // perfect spacing
+            };
 
+            headerPanel.Controls.Add(titleLabel);
+            headerPanel.Controls.Add(subtitleLabel);
+
+            // LOG OUT BUTTON
             Button exitButton = new Button
             {
                 Text = _isDemoMode ? "EXIT DEMO" : "LOG OUT",
@@ -119,14 +122,17 @@ namespace SkillBuilderPro.WinForms
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold)
             };
             exitButton.FlatAppearance.BorderSize = 0;
+
             exitButton.Click += (s, e) => this.Close();
+
             headerPanel.Controls.Add(exitButton);
 
             headerPanel.Resize += (s, e) =>
             {
-                exitButton.Location = new Point(headerPanel.Width - 154, 22);
+                exitButton.Location = new Point(headerPanel.Width - 154, 40);
             };
         }
+
 
         // ------------------------------
         // NAV BAR + TABS
@@ -166,7 +172,7 @@ namespace SkillBuilderPro.WinForms
             navPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 52,
+                Height = 44,               // was 52
                 BackColor = AppColors.TrainingCard
             };
 
@@ -235,13 +241,16 @@ namespace SkillBuilderPro.WinForms
             Panel card = new Panel
             {
                 Size = new Size(width, height),
-                BackColor = AppColors.TrainingCard
+                BackColor = Color.FromArgb(170, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
             };
-            card.Location = new Point(Math.Max((tab.Width - width) / 2, 0), topMargin);
-            tab.Resize += (s, e) =>
-            {
-                card.Location = new Point(Math.Max((tab.Width - width) / 2, 0), topMargin);
-            };
+
+            void PositionCard() => card.Location = new Point(
+                Math.Max((tab.ClientSize.Width - width) / 2, 0) + tab.AutoScrollPosition.X,
+                topMargin + tab.AutoScrollPosition.Y);
+
+            PositionCard();
+            tab.Resize += (s, e) => PositionCard();
+
             tab.Controls.Add(card);
             card.BringToFront();
             return card;
@@ -302,7 +311,10 @@ namespace SkillBuilderPro.WinForms
         {
             SetTabBackground(tab);
 
-            Panel card = CreateCardPanel(tab, 420, 190, 60);
+            tab.Padding = new Padding(0, 30, 0, 0);
+
+
+            Panel card = CreateCardPanel(tab, 420, 190, 100);
 
             Label msg = CreateCardLabel(card,
                 "Your profile lives in the locker room.",
@@ -326,32 +338,36 @@ namespace SkillBuilderPro.WinForms
             tab.AutoScroll = true;
 
             const int leftWidth = 400;
-            const int leftHeight = 560;
+            const int leftHeight = 480;   // was 560 — FIXED
             const int rightWidth = 400;
             const int rightHeight = 560;
             const int gap = 28;
-            const int topMargin = 36;
+            const int topMargin = 150;    // was 100 — FIXED
+
 
             Panel leftCard = new Panel
             {
                 Size = new Size(leftWidth, leftHeight),
-                BackColor = AppColors.TrainingCard
+                BackColor = Color.FromArgb(170, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
             };
             Panel rightCard = new Panel
             {
                 Size = new Size(rightWidth, rightHeight),
-                BackColor = AppColors.TrainingCard,
-                Visible = false            // hidden until a schedule is generated
+                BackColor = Color.FromArgb(170, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B),
+                Visible = false
             };
             scheduleCard = rightCard;
 
             void PositionCards()
             {
-                // Pin cards to the outer edges so the center-court branding
-                // in the background stays fully visible between them.
+
                 const int edgeMargin = 40;
-                leftCard.Location = new Point(edgeMargin, topMargin);
-                rightCard.Location = new Point(Math.Max(tab.Width - rightWidth - edgeMargin, leftWidth + edgeMargin + gap), topMargin);
+                leftCard.Location = new Point(
+                    edgeMargin + tab.AutoScrollPosition.X,
+                    topMargin + tab.AutoScrollPosition.Y);
+                rightCard.Location = new Point(
+                    Math.Max(tab.ClientSize.Width - rightWidth - edgeMargin, leftWidth + edgeMargin + gap) + tab.AutoScrollPosition.X,
+                    topMargin + tab.AutoScrollPosition.Y);
             }
             PositionCards();
             tab.Resize += (s, e) => PositionCards();
@@ -392,19 +408,79 @@ namespace SkillBuilderPro.WinForms
             };
             CenterInCard(leftCard, drillCheckedListBox, 150);
 
+            Label daysLabel = CreateCardLabel(leftCard, "Training Days",
+    11F, FontStyle.Bold, AppColors.SubtleText, 408, 22);
+
+            ComboBox daysPresetComboBox = new ComboBox
+            {
+                Width = 340,
+                Height = 30,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 11F),
+                BackColor = AppColors.Shelf,
+                ForeColor = AppColors.TrainingText,
+                FlatStyle = FlatStyle.Flat
+            };
+            daysPresetComboBox.Items.AddRange(new object[]
+            {
+    "Mon / Wed / Fri",
+    "Tue / Thu",
+    "Mon – Fri (Weekdays)",
+    "Sat / Sun (Weekends)",
+    "Every Day"
+            });
+            daysPresetComboBox.SelectedIndex = 0;   // matches the MWF default
+            CenterInCard(leftCard, daysPresetComboBox, 434);
+
+            daysPresetComboBox.SelectedIndexChanged += (s, e) =>
+            {
+                trainingDays.Clear();
+                switch (daysPresetComboBox.SelectedIndex)
+                {
+                    case 0: // Mon / Wed / Fri
+                        trainingDays.Add(DayOfWeek.Monday);
+                        trainingDays.Add(DayOfWeek.Wednesday);
+                        trainingDays.Add(DayOfWeek.Friday);
+                        break;
+                    case 1: // Tue / Thu
+                        trainingDays.Add(DayOfWeek.Tuesday);
+                        trainingDays.Add(DayOfWeek.Thursday);
+                        break;
+                    case 2: // Weekdays
+                        for (DayOfWeek d = DayOfWeek.Monday; d <= DayOfWeek.Friday; d++)
+                            trainingDays.Add(d);
+                        break;
+                    case 3: // Weekends
+                        trainingDays.Add(DayOfWeek.Saturday);
+                        trainingDays.Add(DayOfWeek.Sunday);
+                        break;
+                    case 4: // Every day
+                        foreach (DayOfWeek d in Enum.GetValues(typeof(DayOfWeek)))
+                            trainingDays.Add(d);
+                        break;
+                }
+
+                // Repaint the calendar if it's been built already
+                if (calendarGrid != null)
+                    RenderCalendar();
+            };
+
+            leftCard.Controls.Add(daysLabel);
+            leftCard.Controls.Add(daysPresetComboBox);
+
             generateScheduleButton = CreateModernButton("GENERATE SCHEDULE", 340, 38);
             clearSelectionButton = CreateModernButton("CLEAR DRILLS", 164, 38);
             generateVideoButton = CreateModernButton("TRAINING VIDEO", 164, 38);
 
-            CenterInCard(leftCard, generateScheduleButton, 420);
-            clearSelectionButton.Location = new Point(30, 468);
-            generateVideoButton.Location = new Point(206, 468);
+            CenterInCard(leftCard, generateScheduleButton, 470);
+            clearSelectionButton.Location = new Point(30, 518);
+            generateVideoButton.Location = new Point(206, 518);
 
             generateScheduleButton.Click += GenerateScheduleButton_Click;
             clearSelectionButton.Click += ClearSelectionButton_Click;
             generateVideoButton.Click += (s, e) => MessageBox.Show(
                 "In a future version, this will generate a customized training video " +
-                "based on the drills and schedule you�ve created.",
+                "based on the drills and schedule you've created.",
                 "Generate Training Video (Coming Soon)");
 
             leftCard.Controls.Add(title);
@@ -424,7 +500,7 @@ namespace SkillBuilderPro.WinForms
             scheduleListBox = new ListBox
             {
                 Width = 340,
-                Height = 470,
+                Height = 510,
                 Font = new Font("Consolas", 10F),
                 BackColor = AppColors.Shelf,
                 ForeColor = AppColors.TrainingText,
@@ -445,32 +521,160 @@ namespace SkillBuilderPro.WinForms
         }
 
         // ------------------------------
-        // GOALS TAB
+        // GOALS TAB - branded goal roadmap + progress
         // ------------------------------
 
         private void SetupGoalsTab(TabPage tab)
         {
             SetTabBackground(tab);
+            tab.AutoScroll = true;              // scroll if window is short
 
-            Panel card = CreateCardPanel(tab, 480, 400, 36);
+            var theme = TeamThemes.GetThemeForSport(_user.Sport);
 
-            Label title = CreateCardLabel(card, "Goals",
-                20F, FontStyle.Bold, AppColors.TrainingText, 20, 40);
+            Panel card = CreateCardPanel(tab, 700, 540, 150);
 
-            Label goalText = CreateCardLabel(card,
-                "Current Goal Ideas\n\n" +
-                "- Improve consistency in your primary focus area.\n" +
-                "- Complete 3 training sessions this week.\n" +
-                "- Build a routine around skill repetition.\n" +
-                "- Review your schedule each weekend.",
-                12F, FontStyle.Regular, AppColors.TrainingText, 80, 180, AppColors.Shelf);
+            Label title = CreateCardLabel(card, "GOAL ROADMAP",
+                20F, FontStyle.Bold, AppColors.TrainingText, 26, 14);
+            // moved UP from 36 → 14
 
-            Button addGoalButton = CreateModernButton("ADD GOAL");
-            CenterInCard(card, addGoalButton, 292);
+            Label brand = CreateCardLabel(card,
+                $"SKILL BUILDER PRO  •  {(_user.Sport ?? "").ToUpper()}",
+                10F, FontStyle.Regular, AppColors.SubtleText, 26, 52);
+            // moved DOWN from 18 → 52
+            // increased font from 9F → 10F and removed bold
+
+            Label goalLabel = new Label
+            {
+                Text = string.IsNullOrWhiteSpace(_user.Goal) ? "No goal set yet" : $"\"{_user.Goal}\"",
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold | FontStyle.Italic),
+                ForeColor = Color.White,
+                BackColor = theme.Accent,
+                AutoSize = false,
+                Width = card.Width - 80,
+                Height = 46,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Location = new Point(40, 84)
+            };
+            card.Controls.Add(goalLabel);
+
+            string[] stages = { "COMMIT", "TRAIN", "COMPETE", "DOMINATE" };
+            int currentStage = GetGoalStage(_user.ExperienceLevel);
+            int progressPercent = currentStage * 100 / stages.Length;
+
+            BufferedGoalPanel roadmap = new BufferedGoalPanel
+            {
+                Size = new Size(card.Width - 80, 190),
+                Location = new Point(40, 154),
+                BackColor = AppColors.Shelf
+            };
+            roadmap.Paint += (s, e) =>
+            {
+                Graphics g = e.Graphics;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+                int n = stages.Length;
+                int nodeSize = 54;
+                int marginX = 50;
+                int cy = 78;
+                int usable = roadmap.Width - marginX * 2;
+                int gap = usable / (n - 1);
+
+                using (Pen track = new Pen(Color.FromArgb(70, 78, 94), 6))
+                    g.DrawLine(track, marginX, cy, marginX + usable, cy);
+
+                if (currentStage > 1)
+                {
+                    using (Pen done = new Pen(theme.Accent, 6))
+                        g.DrawLine(done, marginX, cy, marginX + gap * (currentStage - 1), cy);
+                }
+
+                for (int i = 0; i < n; i++)
+                {
+                    int cx = marginX + gap * i;
+                    Rectangle node = new Rectangle(cx - nodeSize / 2, cy - nodeSize / 2, nodeSize, nodeSize);
+
+                    bool reached = (i + 1) <= currentStage;
+                    bool isCurrent = (i + 1) == currentStage;
+
+                    using (SolidBrush fill = new SolidBrush(reached ? theme.Accent : Color.FromArgb(58, 66, 82)))
+                        g.FillEllipse(fill, node);
+
+                    if (isCurrent)
+                    {
+                        using (Pen ring = new Pen(Color.White, 3))
+                            g.DrawEllipse(ring, Rectangle.Inflate(node, 4, 4));
+                    }
+
+                    string mark = (i + 1) < currentStage ? "✓" : (i + 1).ToString();
+                    using (Font markFont = new Font("Segoe UI", 16F, FontStyle.Bold))
+                    using (SolidBrush markBrush = new SolidBrush(Color.White))
+                    {
+                        SizeF ms = g.MeasureString(mark, markFont);
+                        g.DrawString(mark, markFont, markBrush, cx - ms.Width / 2, cy - ms.Height / 2);
+                    }
+
+                    using (Font capFont = new Font("Segoe UI", 9F, FontStyle.Bold))
+                    using (SolidBrush capBrush = new SolidBrush(reached ? AppColors.TrainingText : AppColors.SubtleText))
+                    {
+                        SizeF cs = g.MeasureString(stages[i], capFont);
+                        g.DrawString(stages[i], capFont, capBrush, cx - cs.Width / 2, cy + nodeSize / 2 + 10);
+                    }
+                }
+            };
+            card.Controls.Add(roadmap);
+
+            Label progressLabel = CreateCardLabel(card,
+                $"PROGRESS: {progressPercent}%  —  STAGE {currentStage} OF {stages.Length} ({stages[currentStage - 1]})",
+                10F, FontStyle.Bold, AppColors.TrainingText, 362, 22);
+
+            BufferedGoalPanel progressBar = new BufferedGoalPanel
+            {
+                Size = new Size(card.Width - 80, 22),
+                Location = new Point(40, 392),
+                BackColor = Color.FromArgb(58, 66, 82)
+            };
+            progressBar.Paint += (s, e) =>
+            {
+                int fillWidth = progressBar.Width * progressPercent / 100;
+                using (SolidBrush fill = new SolidBrush(theme.Accent))
+                    e.Graphics.FillRectangle(fill, 0, 0, fillWidth, progressBar.Height);
+
+                using (Font pctFont = new Font("Segoe UI", 9F, FontStyle.Bold))
+                using (SolidBrush white = new SolidBrush(Color.White))
+                {
+                    string pct = $"{progressPercent}%";
+                    SizeF ps = e.Graphics.MeasureString(pct, pctFont);
+                    e.Graphics.DrawString(pct, pctFont, white,
+                        (progressBar.Width - ps.Width) / 2, (progressBar.Height - ps.Height) / 2);
+                }
+            };
+            card.Controls.Add(progressBar);
+
+            Label hint = CreateCardLabel(card,
+                "Your stage advances with your experience level. Complete training sessions to level up.",
+                9F, FontStyle.Regular, AppColors.SubtleText, 430, 20);
+
+            Button viewPlanButton = CreateModernButton("VIEW TRAINING PLAN", 240, 42);
+            CenterInCard(card, viewPlanButton, 476);   // was 470 — fine, or leave
+            viewPlanButton.Click += (s, e) => SelectNavTab(1);
 
             card.Controls.Add(title);
-            card.Controls.Add(goalText);
-            card.Controls.Add(addGoalButton);
+            card.Controls.Add(brand);
+            card.Controls.Add(progressLabel);
+            card.Controls.Add(hint);
+            card.Controls.Add(viewPlanButton);
+        }
+
+        /// <summary>Maps experience level to roadmap stage (1-based).</summary>
+        private static int GetGoalStage(string experienceLevel)
+        {
+            switch ((experienceLevel ?? "").Trim().ToLower())
+            {
+                case "beginner": return 2;
+                case "intermediate": return 3;
+                case "advanced": return 4;
+                default: return 1;
+            }
         }
 
         // ------------------------------
@@ -481,19 +685,28 @@ namespace SkillBuilderPro.WinForms
         private Panel calendarGrid;
         private Label calendarMonthLabel;
 
+        // Athlete-selected training days — defaults to Mon/Wed/Fri
+        private readonly HashSet<DayOfWeek> trainingDays = new HashSet<DayOfWeek>
+        {
+            DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday
+        };
+
         private void SetupCalendarTab(TabPage tab)
         {
             // Sport-specific calendar background (calendar_* image set)
             Image calBg = GetCalendarBackground(_user.Sport);
             if (calBg != null)
             {
-                tab.BackgroundImage = ApplyDarkOverlay(calBg, 0.5f);
+                tab.BackgroundImage = ApplyDarkOverlay(calBg, 0.3f);
                 tab.BackgroundImageLayout = ImageLayout.Stretch;
             }
 
             var theme = TeamThemes.GetThemeForSport(_user.Sport);
 
-            Panel card = CreateCardPanel(tab, 700, 620, 30);
+            Panel card = CreateCardPanel(tab, 700, 730, 100);
+
+
+
 
             // Month header with prev / next
             calendarMonthLabel = CreateCardLabel(card, "", 18F, FontStyle.Bold, AppColors.TrainingText, 18, 34);
@@ -532,9 +745,43 @@ namespace SkillBuilderPro.WinForms
             };
             card.Controls.Add(calendarGrid);
 
+            // Day picker — check the days you train; calendar + export follow
+            DayOfWeek[] allDays = { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday,
+                            DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
+            string[] dayShort = { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
+
+            for (int i = 0; i < 7; i++)
+            {
+                DayOfWeek d = allDays[i];
+                CheckBox dayCheck = new CheckBox
+                {
+                    Text = dayShort[i],
+                    Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                    ForeColor = AppColors.TrainingText,
+                    BackColor = Color.Transparent,
+                    AutoSize = false,
+                    Size = new Size(70, 24),
+                    Location = new Point(48 + i * 88, 548),
+                    Checked = trainingDays.Contains(d)
+                };
+                dayCheck.CheckedChanged += (s, e) =>
+                {
+                    if (dayCheck.Checked) trainingDays.Add(d);
+                    else trainingDays.Remove(d);
+                    RenderCalendar();
+                };
+                card.Controls.Add(dayCheck);
+            }
+
             Label legend = CreateCardLabel(card,
-                "Team-color days = your training schedule (Mon / Wed / Fri)",
-                10F, FontStyle.Regular, AppColors.SubtleText, 552, 24);
+                "Team-color days = your training schedule (pick your days above)",
+                10F, FontStyle.Regular, AppColors.SubtleText, 578, 24);
+
+            // Export button — universal .ics for Google / Apple / Outlook
+            Button exportButton = CreateModernButton("ADD TO MY CALENDAR  (Google / Apple / Outlook)", 380, 42);
+            CenterInCard(card, exportButton, 646);
+            exportButton.Click += ExportCalendarButton_Click;
+            card.Controls.Add(exportButton);
 
             card.Controls.Add(calendarMonthLabel);
             card.Controls.Add(prevBtn);
@@ -565,16 +812,16 @@ namespace SkillBuilderPro.WinForms
                 int col = cell % 7;
                 int row = cell / 7;
 
-                bool isTrainingDay = date.DayOfWeek == DayOfWeek.Monday ||
-                                     date.DayOfWeek == DayOfWeek.Wednesday ||
-                                     date.DayOfWeek == DayOfWeek.Friday;
+                bool isTrainingDay = trainingDays.Contains(date.DayOfWeek);
                 bool isToday = date.Date == DateTime.Today;
 
                 Panel tile = new Panel
                 {
                     Size = new Size(90, 68),
                     Location = new Point(col * 94, row * 74),
-                    BackColor = isTrainingDay ? theme.Accent : AppColors.Shelf
+                    BackColor = isTrainingDay
+                    ? Color.FromArgb(200, theme.Accent.R, theme.Accent.G, theme.Accent.B)
+                    : Color.FromArgb(140, AppColors.Shelf.R, AppColors.Shelf.G, AppColors.Shelf.B)
                 };
 
                 tile.Controls.Add(new Label
@@ -617,7 +864,71 @@ namespace SkillBuilderPro.WinForms
                 calendarGrid.Controls.Add(tile);
             }
         }
+        /// <summary>
+        /// Exports the selected training days for the displayed month as a
+        /// universal .ics file — importable by Google Calendar, Apple Calendar,
+        /// and Outlook.
+        /// </summary>
+        private void ExportCalendarButton_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Title = "Save Training Schedule";
+                sfd.Filter = "Calendar File (*.ics)|*.ics";
+                sfd.FileName = $"SkillBuilderPro_{_user.Sport}_{calendarMonth:yyyy_MM}.ics";
 
+                if (sfd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                System.IO.File.WriteAllText(sfd.FileName, BuildTrainingIcs());
+
+                MessageBox.Show(
+                    "Training schedule saved!\n\n" +
+                    "Google Calendar: Settings → Import & Export → Import\n" +
+                    "Apple Calendar: double-click the file (or AirDrop to iPhone)\n" +
+                    "Outlook: double-click the file",
+                    "Added to Calendar",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+        }
+
+        /// <summary>
+        /// Builds iCalendar (RFC 5545) content: one 1-hour training event for every
+        /// selected training day in the displayed month, 5:00-6:00 PM local time.
+        /// </summary>
+        private string BuildTrainingIcs()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("BEGIN:VCALENDAR");
+            sb.AppendLine("VERSION:2.0");
+            sb.AppendLine("PRODID:-//SkillBuilderPro//Training Schedule//EN");
+
+            int daysInMonth = DateTime.DaysInMonth(calendarMonth.Year, calendarMonth.Month);
+
+            for (int day = 1; day <= daysInMonth; day++)
+            {
+                DateTime date = new DateTime(calendarMonth.Year, calendarMonth.Month, day);
+
+                if (!trainingDays.Contains(date.DayOfWeek))
+                    continue;
+
+                DateTime start = date.AddHours(17);   // 5:00 PM
+                DateTime end = date.AddHours(18);     // 6:00 PM
+
+                sb.AppendLine("BEGIN:VEVENT");
+                sb.AppendLine($"UID:{Guid.NewGuid()}@skillbuilderpro");
+                sb.AppendLine($"DTSTAMP:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
+                sb.AppendLine($"DTSTART:{start:yyyyMMddTHHmmss}");
+                sb.AppendLine($"DTEND:{end:yyyyMMddTHHmmss}");
+                sb.AppendLine($"SUMMARY:{_user.Sport} Training — {_user.TargetArea} (Skill Builder Pro)");
+                sb.AppendLine($"DESCRIPTION:Athlete: {_user.FullName}\\nFocus: {_user.TargetArea}\\nGoal: {_user.Goal}");
+                sb.AppendLine("END:VEVENT");
+            }
+
+            sb.AppendLine("END:VCALENDAR");
+            return sb.ToString();
+        }
         // ------------------------------
         // TRAINING DATA
         // ------------------------------
@@ -678,7 +989,16 @@ namespace SkillBuilderPro.WinForms
 
             scheduleCard.Visible = true;
 
-            string[] daysPattern = { "Monday", "Wednesday", "Friday" };
+            string[] daysPattern = trainingDays
+                .OrderBy(d => (int)d)
+                .Select(d => d.ToString())
+                .ToArray();
+
+            if (daysPattern.Length == 0)
+            {
+                MessageBox.Show("Pick at least one training day on the Calendar tab first.");
+                return;
+            }
             var scheduleByDay = new Dictionary<string, List<string>>();
             foreach (string day in daysPattern)
                 scheduleByDay[day] = new List<string>();
@@ -743,40 +1063,43 @@ namespace SkillBuilderPro.WinForms
 
         private void SetTabBackground(TabPage tab)
         {
+            tab.Padding = new Padding(0, 20, 0, 0);
+
             Image bg = GetFieldBackground(_user.Sport);
             if (bg != null)
             {
-                tab.BackgroundImage = ApplyDarkOverlay(bg);
+                tab.BackgroundImage = ApplyDarkOverlay(bg, 0.25f);   // was default 0.45
                 tab.BackgroundImageLayout = ImageLayout.Stretch;
             }
         }
-
         private Image GetFieldBackground(string sport)
         {
             switch (sport.Trim().ToLower())
             {
                 case "basketball":
-                    return Resource1.BasketballCourt;
+                    return Resource1.Chicago_Basketball;
 
                 case "football":
-                    return Resource1.FootballField;
+                    return Resource1.Chicago_Football;
 
                 case "baseball":
-                    return Resource1.BaseballDiamond;
+                    return Resource1.Chicago_Baseball;
 
                 case "softball":
                     return Resource1.softball_field;
 
                 case "soccer":
-                    return Resource1.soccer_field;
+                    return Resource1.Chicago_Soccer;
 
                 case "hockey":
-                    return Resource1.hockey_rink;
+                    return Resource1.Chicago_Hockey;
 
                 default:
                     return Resource1.weight_room;
             }
         }
+
+
 
         /// <summary>
         /// Sport-specific calendar backgrounds from the calendar_* image set.
@@ -823,5 +1146,11 @@ namespace SkillBuilderPro.WinForms
             }
             return darkened;
         }
+    }
+
+    /// <summary>Double-buffered panel for flicker-free custom painting.</summary>
+    public class BufferedGoalPanel : Panel
+    {
+        public BufferedGoalPanel() { this.DoubleBuffered = true; }
     }
 }

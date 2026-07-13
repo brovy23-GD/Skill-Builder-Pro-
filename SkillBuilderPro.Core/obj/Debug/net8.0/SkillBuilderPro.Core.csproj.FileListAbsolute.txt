@@ -6,6 +6,7 @@ C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.AssemblyInfoInputs.cache
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.AssemblyInfo.cs
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.csproj.CoreCompileInputs.cache
+C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.sourcelink.json
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.dll
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\refint\SkillBuilderPro.Core.dll
 C:\Users\brovy\source\repos\SkillBuilderPro\SkillBuilderPro.Core\obj\Debug\net8.0\SkillBuilderPro.Core.pdb

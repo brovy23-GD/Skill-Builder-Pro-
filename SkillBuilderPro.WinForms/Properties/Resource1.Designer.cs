@@ -153,9 +153,59 @@ namespace SkillBuilderPro.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap FootballField {
+        internal static System.Drawing.Bitmap Chicago_Baseball {
             get {
-                object obj = ResourceManager.GetObject("FootballField", resourceCulture);
+                object obj = ResourceManager.GetObject("Chicago_Baseball", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Chicago_Basketball {
+            get {
+                object obj = ResourceManager.GetObject("Chicago_Basketball", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Chicago_Football {
+            get {
+                object obj = ResourceManager.GetObject("Chicago_Football", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Chicago_Hockey {
+            get {
+                object obj = ResourceManager.GetObject("Chicago_Hockey", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Chicago_Soccer {
+            get {
+                object obj = ResourceManager.GetObject("Chicago_Soccer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap create_profile {
+            get {
+                object obj = ResourceManager.GetObject("create_profile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

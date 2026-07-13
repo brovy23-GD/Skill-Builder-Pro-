@@ -10,9 +10,12 @@ namespace SkillBuilderPro.WinForms.Services
 {
     public class AuthenticationService
     {
-        private List<User> users = new List<User>();
-        private const string USERS_FILE = "data/users.txt";
-        private User currentUser;
+        private readonly List<User> users = new List<User>();
+
+        private static readonly string USERS_FILE =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "users.txt");
+
+        private User? currentUser;
 
         public AuthenticationService()
         {
@@ -28,18 +31,25 @@ namespace SkillBuilderPro.WinForms.Services
 
             foreach (var line in File.ReadAllLines(USERS_FILE))
             {
-                if (!string.IsNullOrWhiteSpace(line))
-                {
-                    var user = ParseUser(line);
-                    if (user != null)
-                        users.Add(user);
-                }
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                var user = ParseUser(line);
+                if (user != null)
+                    users.Add(user);
             }
         }
 
         public void SaveUsers()
         {
             var lines = users.Select(u => SerializeUser(u)).ToArray();
+
+            string? dir = Path.GetDirectoryName(USERS_FILE);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
             File.WriteAllLines(USERS_FILE, lines);
         }
 
@@ -51,7 +61,9 @@ namespace SkillBuilderPro.WinForms.Services
             string sport,
             string targetArea,
             string experienceLevel,
-            string phone)
+            string phone,
+            int jerseyNumber,
+            string goal)
         {
             if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
                 return (false, "Invalid email");
@@ -72,6 +84,8 @@ namespace SkillBuilderPro.WinForms.Services
                 TargetArea = targetArea,
                 ExperienceLevel = experienceLevel,
                 Phone = phone,
+                JerseyNumber = jerseyNumber,
+                Goal = goal,
                 IsActive = true
             };
 
@@ -81,9 +95,10 @@ namespace SkillBuilderPro.WinForms.Services
             return (true, $"Account created successfully! Welcome, {fullName}!");
         }
 
-        public (bool success, User user, string message) LogIn(string email, string password)
+        public (bool success, User? user, string message) LogIn(string email, string password)
         {
-            var user = users.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            var user = users.FirstOrDefault(u =>
+                u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
 
             if (user == null)
                 return (false, null, "Email not found");
@@ -98,13 +113,21 @@ namespace SkillBuilderPro.WinForms.Services
             return (true, user, $"Welcome back, {user.FullName}!");
         }
 
-        public User GetCurrentUser() => currentUser;
+        public User? GetCurrentUser()
+        {
+            return currentUser;
+        }
 
-        public void LogOut() => currentUser = null;
+        public void LogOut()
+        {
+            currentUser = null;
+        }
 
         public bool UpdateUserProfile(User updated)
         {
-            var user = users.FirstOrDefault(u => u.Email == updated.Email);
+            var user = users.FirstOrDefault(u =>
+                u.Email.Equals(updated.Email, StringComparison.OrdinalIgnoreCase));
+
             if (user == null)
                 return false;
 
@@ -120,6 +143,15 @@ namespace SkillBuilderPro.WinForms.Services
             user.Height = updated.Height;
             user.Weight = updated.Weight;
             user.Age = updated.Age;
+            user.JerseyNumber = updated.JerseyNumber;
+            user.Goal = updated.Goal;
+
+            if (!string.IsNullOrWhiteSpace(updated.Password))
+            {
+                user.Password = updated.Password;
+            }
+
+            user.IsActive = updated.IsActive;
 
             SaveUsers();
             return true;
@@ -144,28 +176,30 @@ namespace SkillBuilderPro.WinForms.Services
         {
             return string.Join("|", new[]
             {
-                u.Email,
-                u.Password,
-                u.FullName,
-                u.Role,
-                u.Sport,
-                u.TargetArea,
-                u.ExperienceLevel,
-                u.Phone,
+                u.Email ?? "",
+                u.Password ?? "",
+                u.FullName ?? "",
+                u.Role ?? "",
+                u.Sport ?? "",
+                u.TargetArea ?? "",
+                u.ExperienceLevel ?? "",
+                u.Phone ?? "",
                 u.PhotoPath ?? "",
                 u.Age.ToString(),
                 u.Height.ToString(),
                 u.Weight.ToString(),
                 u.Team ?? "",
                 u.Bio ?? "",
-                u.IsActive.ToString()
+                u.IsActive.ToString(),
+                u.JerseyNumber.ToString(),
+                u.Goal ?? ""
             });
         }
 
-        private User ParseUser(string line)
+        private User? ParseUser(string line)
         {
             var p = line.Split('|');
-            if (p.Length < 15)
+            if (p.Length < 17)
                 return null;
 
             return new User
@@ -180,13 +214,14 @@ namespace SkillBuilderPro.WinForms.Services
                 Phone = p[7],
                 PhotoPath = p[8],
                 Age = int.TryParse(p[9], out var age) ? age : 0,
-                Height = double.TryParse(p[10], out var h) ? h : 0,
-                Weight = double.TryParse(p[11], out var w) ? w : 0,
+                Height = double.TryParse(p[10], out var height) ? height : 0,
+                Weight = double.TryParse(p[11], out var weight) ? weight : 0,
                 Team = p[12],
                 Bio = p[13],
-                IsActive = bool.Parse(p[14])
+                IsActive = bool.TryParse(p[14], out var active) && active,
+                JerseyNumber = int.TryParse(p[15], out var jerseyNumber) ? jerseyNumber : 0,
+                Goal = p[16]
             };
         }
     }
 }
-

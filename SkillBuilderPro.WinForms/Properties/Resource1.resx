@@ -145,8 +145,25 @@
   <data name="calendar_softball" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\calendar_softball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="FootballField" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Football_Field.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Chicago_Soccer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Chicago Soccer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Chicago Themed Soccer Field </comment>
+  </data>
+  <data name="Chicago_Baseball" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Chicago_Baseball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Chicago Themed Baseball</comment>
+  </data>
+  <data name="Chicago_Basketball" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Chicago_Basketball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Chicago themed Basketball</comment>
+  </data>
+  <data name="Chicago_Football" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Chicago_Football.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Chicago Themed Football</comment>
+  </data>
+  <data name="Chicago_Hockey" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Chicago_Hockey.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Chicago Themed Hockey</comment>
   </data>
   <data name="hockey_rink" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hockey_rink.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -162,5 +179,8 @@
   </data>
   <data name="weight_room" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\weight_room.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="create_profile" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\create_profile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
