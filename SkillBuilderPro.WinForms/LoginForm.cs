@@ -42,7 +42,7 @@ namespace SkillBuilderPro.WinForms
             this.MinimumSize = new Size(1000, 800);
 
             this.BackgroundImage = ApplyDarkOverlayLogin(Resource1.weight_room, 0.20f);
-            this.BackgroundImageLayout = ImageLayout.Zoom;
+            this.BackgroundImageLayout = ImageLayout.Stretch;
         }
 
         private void BuildLoginCard()

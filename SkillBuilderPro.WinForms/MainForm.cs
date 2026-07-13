@@ -2,7 +2,7 @@
 using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Services;
 using SkillBuilderPro.WinForms.Theming;
-using System.Net.Sockets;
+
 
 namespace SkillBuilderPro.WinForms
 {
@@ -241,7 +241,7 @@ namespace SkillBuilderPro.WinForms
             Panel card = new Panel
             {
                 Size = new Size(width, height),
-                BackColor = Color.FromArgb(170, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
+                BackColor = Color.FromArgb(205, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
             };
 
             void PositionCard() => card.Location = new Point(
@@ -338,7 +338,7 @@ namespace SkillBuilderPro.WinForms
             tab.AutoScroll = true;
 
             const int leftWidth = 400;
-            const int leftHeight = 480;   // was 560 — FIXED
+            const int leftHeight = 580;   // was 560 — FIXED
             const int rightWidth = 400;
             const int rightHeight = 560;
             const int gap = 28;
@@ -348,12 +348,12 @@ namespace SkillBuilderPro.WinForms
             Panel leftCard = new Panel
             {
                 Size = new Size(leftWidth, leftHeight),
-                BackColor = Color.FromArgb(170, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
+                BackColor = Color.FromArgb(205, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
             };
             Panel rightCard = new Panel
             {
                 Size = new Size(rightWidth, rightHeight),
-                BackColor = Color.FromArgb(170, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B),
+                BackColor = Color.FromArgb(205, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B),
                 Visible = false
             };
             scheduleCard = rightCard;
@@ -375,10 +375,10 @@ namespace SkillBuilderPro.WinForms
             // ----- LEFT: TRAINING BUILDER -----
 
             Label title = CreateCardLabel(leftCard, "Training Builder",
-                18F, FontStyle.Bold, AppColors.TrainingText, 16, 34);
+                18F, FontStyle.Bold, AppColors.TrainingText, 14, 44);
 
             Label focusLabel = CreateCardLabel(leftCard, "Training Focus",
-                11F, FontStyle.Bold, AppColors.SubtleText, 58, 22);
+                11F, FontStyle.Bold, AppColors.SubtleText, 64, 28);
 
             focusComboBox = new ComboBox
             {
@@ -390,26 +390,26 @@ namespace SkillBuilderPro.WinForms
                 ForeColor = AppColors.TrainingText,
                 FlatStyle = FlatStyle.Flat
             };
-            CenterInCard(leftCard, focusComboBox, 84);
+            CenterInCard(leftCard, focusComboBox, 96);
             focusComboBox.SelectedIndexChanged += (s, e) => LoadDrillsForSelectedFocus();
 
             Label drillLabel = CreateCardLabel(leftCard, "Check One or More Drills",
-                11F, FontStyle.Bold, AppColors.SubtleText, 124, 22);
+                11F, FontStyle.Bold, AppColors.SubtleText, 136, 28);
 
             drillCheckedListBox = new CheckedListBox
             {
                 Width = 340,
-                Height = 250,
+                Height = 220,
                 Font = new Font("Segoe UI", 11F),
                 BackColor = AppColors.Shelf,
                 ForeColor = AppColors.TrainingText,
                 BorderStyle = BorderStyle.None,
                 CheckOnClick = true
             };
-            CenterInCard(leftCard, drillCheckedListBox, 150);
+            CenterInCard(leftCard, drillCheckedListBox, 168);
 
             Label daysLabel = CreateCardLabel(leftCard, "Training Days",
-    11F, FontStyle.Bold, AppColors.SubtleText, 408, 22);
+                11F, FontStyle.Bold, AppColors.SubtleText, 396, 28);
 
             ComboBox daysPresetComboBox = new ComboBox
             {
@@ -430,7 +430,7 @@ namespace SkillBuilderPro.WinForms
     "Every Day"
             });
             daysPresetComboBox.SelectedIndex = 0;   // matches the MWF default
-            CenterInCard(leftCard, daysPresetComboBox, 434);
+            CenterInCard(leftCard, daysPresetComboBox, 428);
 
             daysPresetComboBox.SelectedIndexChanged += (s, e) =>
             {
@@ -472,9 +472,9 @@ namespace SkillBuilderPro.WinForms
             clearSelectionButton = CreateModernButton("CLEAR DRILLS", 164, 38);
             generateVideoButton = CreateModernButton("TRAINING VIDEO", 164, 38);
 
-            CenterInCard(leftCard, generateScheduleButton, 470);
-            clearSelectionButton.Location = new Point(30, 518);
-            generateVideoButton.Location = new Point(206, 518);
+            CenterInCard(leftCard, generateScheduleButton, 472);
+            clearSelectionButton.Location = new Point(30, 520);
+            generateVideoButton.Location = new Point(206, 520);
 
             generateScheduleButton.Click += GenerateScheduleButton_Click;
             clearSelectionButton.Click += ClearSelectionButton_Click;
@@ -495,18 +495,18 @@ namespace SkillBuilderPro.WinForms
             // ----- RIGHT: SCHEDULE PREVIEW (hidden until generated) -----
 
             Label previewTitle = CreateCardLabel(rightCard, "Schedule Preview",
-                18F, FontStyle.Bold, AppColors.TrainingText, 16, 34);
+                18F, FontStyle.Bold, AppColors.TrainingText, 14, 44);
 
             scheduleListBox = new ListBox
             {
                 Width = 340,
-                Height = 510,
+                Height = 470,
                 Font = new Font("Consolas", 10F),
                 BackColor = AppColors.Shelf,
                 ForeColor = AppColors.TrainingText,
                 BorderStyle = BorderStyle.None
             };
-            CenterInCard(rightCard, scheduleListBox, 62);
+            CenterInCard(rightCard, scheduleListBox, 68);
 
             rightCard.Controls.Add(previewTitle);
             rightCard.Controls.Add(scheduleListBox);
@@ -534,14 +534,11 @@ namespace SkillBuilderPro.WinForms
             Panel card = CreateCardPanel(tab, 700, 540, 150);
 
             Label title = CreateCardLabel(card, "GOAL ROADMAP",
-                20F, FontStyle.Bold, AppColors.TrainingText, 26, 14);
-            // moved UP from 36 → 14
+            20F, FontStyle.Bold, AppColors.TrainingText, 12, 46);   // y=14, height=36
 
             Label brand = CreateCardLabel(card,
                 $"SKILL BUILDER PRO  •  {(_user.Sport ?? "").ToUpper()}",
-                10F, FontStyle.Regular, AppColors.SubtleText, 26, 52);
-            // moved DOWN from 18 → 52
-            // increased font from 9F → 10F and removed bold
+                10F, FontStyle.Regular, AppColors.SubtleText, 58, 22);  // y=52, height=18
 
             Label goalLabel = new Label
             {
