@@ -1,11 +1,30 @@
 {
   "version": 4,
   "targets": {
-    "net10.0-windows": {}
+    "net10.0-windows": {
+      "SkillBuilderPro.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/SkillBuilderPro.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SkillBuilderPro.Core.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "SkillBuilderPro.Core/1.0.0": {
+      "type": "project",
+      "path": "../SkillBuilderPro.Core/SkillBuilderPro.Core.csproj",
+      "msbuildProject": "../SkillBuilderPro.Core/SkillBuilderPro.Core.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0-windows": []
+    "net10.0-windows": [
+      "SkillBuilderPro.Core >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\brovy\\.nuget\\packages\\": {},
@@ -40,7 +59,11 @@
         "net10.0-windows": {
           "framework": "net10.0-windows7.0",
           "targetAlias": "net10.0-windows",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\brovy\\source\\repos\\SkillBuilderPro\\SkillBuilderPro.Core\\SkillBuilderPro.Core.csproj": {
+              "projectPath": "C:\\Users\\brovy\\source\\repos\\SkillBuilderPro\\SkillBuilderPro.Core\\SkillBuilderPro.Core.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

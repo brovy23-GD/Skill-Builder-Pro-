@@ -1,35 +1,31 @@
 using Microsoft.EntityFrameworkCore;
-using SkillBuilderPro.Core.Data;
+using SkillBuilderPro.API.Data;
 using SkillBuilderPro.Core.Interfaces;
-using SkillBuilderPro.Core.Services;
+using SkillBuilderPro.API.Services;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-// EF Core + SQLite
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Dependency Injection - service layer
-builder.Services.AddScoped<IDrillService, DrillService>();
-builder.Services.AddScoped<IScheduleService, ScheduleService>();
-builder.Services.AddScoped<IProgressService, ProgressService>();
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-WebApplication app = builder.Build();
+// Database — SQL Server
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SkillBuilderDb")));
 
-// Auto-create database with seed data on startup (dev convenience)
-using (IServiceScope scope = app.Services.CreateScope())
+// Dependency injection for services
+builder.Services.AddScoped<IDrillService, DrillService>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
+builder.Services.AddScoped<IProgressService, ProgressService>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
 {
-    AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    app.UseSwagger();
+    app.UseSwaggerUI();   // interactive UI at /swagger
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
+app.UseAuthorization();
 app.MapControllers();
-
 app.Run();
