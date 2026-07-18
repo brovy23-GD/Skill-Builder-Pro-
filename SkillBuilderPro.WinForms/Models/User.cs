@@ -24,5 +24,6 @@ namespace SkillBuilderPro.WinForms.Models
 
         public int JerseyNumber { get; set; }
         public string Goal { get; set; }
+        public string GuardianEmail { get; set; } = "";
     }
 }

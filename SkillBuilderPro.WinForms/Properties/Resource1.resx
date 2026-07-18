@@ -183,4 +183,13 @@
   <data name="create_profile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\create_profile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AdminDash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AdminDash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CoachOffice" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CoachOffice.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="parentsbackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\parentsbackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

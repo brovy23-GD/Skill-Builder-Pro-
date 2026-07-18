@@ -24,6 +24,9 @@ public class Drill
     [Range(1, 5)]
     public int DifficultyLevel { get; set; } = 1;           // 1 = Beginner, 5 = Elite
 
+    [Range(1, 240)]
+    public int Duration { get; set; } = 20;                 // minutes
+
     public List<TrainingSchedule> Schedules { get; set; } = new();
     public List<ProgressLog> ProgressLogs { get; set; } = new();
 }

@@ -2,6 +2,7 @@
 using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Services;
 using SkillBuilderPro.WinForms.Theming;
+using static SkillBuilderPro.WinForms.Theming.TeamThemes;
 
 
 namespace SkillBuilderPro.WinForms
@@ -38,7 +39,7 @@ namespace SkillBuilderPro.WinForms
         {
             public static readonly Color TrainingBackground = Color.FromArgb(20, 24, 32);
             public static readonly Color TrainingCard = Color.FromArgb(32, 38, 50);
-            public static readonly Color Shelf = Color.FromArgb(42, 49, 63);
+            public static readonly Color Shelf = Color.FromArgb(52, 60, 76);   // was 42,49,63
             public static readonly Color TrainingText = Color.FromArgb(230, 235, 240);
             public static readonly Color SubtleText = Color.FromArgb(155, 170, 190);
         }
@@ -56,13 +57,11 @@ namespace SkillBuilderPro.WinForms
             BuildTabControl();
             BuildNavBar();
 
-            // Dock order: last added is laid out first - header on top,
-            // nav under it, tabs filling the rest.
-            this.Controls.Add(mainTabControl);
-            this.Controls.Add(navPanel);
-            this.Controls.Add(headerPanel);
+            Controls.Add(mainTabControl);
+            Controls.Add(navPanel);
+            Controls.Add(headerPanel);
 
-            SelectNavTab(1); // land on Training
+            SelectNavTab(1);
         }
 
         private void SetupForm()
@@ -84,7 +83,7 @@ namespace SkillBuilderPro.WinForms
             headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 120,
+                Height = 90,
                 BackColor = theme.Panel
             };
 
@@ -93,47 +92,57 @@ namespace SkillBuilderPro.WinForms
             {
                 Text = "SKILL BUILDER PRO",
                 ForeColor = theme.Text,
-                Font = new Font("Segoe UI", 18F, FontStyle.Bold),   // cleaner + more modern
+                Font = new Font("Segoe UI", 18F, FontStyle.Bold),
                 AutoSize = true,
-                Location = new Point(22, 20)                       // sits in top third
+                Location = new Point(150, 12)
             };
 
-            // SUBTITLE (Sport + Focus)
+            // SUBTITLE
             Label subtitleLabel = new Label
             {
                 Text = $"Sport: {_user.Sport}   |   Focus: {_user.TargetArea}",
                 ForeColor = theme.Text,
-                Font = new Font("Segoe UI", 12F, FontStyle.Regular),  // balanced with title
+                Font = new Font("Segoe UI", 11F, FontStyle.Regular),
                 AutoSize = true,
-                Location = new Point(22, 60)                          // perfect spacing
+                Location = new Point(22, 50)
             };
 
             headerPanel.Controls.Add(titleLabel);
             headerPanel.Controls.Add(subtitleLabel);
 
-            // LOG OUT BUTTON
+            // LOG OUT / EXIT DEMO BUTTON
             Button exitButton = new Button
             {
-                Text = _isDemoMode ? "EXIT DEMO" : "LOG OUT",
-                Size = new Size(130, 40),
+                Text = _isDemoMode ? "EXIT DEMO MODE" : "LOG OUT",
+                Size = new Size(145, 40),
                 BackColor = theme.Accent,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand
             };
-            exitButton.FlatAppearance.BorderSize = 0;
 
-            exitButton.Click += (s, e) => this.Close();
+            exitButton.FlatAppearance.BorderSize = 0;
+            exitButton.Click += (s, e) =>
+            {
+                NextUser = null;
+                Close();
+            };
 
             headerPanel.Controls.Add(exitButton);
 
-            headerPanel.Resize += (s, e) =>
+            void PositionExitButton()
             {
-                exitButton.Location = new Point(headerPanel.Width - 154, 40);
-            };
+                exitButton.Location = new Point(
+                    headerPanel.ClientSize.Width - exitButton.Width - 24,
+                    25);
+            }
+            headerPanel.Resize += (s, e) => PositionExitButton();
+            PositionExitButton();
+
+            NavHelper.AddBackButton(this, headerPanel, () => { NextUser = null; Close(); });
+            NavHelper.AddMuteButton(headerPanel);
         }
-
-
         // ------------------------------
         // NAV BAR + TABS
         // ------------------------------
@@ -172,11 +181,11 @@ namespace SkillBuilderPro.WinForms
             navPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 44,               // was 52
+                Height = 48,               // was 52
                 BackColor = AppColors.TrainingCard
             };
 
-            string[] sections = { "ATHLETE PROFILE", "TRAINING", "GOALS", "CALENDAR" };
+            string[] sections = { "ATHLETE PROFILE", "TRAINING", "GOALS", "CALENDAR", "API DRILLS" };
 
             int x = 20;
             for (int i = 0; i < sections.Length; i++)
@@ -187,7 +196,7 @@ namespace SkillBuilderPro.WinForms
                 {
                     Text = sections[i],
                     Width = i == 0 ? 190 : 140,
-                    Height = 52,
+                    Height = 48,
                     Location = new Point(x, 0),
                     FlatStyle = FlatStyle.Flat,
                     BackColor = AppColors.TrainingCard,
@@ -199,10 +208,12 @@ namespace SkillBuilderPro.WinForms
                 navBtn.FlatAppearance.BorderSize = 0;
                 navBtn.FlatAppearance.MouseOverBackColor = AppColors.Shelf;
 
-                // ATHLETE PROFILE opens the standalone locker room;
-                // everything else switches tabs.
+                // Click handlers: ATHLETE PROFILE opens LockerRoomForm,
+                // API DRILLS opens ApiDrillsForm, others select the tab.
                 if (sections[i] == "ATHLETE PROFILE")
                     navBtn.Click += (s, e) => OpenAthleteProfile();
+                else if (sections[i] == "API DRILLS")
+                    navBtn.Click += (s, e) => OpenApiDrills();
                 else
                     navBtn.Click += (s, e) => SelectNavTab(index);
 
@@ -342,18 +353,18 @@ namespace SkillBuilderPro.WinForms
             const int rightWidth = 400;
             const int rightHeight = 560;
             const int gap = 28;
-            const int topMargin = 150;    // was 100 — FIXED
+            const int topMargin = 24;    // was 100 — FIXED
 
 
             Panel leftCard = new Panel
             {
                 Size = new Size(leftWidth, leftHeight),
-                BackColor = Color.FromArgb(205, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
+                BackColor = Color.FromArgb(150, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
             };
             Panel rightCard = new Panel
             {
                 Size = new Size(rightWidth, rightHeight),
-                BackColor = Color.FromArgb(205, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B),
+                BackColor = Color.FromArgb(150, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B),
                 Visible = false
             };
             scheduleCard = rightCard;
@@ -374,60 +385,61 @@ namespace SkillBuilderPro.WinForms
 
             // ----- LEFT: TRAINING BUILDER -----
 
+            
             Label title = CreateCardLabel(leftCard, "Training Builder",
-                18F, FontStyle.Bold, AppColors.TrainingText, 14, 44);
+                18F, FontStyle.Bold, Brand.TextStrong, 14, 44);
 
             Label focusLabel = CreateCardLabel(leftCard, "Training Focus",
-                11F, FontStyle.Bold, AppColors.SubtleText, 64, 28);
+                11F, FontStyle.Bold, Brand.TextCell, 64, 28);
 
             focusComboBox = new ComboBox
             {
                 Width = 340,
                 Height = 30,
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 11F),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 BackColor = AppColors.Shelf,
-                ForeColor = AppColors.TrainingText,
+                ForeColor = Brand.TextStrong,
                 FlatStyle = FlatStyle.Flat
             };
             CenterInCard(leftCard, focusComboBox, 96);
             focusComboBox.SelectedIndexChanged += (s, e) => LoadDrillsForSelectedFocus();
 
             Label drillLabel = CreateCardLabel(leftCard, "Check One or More Drills",
-                11F, FontStyle.Bold, AppColors.SubtleText, 136, 28);
+                11F, FontStyle.Bold, Brand.TextCell, 136, 28);
 
             drillCheckedListBox = new CheckedListBox
             {
                 Width = 340,
                 Height = 220,
-                Font = new Font("Segoe UI", 11F),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 BackColor = AppColors.Shelf,
-                ForeColor = AppColors.TrainingText,
+                ForeColor = Brand.TextStrong,
                 BorderStyle = BorderStyle.None,
                 CheckOnClick = true
             };
             CenterInCard(leftCard, drillCheckedListBox, 168);
 
             Label daysLabel = CreateCardLabel(leftCard, "Training Days",
-                11F, FontStyle.Bold, AppColors.SubtleText, 396, 28);
+                11F, FontStyle.Bold, Brand.TextCell, 396, 28);
 
             ComboBox daysPresetComboBox = new ComboBox
             {
                 Width = 340,
                 Height = 30,
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 11F),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 BackColor = AppColors.Shelf,
-                ForeColor = AppColors.TrainingText,
+                ForeColor = Brand.TextStrong,
                 FlatStyle = FlatStyle.Flat
             };
             daysPresetComboBox.Items.AddRange(new object[]
             {
-    "Mon / Wed / Fri",
-    "Tue / Thu",
-    "Mon – Fri (Weekdays)",
-    "Sat / Sun (Weekends)",
-    "Every Day"
+                "Mon / Wed / Fri",
+                "Tue / Thu",
+                "Mon – Fri (Weekdays)",
+                "Sat / Sun (Weekends)",
+                "Every Day"
             });
             daysPresetComboBox.SelectedIndex = 0;   // matches the MWF default
             CenterInCard(leftCard, daysPresetComboBox, 428);
@@ -495,15 +507,15 @@ namespace SkillBuilderPro.WinForms
             // ----- RIGHT: SCHEDULE PREVIEW (hidden until generated) -----
 
             Label previewTitle = CreateCardLabel(rightCard, "Schedule Preview",
-                18F, FontStyle.Bold, AppColors.TrainingText, 14, 44);
+                18F, FontStyle.Bold, Brand.TextStrong, 14, 44);
 
             scheduleListBox = new ListBox
             {
                 Width = 340,
                 Height = 470,
-                Font = new Font("Consolas", 10F),
+                Font = new Font("Consolas", 10F, FontStyle.Bold),
                 BackColor = AppColors.Shelf,
-                ForeColor = AppColors.TrainingText,
+                ForeColor = Brand.TextStrong,
                 BorderStyle = BorderStyle.None
             };
             CenterInCard(rightCard, scheduleListBox, 68);
@@ -628,7 +640,7 @@ namespace SkillBuilderPro.WinForms
             {
                 Size = new Size(card.Width - 80, 22),
                 Location = new Point(40, 392),
-                BackColor = Color.FromArgb(58, 66, 82)
+                BackColor = Color.FromArgb(58, 68,86)
             };
             progressBar.Paint += (s, e) =>
             {
@@ -694,7 +706,7 @@ namespace SkillBuilderPro.WinForms
             Image calBg = GetCalendarBackground(_user.Sport);
             if (calBg != null)
             {
-                tab.BackgroundImage = ApplyDarkOverlay(calBg, 0.3f);
+                tab.BackgroundImage = Brand.Hero(calBg);
                 tab.BackgroundImageLayout = ImageLayout.Stretch;
             }
 
@@ -1065,13 +1077,13 @@ namespace SkillBuilderPro.WinForms
             Image bg = GetFieldBackground(_user.Sport);
             if (bg != null)
             {
-                tab.BackgroundImage = ApplyDarkOverlay(bg, 0.25f);   // was default 0.45
+                tab.BackgroundImage = Brand.Hero(bg);
                 tab.BackgroundImageLayout = ImageLayout.Stretch;
             }
         }
-        private Image GetFieldBackground(string sport)
+        private Image GetFieldBackground(string? sport)
         {
-            switch (sport.Trim().ToLower())
+            switch ((sport ?? "").Trim().ToLowerInvariant())
             {
                 case "basketball":
                     return Resource1.Chicago_Basketball;
@@ -1132,22 +1144,96 @@ namespace SkillBuilderPro.WinForms
         /// Returns a darkened copy of an image (45% black overlay) so cards
         /// and text stay readable over the busy photo backgrounds.
         /// </summary>
-        private static Image ApplyDarkOverlay(Image source, float opacity = 0.45f)
+        private static Image ResizeImageToFill(Image source, Size targetSize)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (targetSize.Width <= 0 || targetSize.Height <= 0)
+                return new Bitmap(source);
+
+            Bitmap result = new Bitmap(targetSize.Width, targetSize.Height);
+
+            float sourceRatio = (float)source.Width / source.Height;
+            float targetRatio = (float)targetSize.Width / targetSize.Height;
+
+            Rectangle sourceRectangle;
+
+            if (sourceRatio > targetRatio)
+            {
+                int croppedWidth = (int)(source.Height * targetRatio);
+                int cropX = (source.Width - croppedWidth) / 2;
+
+                sourceRectangle = new Rectangle(
+                    cropX,
+                    0,
+                    croppedWidth,
+                    source.Height);
+            }
+            else
+            {
+                int croppedHeight = (int)(source.Width / targetRatio);
+                int cropY = (source.Height - croppedHeight) / 2;
+
+                sourceRectangle = new Rectangle(
+                    0,
+                    cropY,
+                    source.Width,
+                    croppedHeight);
+            }
+
+            using (Graphics graphics = Graphics.FromImage(result))
+            {
+                graphics.InterpolationMode =
+                    System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+                graphics.SmoothingMode =
+                    System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+                graphics.PixelOffsetMode =
+                    System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+                graphics.DrawImage(
+                    source,
+                    new Rectangle(0, 0, targetSize.Width, targetSize.Height),
+                    sourceRectangle,
+                    GraphicsUnit.Pixel);
+            }
+
+            return result;
+        }
+
+        private static Image ApplyDarkOverlay(
+    Image source,
+    float opacity = 0.45f)
         {
             Bitmap darkened = new Bitmap(source.Width, source.Height);
+
             using (Graphics g = Graphics.FromImage(darkened))
-            using (SolidBrush overlay = new SolidBrush(Color.FromArgb((int)(opacity * 255), 0, 0, 0)))
+            using (SolidBrush overlay = new SolidBrush(
+                Color.FromArgb((int)(opacity * 255), 0, 0, 0)))
             {
                 g.DrawImage(source, 0, 0, source.Width, source.Height);
                 g.FillRectangle(overlay, 0, 0, source.Width, source.Height);
             }
+
             return darkened;
+        }
+
+        private void OpenApiDrills()
+        {
+            using (var form = new ApiDrillsForm())
+            {
+                form.ShowDialog(this);
+            }
         }
     }
 
-    /// <summary>Double-buffered panel for flicker-free custom painting.</summary>
     public class BufferedGoalPanel : Panel
     {
-        public BufferedGoalPanel() { this.DoubleBuffered = true; }
+        public BufferedGoalPanel()
+        {
+            DoubleBuffered = true;
+        }
     }
 }

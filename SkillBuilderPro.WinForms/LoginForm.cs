@@ -1,9 +1,10 @@
-using SkillBuilderPro.WinForms.Models;
+﻿using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Properties;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace SkillBuilderPro.WinForms
 {
@@ -20,6 +21,9 @@ namespace SkillBuilderPro.WinForms
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public User LoggedInUser { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string SelectedRole { get; set; } = "Athlete";   // ← ADD THIS
+
         private TextBox emailBox;
         private TextBox passwordBox;
         private Button enterButton;
@@ -27,8 +31,12 @@ namespace SkillBuilderPro.WinForms
         private Button createProfileButton;
         private Label loginErrorLabel;
 
-        public LoginForm()
+        public LoginForm() : this("Athlete") { }
+
+        public LoginForm(string role)
         {
+            SelectedRole = string.IsNullOrWhiteSpace(role) ? "Athlete" : role;
+
             InitializeComponent();
             SetupForm();
             BuildLoginCard();
@@ -47,22 +55,23 @@ namespace SkillBuilderPro.WinForms
 
         private void BuildLoginCard()
         {
-            // Locker door plaque / coach's clipboard - dark, matte
+           
+            bool isAdmin = SelectedRole == "Admin";
+
             Panel card = new Panel
             {
-                Size = new Size(420, 480),
-                BackColor = Color.FromArgb(170, 40, 40, 48),   // ~67% opaque � weight room shows through
+                Size = new Size(420, isAdmin ? 410 : 462),
+                BackColor = Color.FromArgb(170, 40, 40, 48),
                 BorderStyle = BorderStyle.FixedSingle
             };
-            // Positioned in the upper portion of the screen so the branding
-            // on the gym floor (lower half of the photo) stays fully visible.
+
             void CenterCard() => card.Location = new Point(
                 (this.ClientSize.Width - card.Width) / 2,
-                Math.Max((int)(this.ClientSize.Height * 0.08), 20));
+                Math.Max((int)(this.ClientSize.Height * 0.12), 20));
             CenterCard();
             this.Resize += (s, e) => CenterCard();
 
-            Label title = new Label
+            card.Controls.Add(new Label
             {
                 Text = "SKILL BUILDER PRO",
                 Font = new Font("Segoe UI Black", 22F),
@@ -71,53 +80,62 @@ namespace SkillBuilderPro.WinForms
                 Height = 52,
                 Dock = DockStyle.Top,
                 TextAlign = ContentAlignment.MiddleCenter
-            };
-            card.Controls.Add(title);
+            });
 
-            // Tagline under the brand
-            Label tagline = new Label
+            card.Controls.Add(new Label
             {
                 Text = "BUILT FOR ATHLETES. POWERED BY PRECISION.",
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Italic),
                 ForeColor = Color.FromArgb(155, 170, 190),
                 AutoSize = false,
                 Width = 380,
-                Height = 22,
+                Height = 20,
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(20, 56)
-            };
-            card.Controls.Add(tagline);
+                Location = new Point(20, 54)
+            });
 
-            Label emailLabel = new Label
+            // ROLE BANNER
+            card.Controls.Add(new Label
+            {
+                Text = SelectedRole.ToUpper(),
+                Font = new Font("Segoe UI Black", 15F),
+                ForeColor = Color.White,
+                BackColor = Brand.RoleColor(SelectedRole),
+                AutoSize = false,
+                Width = 340,
+                Height = 34,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Location = new Point(40, 80)
+            });
+
+            card.Controls.Add(new Label
             {
                 Text = "Email",
                 Font = new Font("Segoe UI", 12F),
                 ForeColor = Color.White,
-                Location = new Point(40, 90)
-            };
-            card.Controls.Add(emailLabel);
+                Location = new Point(40, 126)
+            });
 
             emailBox = new TextBox
             {
                 Width = 340,
-                Location = new Point(40, 120),
+                Location = new Point(40, 154),
                 Font = new Font("Segoe UI", 12F)
             };
             card.Controls.Add(emailBox);
 
-            Label passwordLabel = new Label
+            card.Controls.Add(new Label
             {
                 Text = "Password",
                 Font = new Font("Segoe UI", 12F),
                 ForeColor = Color.White,
-                Location = new Point(40, 170)
-            };
-            card.Controls.Add(passwordLabel);
+                Location = new Point(40, 194)
+            });
 
             passwordBox = new TextBox
             {
                 Width = 340,
-                Location = new Point(40, 200),
+                Location = new Point(40, 222),
                 Font = new Font("Segoe UI", 12F),
                 UseSystemPasswordChar = true
             };
@@ -132,20 +150,21 @@ namespace SkillBuilderPro.WinForms
                 Width = 340,
                 Height = 20,
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(40, 238)
+                Location = new Point(40, 258)
             };
             card.Controls.Add(loginErrorLabel);
 
             enterButton = new Button
             {
-                Text = "ENTER LOCKER ROOM",
+                Text = EnterText(SelectedRole),
                 Width = 340,
                 Height = 48,
-                Location = new Point(40, 260),
+                Location = new Point(40, 282),
                 BackColor = Color.FromArgb(0, 120, 215),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI Semibold", 14F)
+                Font = new Font("Segoe UI Semibold", 13F),
+                Cursor = Cursors.Hand
             };
             enterButton.FlatAppearance.BorderSize = 0;
             enterButton.Click += EnterLockerRoom;
@@ -153,43 +172,60 @@ namespace SkillBuilderPro.WinForms
 
             demoButton = new Button
             {
-                Text = "DEMO MODE",
+                Text = $"DEMO AS {SelectedRole.ToUpper()}",
                 Width = 340,
                 Height = 40,
-                Location = new Point(40, 320),
+                Location = new Point(40, 340),
                 BackColor = Color.FromArgb(70, 70, 80),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 11F)
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                Cursor = Cursors.Hand
             };
             demoButton.FlatAppearance.BorderSize = 0;
             demoButton.Click += DemoMode_Click;
             card.Controls.Add(demoButton);
 
-            // Sign-up path - opens the full CreateProfileForm
-            createProfileButton = new Button
+            if (!isAdmin)
             {
-                Text = "NEW ATHLETE?  CREATE PROFILE",
-                Width = 340,
-                Height = 40,
-                Location = new Point(40, 380),
-                BackColor = Color.FromArgb(150, 15, 45),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold)
-            };
-            createProfileButton.FlatAppearance.BorderSize = 0;
-            createProfileButton.Click += CreateProfile_Click;
-            card.Controls.Add(createProfileButton);
+                createProfileButton = new Button
+                {
+                    Text = $"NEW {SelectedRole.ToUpper()}?  CREATE PROFILE",
+                    Width = 340,
+                    Height = 40,
+                    Location = new Point(40, 390),
+                    BackColor = Color.FromArgb(150, 15, 45),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                createProfileButton.FlatAppearance.BorderSize = 0;
+                createProfileButton.Click += CreateProfile_Click;
+                card.Controls.Add(createProfileButton);
+            }
 
+            this.AcceptButton = enterButton;
             this.Controls.Add(card);
             card.BringToFront();
+
+            NavHelper.AddBackButton(this, this);
         }
 
+        private static string EnterText(string role)
+        {
+            switch (role)
+            {
+                case "Coach": return "ENTER COACH'S OFFICE";
+                case "Parent": return "ENTER PARENT PORTAL";
+                case "Admin": return "ENTER ADMIN CONSOLE";
+                default: return "ENTER LOCKER ROOM";
+            }
+        }
+
+       
         private void EnterLockerRoom(object sender, EventArgs e)
         {
-            // Real login only - authenticates an existing profile.
-            // Demo access is the DEMO MODE button; sign-up is CREATE PROFILE.
             string email = emailBox.Text?.Trim() ?? "";
             string password = passwordBox.Text ?? "";
 
@@ -210,27 +246,27 @@ namespace SkillBuilderPro.WinForms
                 return;
             }
 
+            result.user.Role = SelectedRole;
+
             LoggedInUser = result.user;
             IsDemoMode = false;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-
         private void DemoMode_Click(object sender, EventArgs e)
         {
-            // DEMO MODE opens the athlete picker - choose anyone from the
-            // DummyUsers roster to tour the app as (each sport shows its own
-            // theme, backgrounds, and drill library).
             User selected = ShowDemoAthletePicker();
             if (selected == null)
-                return;   // picker cancelled - stay on the login screen
+                return;
 
-            selected.IsActive = true;   // demo athletes always show ACTIVE
+            selected.IsActive = true;
+            selected.Role = SelectedRole;
             LoggedInUser = selected;
             IsDemoMode = true;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
         private static Image ApplyDarkOverlayLogin(Image source, float opacity = 0.20f)
         {
             Bitmap darkened = new Bitmap(source.Width, source.Height);
@@ -242,17 +278,24 @@ namespace SkillBuilderPro.WinForms
             }
             return darkened;
         }
-        /// <summary>
-        /// Small dark modal listing the DummyUsers roster.
-        /// Returns the chosen athlete, or null if cancelled.
-        /// </summary>
+
         private User ShowDemoAthletePicker()
         {
-            var roster = DummyUsers.GetAllDummyUsers();
-            User chosen = null;
+            var roster = DummyUsers.GetAllDummyUsers()
+                .Where(u => u.Role == SelectedRole)
+                .ToList();
+
+            if (roster.Count == 0)
+            {
+                MessageBox.Show($"No demo users for role: {SelectedRole}");
+                return null;
+            }
+
+            User chosen = null;   // ← this line got lost
 
             using (Form picker = new Form())
             {
+                // ... rest unchanged ...
                 picker.Text = "Choose Demo Athlete";
                 picker.StartPosition = FormStartPosition.CenterParent;
                 picker.Size = new Size(430, 460);
@@ -312,7 +355,6 @@ namespace SkillBuilderPro.WinForms
                 cancelButton.FlatAppearance.BorderSize = 0;
                 cancelButton.Click += (s, e) => { picker.DialogResult = DialogResult.Cancel; };
 
-                // Double-clicking an athlete enters immediately
                 rosterList.DoubleClick += (s, e) => { picker.DialogResult = DialogResult.OK; };
 
                 picker.Controls.Add(rosterList);
@@ -334,12 +376,12 @@ namespace SkillBuilderPro.WinForms
             var profileForm = new CreateProfileForm();
             if (profileForm.ShowDialog() == DialogResult.OK && profileForm.CreatedUser != null)
             {
+                profileForm.CreatedUser.Role = SelectedRole;   // ← ADD
                 LoggedInUser = profileForm.CreatedUser;
                 IsDemoMode = false;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
         }
-
     }
 }

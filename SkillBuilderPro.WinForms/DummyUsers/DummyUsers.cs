@@ -1,5 +1,7 @@
-using System.Collections.Generic;
 using SkillBuilderPro.WinForms.Models;
+using System.Collections.Generic;
+using System.Data;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SkillBuilderPro.WinForms
 {
@@ -160,6 +162,7 @@ namespace SkillBuilderPro.WinForms
                 {
                     FullName = "Walter Payton",
                     Email = "walter.payton@football.com",
+                    GuardianEmail = "peter.griffin@quahog.com",
                     Password = "",
                     Phone = "000-000-0034",
                     Sport = "Football",
@@ -181,6 +184,7 @@ namespace SkillBuilderPro.WinForms
                 {
                     FullName = "Lionel Messi",
                     Email = "lionel.messi@soccer.com",
+                    GuardianEmail = "marge.simpson@springfield.com",
                     Password = "",
                     Phone = "000-000-0010",
                     Sport = "Soccer",
@@ -259,7 +263,135 @@ namespace SkillBuilderPro.WinForms
                     Bio = "The Great One. Skated to where the puck was going. Owns more assists than anyone else has points.",
                     JerseyNumber = 99,
                     Goal = "Create more scoring opportunities"
+                },
+
+
+                    new User
+                {
+                    FullName = "Bobby Rovy",
+                    Email = "bobby.rovy@skillbuilderpro.com",
+                    Password = "",
+                    Phone = "000-000-0001",
+                    Sport = "Baskeball",
+                    TargetArea = "Dribbling",
+                    ExperienceLevel = "Advanced",
+                    Role = "Admin",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 40,
+                    Height = 6.0,
+                    Weight = 190,
+                    Team = "SkillBuilderPro",
+                    Bio = "Built this thing. Full system access — users, drills, rosters, and everything under the hood.",
+                    JerseyNumber = 1,
+                    Goal = "Keep the platform running"
+                },
+
+                new User
+                {
+                    FullName = "Peter Griffin",
+                    Email = "peter.griffin@quahog.com",
+                    Password = "",
+                    Phone = "000-000-0042",
+                    Sport = "Football",
+                    TargetArea = "Conditioning",
+                    ExperienceLevel = "Beginner",
+                    Role = "Parent",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 43,
+                    Height = 5.9,
+                    Weight = 270,
+                    Team = "Quahog",
+                    Bio = "Loudest guy in the bleachers. Questionable coaching advice, unquestionable attendance.",
+                    JerseyNumber = 0,
+                    Goal = "Follow my athlete's progress"
+                },
+
+                new User
+                {
+                    FullName = "Phil Jackson",
+                    Email = "phil.jackson@basketball.com",
+                    Password = "",
+                    Phone = "000-000-0011",
+                    Sport = "Basketball",
+                    TargetArea = "Shooting",
+                    ExperienceLevel = "Advanced",
+                    Role = "Coach",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 55,
+                    Height = 6.8,
+                    Weight = 220,
+                    Team = "Chicago Bulls",
+                    Bio = "Eleven rings as a head coach. The Zen Master ran the triangle and managed egos nobody else could.",
+                    JerseyNumber = 0,
+                    Goal = "Develop the roster"
+                },
+
+                new User
+                {
+                    FullName = "Mike Ditka",
+                    Email = "mike.ditka@football.com",
+                    Password = "",
+                    Phone = "000-000-0089",
+                    Sport = "Football",
+                    TargetArea = "Conditioning",
+                    ExperienceLevel = "Advanced",
+                    Role = "Coach",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 46,
+                    Height = 6.3,
+                    Weight = 230,
+                    Team = "Chicago Bears",
+                    Bio = "Da Coach. '85 Bears. Toughness wasn't a drill, it was the whole program.",
+                    JerseyNumber = 0,
+                    Goal = "Build a championship roster"
+                },
+
+                new User
+                {
+                    FullName = "Jennie Finch",
+                    Email = "jennie.finch@softball.com",
+                    Password = "",
+                    Phone = "000-000-0027",
+                    Sport = "Softball",
+                    TargetArea = "Hitting",
+                    ExperienceLevel = "Advanced",
+                    Role = "Coach",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 38,
+                    Height = 6.1,
+                    Weight = 165,
+                    Team = "Oak Lawn",
+                    Bio = "Olympic gold medalist and one of the most dominant arms softball has produced. Runs the cage like a machine shop.",
+                    JerseyNumber = 27,
+                    Goal = "Develop hitters"
+                },
+
+                new User
+                {
+                    FullName = "Marge Simpson",
+                    Email = "marge.simpson@springfield.com",
+                    Password = "",
+                    Phone = "000-000-0044",
+                    Sport = "Soccer",
+                    TargetArea = "Dribbling",
+                    ExperienceLevel = "Beginner",
+                    Role = "Parent",
+                    IsActive = true,
+                    PhotoPath = "",
+                    Age = 38,
+                    Height = 8.0,
+                    Weight = 140,
+                    Team = "Springfield",
+                    Bio = "Actually reads the practice schedule. Runs the snack rotation.",
+                    JerseyNumber = 0,
+                    Goal = "Follow my athlete's progress"
                 }
+
             };
         }
     }

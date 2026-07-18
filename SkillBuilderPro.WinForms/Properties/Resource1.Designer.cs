@@ -63,6 +63,16 @@ namespace SkillBuilderPro.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AdminDash {
+            get {
+                object obj = ResourceManager.GetObject("AdminDash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap BaseballDiamond {
             get {
                 object obj = ResourceManager.GetObject("BaseballDiamond", resourceCulture);
@@ -203,6 +213,16 @@ namespace SkillBuilderPro.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CoachOffice {
+            get {
+                object obj = ResourceManager.GetObject("CoachOffice", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap create_profile {
             get {
                 object obj = ResourceManager.GetObject("create_profile", resourceCulture);
@@ -226,6 +246,16 @@ namespace SkillBuilderPro.WinForms.Properties {
         internal static System.Drawing.Bitmap LockerRoom {
             get {
                 object obj = ResourceManager.GetObject("LockerRoom", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap parentsbackground {
+            get {
+                object obj = ResourceManager.GetObject("parentsbackground", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
