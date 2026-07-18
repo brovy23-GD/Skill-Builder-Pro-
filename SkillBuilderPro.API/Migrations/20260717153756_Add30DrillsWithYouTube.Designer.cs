@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkillBuilderPro.API.Data;
 
@@ -11,9 +12,11 @@ using SkillBuilderPro.API.Data;
 namespace SkillBuilderPro.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260717153756_Add30DrillsWithYouTube")]
+    partial class Add30DrillsWithYouTube
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,301 +70,301 @@ namespace SkillBuilderPro.API.Migrations
                         {
                             Id = 1,
                             Category = "Dribbling",
-                            Description = "5-minute dribbling workout that changes your game.",
+                            Description = "Improve handles with advanced dribbling techniques.",
                             DifficultyLevel = 2,
                             Name = "Ball Handling Drills",
                             Sport = "Basketball",
-                            VideoUrl = "https://www.youtube.com/watch?v=oADaM2L1YLc"
+                            VideoUrl = "https://www.youtube.com/watch?v=UVAz2aASZx4"
                         },
                         new
                         {
                             Id = 2,
                             Category = "Shooting",
-                            Description = "Find your perfect shooting form.",
+                            Description = "Master proper shooting technique and form.",
                             DifficultyLevel = 2,
                             Name = "Shooting Form Basics",
                             Sport = "Basketball",
-                            VideoUrl = "https://www.youtube.com/watch?v=x7anDE7OEww"
+                            VideoUrl = "https://www.youtube.com/watch?v=hYaLYGmS61A"
                         },
                         new
                         {
                             Id = 3,
                             Category = "Defense",
-                            Description = "Three defense drills to make your team better.",
+                            Description = "Learn proper defensive stance and movement.",
                             DifficultyLevel = 2,
                             Name = "Defensive Footwork",
                             Sport = "Basketball",
-                            VideoUrl = "https://www.youtube.com/watch?v=lFY__uSOJIY"
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 4,
-                            Category = "Rebounding",
-                            Description = "Three best basketball rebounding drills that win games.",
+                            Category = "Passing",
+                            Description = "Develop precision passing and court vision.",
                             DifficultyLevel = 1,
-                            Name = "Rebounding Techniques",
+                            Name = "Passing Accuracy",
                             Sport = "Basketball",
-                            VideoUrl = "https://www.youtube.com/watch?v=pFRlEOeWpKY"
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 5,
-                            Category = "Passing",
-                            Description = "Three basketball drills to become better at passing.",
-                            DifficultyLevel = 1,
-                            Name = "Passing Accuracy",
+                            Category = "Footwork",
+                            Description = "Build explosive footwork and lateral agility.",
+                            DifficultyLevel = 3,
+                            Name = "Footwork Conditioning",
                             Sport = "Basketball",
-                            VideoUrl = "https://www.youtube.com/watch?v=OUskjh1r4Aw"
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 6,
                             Category = "Passing",
-                            Description = "How to throw a football with Tom Brady.",
+                            Description = "Master offensive route running patterns.",
                             DifficultyLevel = 2,
-                            Name = "Passing Technique",
+                            Name = "Passing Routes",
                             Sport = "Football",
-                            VideoUrl = "https://www.youtube.com/watch?v=lv5p2Xqkxyk"
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 7,
-                            Category = "Catching",
-                            Description = "WR drills with Odell Beckham Jr.",
+                            Category = "Defense",
+                            Description = "Learn proper tackling form and safety.",
                             DifficultyLevel = 2,
-                            Name = "Catching Skills",
+                            Name = "Tackling Technique",
                             Sport = "Football",
-                            VideoUrl = "https://www.youtube.com/watch?v=4n-Js1SwC2c"
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 8,
-                            Category = "Route Running",
-                            Description = "Cooper Kupp's WR drills for creating separation.",
+                            Category = "Blocking",
+                            Description = "Develop offensive line blocking fundamentals.",
                             DifficultyLevel = 2,
-                            Name = "Route Running",
+                            Name = "Line Blocking",
                             Sport = "Football",
-                            VideoUrl = "https://www.youtube.com/watch?v=b8Y-BrxoGQc"
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 9,
-                            Category = "Blocking",
-                            Description = "Proper technique for run and pass blocking.",
-                            DifficultyLevel = 2,
-                            Name = "Blocking Fundamentals",
+                            Category = "Ball Handling",
+                            Description = "Prevent fumbles with strong ball security drills.",
+                            DifficultyLevel = 1,
+                            Name = "Ball Security",
                             Sport = "Football",
-                            VideoUrl = "https://www.youtube.com/watch?v=hHyjR__k3XA"
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 10,
                             Category = "Conditioning",
-                            Description = "Ten speed and agility ladder drills.",
+                            Description = "Build speed and endurance for game performance.",
                             DifficultyLevel = 3,
-                            Name = "Speed and Agility",
+                            Name = "Conditioning Sprints",
                             Sport = "Football",
-                            VideoUrl = "https://www.youtube.com/watch?v=9ZTRUVLjGzI"
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 11,
                             Category = "Hitting",
-                            Description = "Ten best softball hitting drills for kids.",
+                            Description = "Perfect your stance and swing mechanics.",
                             DifficultyLevel = 1,
-                            Name = "Hitting Drills",
-                            Sport = "Softball",
-                            VideoUrl = "https://www.youtube.com/watch?v=g-yDDzQL6eE"
+                            Name = "Batting Stance",
+                            Sport = "Baseball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 12,
-                            Category = "Pitching",
-                            Description = "Basic five steps for a beginner pitcher.",
+                            Category = "Running",
+                            Description = "Improve speed and technique between bases.",
                             DifficultyLevel = 2,
-                            Name = "Pitching Mechanics",
-                            Sport = "Softball",
-                            VideoUrl = "https://www.youtube.com/watch?v=mIx9CvpGXsU"
+                            Name = "Base Running",
+                            Sport = "Baseball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 13,
                             Category = "Fielding",
-                            Description = "Three infield drills for youth players.",
-                            DifficultyLevel = 1,
-                            Name = "Infield Drills",
-                            Sport = "Softball",
-                            VideoUrl = "https://www.youtube.com/watch?v=6z0cpY5nGMA"
+                            Description = "Master ground ball and fly ball techniques.",
+                            DifficultyLevel = 2,
+                            Name = "Fielding Basics",
+                            Sport = "Baseball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 14,
-                            Category = "Fielding",
-                            Description = "Must-do outfield drills with Gold Glover AJ Andrews.",
-                            DifficultyLevel = 2,
-                            Name = "Outfield Skills",
-                            Sport = "Softball",
-                            VideoUrl = "https://www.youtube.com/watch?v=QREFQP72W0U"
+                            Category = "Pitching",
+                            Description = "Learn proper pitching form and control.",
+                            DifficultyLevel = 3,
+                            Name = "Pitching Mechanics",
+                            Sport = "Baseball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 15,
-                            Category = "Catching",
-                            Description = "How to improve as a softball catcher.",
-                            DifficultyLevel = 3,
-                            Name = "Catcher Fundamentals",
-                            Sport = "Softball",
-                            VideoUrl = "https://www.youtube.com/watch?v=qwdeRteH3es"
+                            Category = "Throwing",
+                            Description = "Develop arm strength and throwing precision.",
+                            DifficultyLevel = 2,
+                            Name = "Throwing Accuracy",
+                            Sport = "Baseball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 16,
                             Category = "Hitting",
-                            Description = "Ten best baseball hitting drills for kids.",
-                            DifficultyLevel = 1,
-                            Name = "Hitting Drills",
-                            Sport = "Baseball",
-                            VideoUrl = "https://www.youtube.com/watch?v=gOE484Meo_o"
+                            Description = "Tee placement and batting technique.",
+                            DifficultyLevel = 2,
+                            Name = "Softball Hitting Drills",
+                            Sport = "Softball",
+                            VideoUrl = "https://www.youtube.com/watch?v=ZxkrWk5j2NE"
                         },
                         new
                         {
                             Id = 17,
-                            Category = "Pitching",
-                            Description = "Must-do youth baseball pitching drills.",
-                            DifficultyLevel = 2,
-                            Name = "Pitching Drills",
-                            Sport = "Baseball",
-                            VideoUrl = "https://www.youtube.com/watch?v=McHb2hXrTrE"
+                            Category = "Defense",
+                            Description = "Learn proper fielding positions and angles.",
+                            DifficultyLevel = 1,
+                            Name = "Defensive Positioning",
+                            Sport = "Softball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 18,
-                            Category = "Fielding",
-                            Description = "The top four infield drills.",
-                            DifficultyLevel = 1,
-                            Name = "Infield Drills",
-                            Sport = "Baseball",
-                            VideoUrl = "https://www.youtube.com/watch?v=Uj5lw17XvuI"
+                            Category = "Running",
+                            Description = "Master safe and effective sliding into bases.",
+                            DifficultyLevel = 2,
+                            Name = "Sliding Technique",
+                            Sport = "Softball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 19,
-                            Category = "Fielding",
-                            Description = "Baseball outfield drills you must be doing.",
+                            Category = "Throwing",
+                            Description = "Build arm strength with proper throwing form.",
                             DifficultyLevel = 2,
-                            Name = "Outfield Drills",
-                            Sport = "Baseball",
-                            VideoUrl = "https://www.youtube.com/watch?v=WUIM8NqNETg"
+                            Name = "Throwing Fundamentals",
+                            Sport = "Softball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 20,
                             Category = "Catching",
-                            Description = "How to become a better baseball catcher.",
+                            Description = "Improve catching technique and pop time.",
                             DifficultyLevel = 3,
-                            Name = "Catcher Training",
-                            Sport = "Baseball",
-                            VideoUrl = "https://www.youtube.com/watch?v=KJZHdoPxvW0"
+                            Name = "Catching Skills",
+                            Sport = "Softball",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 21,
-                            Category = "Skating",
-                            Description = "Edge-work drills from level 1 to 100.",
+                            Category = "Dribbling",
+                            Description = "Enhance touch and close ball control.",
                             DifficultyLevel = 2,
-                            Name = "Edge-Work Skating",
-                            Sport = "Hockey",
-                            VideoUrl = "https://www.youtube.com/watch?v=pp0Y3BDDp4A"
+                            Name = "Ball Control",
+                            Sport = "Soccer",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 22,
-                            Category = "Dribbling",
-                            Description = "Five-minute daily stickhandling routine.",
-                            DifficultyLevel = 2,
-                            Name = "Stickhandling Routine",
-                            Sport = "Hockey",
-                            VideoUrl = "https://www.youtube.com/watch?v=7HluVwbAv3w"
+                            Category = "Passing",
+                            Description = "Master short and long range passing.",
+                            DifficultyLevel = 1,
+                            Name = "Passing Accuracy",
+                            Sport = "Soccer",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 23,
                             Category = "Shooting",
-                            Description = "Fifteen hockey shooting drills.",
+                            Description = "Improve shot power and accuracy toward goal.",
                             DifficultyLevel = 2,
-                            Name = "Shooting Drills",
-                            Sport = "Hockey",
-                            VideoUrl = "https://www.youtube.com/watch?v=RrYFNdTNvkc"
+                            Name = "Shooting Technique",
+                            Sport = "Soccer",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 24,
-                            Category = "Passing",
-                            Description = "How to catch and receive passes.",
-                            DifficultyLevel = 1,
-                            Name = "Passing Technique",
-                            Sport = "Hockey",
-                            VideoUrl = "https://www.youtube.com/watch?v=BFI7jzMgu6Q"
+                            Category = "Defense",
+                            Description = "Learn positioning and marking techniques.",
+                            DifficultyLevel = 2,
+                            Name = "Defensive Tactics",
+                            Sport = "Soccer",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 25,
-                            Category = "Defense",
-                            Description = "How to play better defense in hockey.",
-                            DifficultyLevel = 2,
-                            Name = "Defensive Positioning",
-                            Sport = "Hockey",
-                            VideoUrl = "https://www.youtube.com/watch?v=HkNAK40ugkw"
+                            Category = "Ball Control",
+                            Description = "Develop soft first touch and ball reception.",
+                            DifficultyLevel = 1,
+                            Name = "First Touch",
+                            Sport = "Soccer",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 26,
                             Category = "Dribbling",
-                            Description = "Five essential dribbling drills.",
-                            DifficultyLevel = 1,
-                            Name = "Dribbling Drills",
-                            Sport = "Soccer",
-                            VideoUrl = "https://www.youtube.com/watch?v=jwIHc9rz7yo"
+                            Description = "Master puck control at speed.",
+                            DifficultyLevel = 2,
+                            Name = "Stick Handling",
+                            Sport = "Hockey",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 27,
                             Category = "Shooting",
-                            Description = "Ten finishing exercises to become clinical.",
+                            Description = "Improve shot speed and placement.",
                             DifficultyLevel = 2,
-                            Name = "Finishing Exercises",
-                            Sport = "Soccer",
-                            VideoUrl = "https://www.youtube.com/watch?v=0u8kPwXXsLA"
+                            Name = "Shooting Accuracy",
+                            Sport = "Hockey",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 28,
-                            Category = "Passing",
-                            Description = "Ten best soccer passing drills.",
-                            DifficultyLevel = 1,
-                            Name = "Passing Drills",
-                            Sport = "Soccer",
-                            VideoUrl = "https://www.youtube.com/watch?v=Kb58F3r_TQM"
+                            Category = "Defense",
+                            Description = "Learn proper body checking form.",
+                            DifficultyLevel = 3,
+                            Name = "Checking Technique",
+                            Sport = "Hockey",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 29,
-                            Category = "Defense",
-                            Description = "Stop getting beaten in one-on-one situations.",
-                            DifficultyLevel = 2,
-                            Name = "Defensive Fundamentals",
-                            Sport = "Soccer",
-                            VideoUrl = "https://www.youtube.com/watch?v=aadebgx5nz4"
+                            Category = "Passing",
+                            Description = "Develop precision tape-to-tape passing.",
+                            DifficultyLevel = 1,
+                            Name = "Passing Drills",
+                            Sport = "Hockey",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         },
                         new
                         {
                             Id = 30,
-                            Category = "Conditioning",
-                            Description = "Eight exercises to improve speed, agility and power.",
+                            Category = "Skating",
+                            Description = "Build speed, balance, and edge work.",
                             DifficultyLevel = 3,
-                            Name = "Speed and Agility",
-                            Sport = "Soccer",
-                            VideoUrl = "https://www.youtube.com/watch?v=cCZSTGeSuHM"
+                            Name = "Skating Agility",
+                            Sport = "Hockey",
+                            VideoUrl = "https://www.youtube.com/watch?v=PLACEHOLDER"
                         });
                 });
 
