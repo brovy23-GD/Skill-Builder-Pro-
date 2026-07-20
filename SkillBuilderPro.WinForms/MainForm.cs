@@ -185,7 +185,7 @@ namespace SkillBuilderPro.WinForms
                 BackColor = AppColors.TrainingCard
             };
 
-            string[] sections = { "ATHLETE PROFILE", "TRAINING", "GOALS", "CALENDAR", "API DRILLS" };
+            string[] sections = { "ATHLETE PROFILE", "TRAINING", "GOALS", "CALENDAR" };
 
             int x = 20;
             for (int i = 0; i < sections.Length; i++)
@@ -212,8 +212,6 @@ namespace SkillBuilderPro.WinForms
                 // API DRILLS opens ApiDrillsForm, others select the tab.
                 if (sections[i] == "ATHLETE PROFILE")
                     navBtn.Click += (s, e) => OpenAthleteProfile();
-                else if (sections[i] == "API DRILLS")
-                    navBtn.Click += (s, e) => OpenApiDrills();
                 else
                     navBtn.Click += (s, e) => SelectNavTab(index);
 
@@ -343,18 +341,19 @@ namespace SkillBuilderPro.WinForms
         // TRAINING TAB - builder left, preview right (edge-pinned)
         // ------------------------------
 
-        private void SetupTrainingTab(TabPage tab)
+        // ============ ASYNC VERSION — wire MainForm.SetupTrainingTab and LoadTrainingFocusOptions to DrillProvider ============
+
+        private async void SetupTrainingTab(TabPage tab)
         {
             SetTabBackground(tab);
             tab.AutoScroll = true;
 
             const int leftWidth = 400;
-            const int leftHeight = 580;   // was 560 — FIXED
+            const int leftHeight = 580;
             const int rightWidth = 400;
             const int rightHeight = 560;
             const int gap = 28;
-            const int topMargin = 24;    // was 100 — FIXED
-
+            const int topMargin = 24;
 
             Panel leftCard = new Panel
             {
@@ -371,7 +370,6 @@ namespace SkillBuilderPro.WinForms
 
             void PositionCards()
             {
-
                 const int edgeMargin = 40;
                 leftCard.Location = new Point(
                     edgeMargin + tab.AutoScrollPosition.X,
@@ -385,7 +383,6 @@ namespace SkillBuilderPro.WinForms
 
             // ----- LEFT: TRAINING BUILDER -----
 
-            
             Label title = CreateCardLabel(leftCard, "Training Builder",
                 18F, FontStyle.Bold, Brand.TextStrong, 14, 44);
 
@@ -404,6 +401,10 @@ namespace SkillBuilderPro.WinForms
             };
             CenterInCard(leftCard, focusComboBox, 96);
             focusComboBox.SelectedIndexChanged += (s, e) => LoadDrillsForSelectedFocus();
+
+            // SOURCE LABEL — shows "Drills: API" or "Drills: Offline"
+            Label sourceLabel = CreateCardLabel(leftCard, "Drills: —",
+                8F, FontStyle.Regular, Brand.TextCell, 124, 16);
 
             Label drillLabel = CreateCardLabel(leftCard, "Check One or More Drills",
                 11F, FontStyle.Bold, Brand.TextCell, 136, 28);
@@ -441,7 +442,7 @@ namespace SkillBuilderPro.WinForms
                 "Sat / Sun (Weekends)",
                 "Every Day"
             });
-            daysPresetComboBox.SelectedIndex = 0;   // matches the MWF default
+            daysPresetComboBox.SelectedIndex = 0;
             CenterInCard(leftCard, daysPresetComboBox, 428);
 
             daysPresetComboBox.SelectedIndexChanged += (s, e) =>
@@ -490,14 +491,12 @@ namespace SkillBuilderPro.WinForms
 
             generateScheduleButton.Click += GenerateScheduleButton_Click;
             clearSelectionButton.Click += ClearSelectionButton_Click;
-            generateVideoButton.Click += (s, e) => MessageBox.Show(
-                "In a future version, this will generate a customized training video " +
-                "based on the drills and schedule you've created.",
-                "Generate Training Video (Coming Soon)");
+            generateVideoButton.Click += (s, e) => OpenVideoPlaylist();// OpenVideoPlaylist() opens a new form with the video playlist for the selected drills.
 
             leftCard.Controls.Add(title);
             leftCard.Controls.Add(focusLabel);
             leftCard.Controls.Add(focusComboBox);
+            leftCard.Controls.Add(sourceLabel);
             leftCard.Controls.Add(drillLabel);
             leftCard.Controls.Add(drillCheckedListBox);
             leftCard.Controls.Add(generateScheduleButton);
@@ -528,8 +527,33 @@ namespace SkillBuilderPro.WinForms
             leftCard.BringToFront();
             rightCard.BringToFront();
 
-            LoadTrainingFocusOptions();
+            // ASYNC: Load drills from DrillProvider (API or offline), update sourceLabel on completion
+            await LoadTrainingFocusOptionsAsync();
+            sourceLabel.Text = $"Drills: {DrillProvider.LastSource}";
             LoadDrillsForSelectedFocus();
+        }
+
+        private async Task LoadTrainingFocusOptionsAsync()
+        {
+            focusComboBox.Items.Clear();
+
+            // Async call to DrillProvider — tries API, falls back to offline database
+            currentSportDrills = await DrillProvider.GetBySportAsync(_user.Sport);
+
+            var focusOptions = currentSportDrills
+                .Select(d => d.SkillCategory)
+                .Distinct()
+                .OrderBy(f => f)
+                .ToList();
+
+            foreach (string focus in focusOptions)
+                focusComboBox.Items.Add(focus);
+
+            if (focusComboBox.Items.Count > 0)
+            {
+                int existingIndex = focusComboBox.Items.IndexOf(_user.TargetArea);
+                focusComboBox.SelectedIndex = existingIndex >= 0 ? existingIndex : 0;
+            }
         }
 
         // ------------------------------
@@ -640,7 +664,7 @@ namespace SkillBuilderPro.WinForms
             {
                 Size = new Size(card.Width - 80, 22),
                 Location = new Point(40, 392),
-                BackColor = Color.FromArgb(58, 68,86)
+                BackColor = Color.FromArgb(58, 68, 86)
             };
             progressBar.Paint += (s, e) =>
             {
@@ -1227,13 +1251,32 @@ namespace SkillBuilderPro.WinForms
                 form.ShowDialog(this);
             }
         }
-    }
-
-    public class BufferedGoalPanel : Panel
-    {
-        public BufferedGoalPanel()
+        private void OpenVideoPlaylist()
         {
-            DoubleBuffered = true;
+            List<string> selectedDrills = new List<string>();
+            foreach (var item in drillCheckedListBox.CheckedItems)
+                selectedDrills.Add(item.ToString());
+
+            if (selectedDrills.Count == 0)
+            {
+                MessageBox.Show("Please check at least one drill before opening the video playlist.",
+                    "No Drills Selected");
+                return;
+            }
+
+            using (var playerForm = new VideoPlayerForm(_user, selectedDrills))
+            {
+                playerForm.ShowDialog(this);
+            }
+        }
+
+
+        public class BufferedGoalPanel : Panel
+        {
+            public BufferedGoalPanel()
+            {
+                DoubleBuffered = true;
+            }
         }
     }
 }

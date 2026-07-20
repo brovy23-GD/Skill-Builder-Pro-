@@ -48,7 +48,7 @@ namespace SkillBuilderPro.WinForms.Services
             Id = Guid.NewGuid(),
             Name = c.Name,
             Description = c.Description,
-            SkillCategory = c.Category,
+            SkillCategory = c.SubCategory,
             Sport = c.Sport,
             Difficulty = c.DifficultyLevel,
             Duration = c.Duration,

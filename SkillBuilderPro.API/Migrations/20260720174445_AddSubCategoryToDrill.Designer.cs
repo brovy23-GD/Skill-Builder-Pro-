@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkillBuilderPro.API.Data;
 
@@ -11,9 +12,11 @@ using SkillBuilderPro.API.Data;
 namespace SkillBuilderPro.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260720174445_AddSubCategoryToDrill")]
+    partial class AddSubCategoryToDrill
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,9 +37,6 @@ namespace SkillBuilderPro.API.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -59,11 +59,6 @@ namespace SkillBuilderPro.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("SubCategory")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("VideoUrl")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -78,390 +73,330 @@ namespace SkillBuilderPro.API.Migrations
                         {
                             Id = 1,
                             Category = "Dribbling",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "5-minute dribbling workout that changes your game.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Ball Handling Drills",
                             Sport = "Basketball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=oADaM2L1YLc"
                         },
                         new
                         {
                             Id = 2,
                             Category = "Shooting",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Find your perfect shooting form.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Shooting Form Basics",
                             Sport = "Basketball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=x7anDE7OEww"
                         },
                         new
                         {
                             Id = 3,
                             Category = "Defense",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Three defense drills to make your team better.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Defensive Footwork",
                             Sport = "Basketball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=lFY__uSOJIY"
                         },
                         new
                         {
                             Id = 4,
                             Category = "Rebounding",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Three best basketball rebounding drills that win games.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Rebounding Techniques",
                             Sport = "Basketball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=pFRlEOeWpKY"
                         },
                         new
                         {
                             Id = 5,
                             Category = "Passing",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Three basketball drills to become better at passing.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Passing Accuracy",
                             Sport = "Basketball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=OUskjh1r4Aw"
                         },
                         new
                         {
                             Id = 6,
                             Category = "Passing",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "How to throw a football with Tom Brady.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Passing Technique",
                             Sport = "Football",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=lv5p2Xqkxyk"
                         },
                         new
                         {
                             Id = 7,
                             Category = "Catching",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "WR drills with Odell Beckham Jr.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Catching Skills",
                             Sport = "Football",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=4n-Js1SwC2c"
                         },
                         new
                         {
                             Id = 8,
                             Category = "Route Running",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cooper Kupp's WR drills for creating separation.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Route Running",
                             Sport = "Football",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=b8Y-BrxoGQc"
                         },
                         new
                         {
                             Id = 9,
                             Category = "Blocking",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Proper technique for run and pass blocking.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Blocking Fundamentals",
                             Sport = "Football",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=hHyjR__k3XA"
                         },
                         new
                         {
                             Id = 10,
                             Category = "Conditioning",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Ten speed and agility ladder drills.",
                             DifficultyLevel = 3,
                             Duration = 20,
                             Name = "Speed and Agility",
                             Sport = "Football",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=9ZTRUVLjGzI"
                         },
                         new
                         {
                             Id = 11,
                             Category = "Hitting",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Ten best softball hitting drills for kids.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Hitting Drills",
                             Sport = "Softball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=g-yDDzQL6eE"
                         },
                         new
                         {
                             Id = 12,
                             Category = "Pitching",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Basic five steps for a beginner pitcher.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Pitching Mechanics",
                             Sport = "Softball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=mIx9CvpGXsU"
                         },
                         new
                         {
                             Id = 13,
                             Category = "Fielding",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Three infield drills for youth players.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Infield Drills",
                             Sport = "Softball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=6z0cpY5nGMA"
                         },
                         new
                         {
                             Id = 14,
                             Category = "Fielding",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Must-do outfield drills with Gold Glover AJ Andrews.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Outfield Skills",
                             Sport = "Softball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=QREFQP72W0U"
                         },
                         new
                         {
                             Id = 15,
                             Category = "Catching",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "How to improve as a softball catcher.",
                             DifficultyLevel = 3,
                             Duration = 20,
                             Name = "Catcher Fundamentals",
                             Sport = "Softball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=qwdeRteH3es"
                         },
                         new
                         {
                             Id = 16,
                             Category = "Hitting",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Ten best baseball hitting drills for kids.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Hitting Drills",
                             Sport = "Baseball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=gOE484Meo_o"
                         },
                         new
                         {
                             Id = 17,
                             Category = "Pitching",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Must-do youth baseball pitching drills.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Pitching Drills",
                             Sport = "Baseball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=McHb2hXrTrE"
                         },
                         new
                         {
                             Id = 18,
                             Category = "Fielding",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "The top four infield drills.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Infield Drills",
                             Sport = "Baseball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=Uj5lw17XvuI"
                         },
                         new
                         {
                             Id = 19,
                             Category = "Fielding",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Baseball outfield drills you must be doing.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Outfield Drills",
                             Sport = "Baseball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=WUIM8NqNETg"
                         },
                         new
                         {
                             Id = 20,
                             Category = "Catching",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "How to become a better baseball catcher.",
                             DifficultyLevel = 3,
                             Duration = 20,
                             Name = "Catcher Training",
                             Sport = "Baseball",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=KJZHdoPxvW0"
                         },
                         new
                         {
                             Id = 21,
                             Category = "Skating",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Edge-work drills from level 1 to 100.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Edge-Work Skating",
                             Sport = "Hockey",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=pp0Y3BDDp4A"
                         },
                         new
                         {
                             Id = 22,
                             Category = "Dribbling",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Five-minute daily stickhandling routine.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Stickhandling Routine",
                             Sport = "Hockey",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=7HluVwbAv3w"
                         },
                         new
                         {
                             Id = 23,
                             Category = "Shooting",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Fifteen hockey shooting drills.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Shooting Drills",
                             Sport = "Hockey",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=RrYFNdTNvkc"
                         },
                         new
                         {
                             Id = 24,
                             Category = "Passing",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "How to catch and receive passes.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Passing Technique",
                             Sport = "Hockey",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=BFI7jzMgu6Q"
                         },
                         new
                         {
                             Id = 25,
                             Category = "Defense",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "How to play better defense in hockey.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Defensive Positioning",
                             Sport = "Hockey",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=HkNAK40ugkw"
                         },
                         new
                         {
                             Id = 26,
                             Category = "Dribbling",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Five essential dribbling drills.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Dribbling Drills",
                             Sport = "Soccer",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=jwIHc9rz7yo"
                         },
                         new
                         {
                             Id = 27,
                             Category = "Shooting",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Ten finishing exercises to become clinical.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Finishing Exercises",
                             Sport = "Soccer",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=0u8kPwXXsLA"
                         },
                         new
                         {
                             Id = 28,
                             Category = "Passing",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Ten best soccer passing drills.",
                             DifficultyLevel = 1,
                             Duration = 20,
                             Name = "Passing Drills",
                             Sport = "Soccer",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=Kb58F3r_TQM"
                         },
                         new
                         {
                             Id = 29,
                             Category = "Defense",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Stop getting beaten in one-on-one situations.",
                             DifficultyLevel = 2,
                             Duration = 20,
                             Name = "Defensive Fundamentals",
                             Sport = "Soccer",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=aadebgx5nz4"
                         },
                         new
                         {
                             Id = 30,
                             Category = "Conditioning",
-                            DateCreated = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Eight exercises to improve speed, agility and power.",
                             DifficultyLevel = 3,
                             Duration = 20,
                             Name = "Speed and Agility",
                             Sport = "Soccer",
-                            SubCategory = "",
                             VideoUrl = "https://www.youtube.com/watch?v=cCZSTGeSuHM"
                         });
                 });

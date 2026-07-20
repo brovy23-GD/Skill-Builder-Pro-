@@ -41,5 +41,8 @@
     <Compile Update="RoleSelectForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="VideoPlayerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
