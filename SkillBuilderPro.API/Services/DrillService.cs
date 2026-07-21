@@ -54,7 +54,7 @@ public class DrillService : IDrillService
         existing.Category = drill.Category;
         existing.Description = drill.Description;
         existing.VideoUrl = drill.VideoUrl;
-        existing.DifficultyLevel = drill.DifficultyLevel;
+        existing.Difficulty = drill.Difficulty;
 
         await _context.SaveChangesAsync();
         return true;

@@ -1,4 +1,5 @@
-﻿using SkillBuilderPro.WinForms.Models;
+﻿
+using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Services;
 using SkillBuilderPro.WinForms.Theming;
@@ -14,9 +15,10 @@ namespace SkillBuilderPro.WinForms
     /// </summary>
     public partial class MainForm : Form
     {
-        private readonly User _user;
+        private readonly SkillBuilderPro.WinForms.Models.User _user;
         private readonly bool _isDemoMode;
-        public User? NextUser { get; private set; }
+        public SkillBuilderPro.WinForms.Models.User? NextUser { get; private set; }
+
 
         // Layout
         private Panel headerPanel;
@@ -342,7 +344,6 @@ namespace SkillBuilderPro.WinForms
         // ------------------------------
 
         // ============ ASYNC VERSION — wire MainForm.SetupTrainingTab and LoadTrainingFocusOptions to DrillProvider ============
-
         private async void SetupTrainingTab(TabPage tab)
         {
             SetTabBackground(tab);
@@ -386,7 +387,8 @@ namespace SkillBuilderPro.WinForms
             Label title = CreateCardLabel(leftCard, "Training Builder",
                 18F, FontStyle.Bold, Brand.TextStrong, 14, 44);
 
-            Label focusLabel = CreateCardLabel(leftCard, "Training Focus",
+            // CATEGORY LABEL & COMBO (Offense/Defense or Hitting/Fielding, etc.)
+            Label categoryLabel = CreateCardLabel(leftCard, "Training Category",
                 11F, FontStyle.Bold, Brand.TextCell, 64, 28);
 
             focusComboBox = new ComboBox
@@ -400,13 +402,13 @@ namespace SkillBuilderPro.WinForms
                 FlatStyle = FlatStyle.Flat
             };
             CenterInCard(leftCard, focusComboBox, 96);
-            focusComboBox.SelectedIndexChanged += (s, e) => LoadDrillsForSelectedFocus();
 
-            // SOURCE LABEL — shows "Drills: API" or "Drills: Offline"
+            // SOURCE LABEL (API/Offline)
             Label sourceLabel = CreateCardLabel(leftCard, "Drills: —",
                 8F, FontStyle.Regular, Brand.TextCell, 124, 16);
 
-            Label drillLabel = CreateCardLabel(leftCard, "Check One or More Drills",
+            // DRILLS LABEL & LIST
+            Label drillLabel = CreateCardLabel(leftCard, "Select Drills (Max 5)",
                 11F, FontStyle.Bold, Brand.TextCell, 136, 28);
 
             drillCheckedListBox = new CheckedListBox
@@ -421,6 +423,27 @@ namespace SkillBuilderPro.WinForms
             };
             CenterInCard(leftCard, drillCheckedListBox, 168);
 
+            // EVENT: Category changed → load drills for that category
+            focusComboBox.SelectedIndexChanged += (s, e) => LoadDrillsForSelectedCategory();
+
+            // EVENT: Drill checked → enforce max 5 limit
+            drillCheckedListBox.ItemCheck += (s, e) =>
+            {
+                if (e.NewValue == CheckState.Checked)
+                {
+                    int checkedCount = drillCheckedListBox.CheckedItems.Count;
+
+                    // If already 5 checked, block the new check
+                    if (checkedCount >= 5)
+                    {
+                        e.NewValue = e.CurrentValue;  // ✔ Prevent the change
+                        MessageBox.Show("You can select a maximum of 5 drills.", "Limit Reached");
+                    }
+                }
+            };
+
+
+            // TRAINING DAYS
             Label daysLabel = CreateCardLabel(leftCard, "Training Days",
                 11F, FontStyle.Bold, Brand.TextCell, 396, 28);
 
@@ -450,30 +473,28 @@ namespace SkillBuilderPro.WinForms
                 trainingDays.Clear();
                 switch (daysPresetComboBox.SelectedIndex)
                 {
-                    case 0: // Mon / Wed / Fri
+                    case 0:
                         trainingDays.Add(DayOfWeek.Monday);
                         trainingDays.Add(DayOfWeek.Wednesday);
                         trainingDays.Add(DayOfWeek.Friday);
                         break;
-                    case 1: // Tue / Thu
+                    case 1:
                         trainingDays.Add(DayOfWeek.Tuesday);
                         trainingDays.Add(DayOfWeek.Thursday);
                         break;
-                    case 2: // Weekdays
+                    case 2:
                         for (DayOfWeek d = DayOfWeek.Monday; d <= DayOfWeek.Friday; d++)
                             trainingDays.Add(d);
                         break;
-                    case 3: // Weekends
+                    case 3:
                         trainingDays.Add(DayOfWeek.Saturday);
                         trainingDays.Add(DayOfWeek.Sunday);
                         break;
-                    case 4: // Every day
+                    case 4:
                         foreach (DayOfWeek d in Enum.GetValues(typeof(DayOfWeek)))
                             trainingDays.Add(d);
                         break;
                 }
-
-                // Repaint the calendar if it's been built already
                 if (calendarGrid != null)
                     RenderCalendar();
             };
@@ -481,6 +502,7 @@ namespace SkillBuilderPro.WinForms
             leftCard.Controls.Add(daysLabel);
             leftCard.Controls.Add(daysPresetComboBox);
 
+            // BUTTONS
             generateScheduleButton = CreateModernButton("GENERATE SCHEDULE", 340, 38);
             clearSelectionButton = CreateModernButton("CLEAR DRILLS", 164, 38);
             generateVideoButton = CreateModernButton("TRAINING VIDEO", 164, 38);
@@ -491,10 +513,10 @@ namespace SkillBuilderPro.WinForms
 
             generateScheduleButton.Click += GenerateScheduleButton_Click;
             clearSelectionButton.Click += ClearSelectionButton_Click;
-            generateVideoButton.Click += (s, e) => OpenVideoPlaylist();// OpenVideoPlaylist() opens a new form with the video playlist for the selected drills.
+            generateVideoButton.Click += (s, e) => OpenVideoPlaylist();
 
             leftCard.Controls.Add(title);
-            leftCard.Controls.Add(focusLabel);
+            leftCard.Controls.Add(categoryLabel);
             leftCard.Controls.Add(focusComboBox);
             leftCard.Controls.Add(sourceLabel);
             leftCard.Controls.Add(drillLabel);
@@ -503,7 +525,7 @@ namespace SkillBuilderPro.WinForms
             leftCard.Controls.Add(clearSelectionButton);
             leftCard.Controls.Add(generateVideoButton);
 
-            // ----- RIGHT: SCHEDULE PREVIEW (hidden until generated) -----
+            // ----- RIGHT: SCHEDULE PREVIEW -----
 
             Label previewTitle = CreateCardLabel(rightCard, "Schedule Preview",
                 18F, FontStyle.Bold, Brand.TextStrong, 14, 44);
@@ -527,32 +549,72 @@ namespace SkillBuilderPro.WinForms
             leftCard.BringToFront();
             rightCard.BringToFront();
 
-            // ASYNC: Load drills from DrillProvider (API or offline), update sourceLabel on completion
-            await LoadTrainingFocusOptionsAsync();
-            sourceLabel.Text = $"Drills: {DrillProvider.LastSource}";
-            LoadDrillsForSelectedFocus();
+            // Load categories and populate combo
+            try
+            {
+                await LoadTrainingCategoriesAsync();
+                sourceLabel.Text = $"Drills: {DrillProvider.LastSource}";
+            }
+            catch (Exception ex)
+            {
+                sourceLabel.Text = $"Drills: ERROR - {ex.GetType().Name}";
+                System.Diagnostics.Debug.WriteLine($"[SetupTrainingTab] {ex.GetType().Name}: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}");
+            }
         }
 
-        private async Task LoadTrainingFocusOptionsAsync()
+        private async Task LoadTrainingCategoriesAsync()
         {
             focusComboBox.Items.Clear();
 
-            // Async call to DrillProvider — tries API, falls back to offline database
             currentSportDrills = await DrillProvider.GetBySportAsync(_user.Sport);
 
-            var focusOptions = currentSportDrills
-                .Select(d => d.SkillCategory)
+            var categories = currentSportDrills
+                .Select(d => d.SkillCategory)  // ← Use SkillCategory
+                .Where(c => !string.IsNullOrWhiteSpace(c))
                 .Distinct()
-                .OrderBy(f => f)
+                .OrderBy(c => c)
                 .ToList();
 
-            foreach (string focus in focusOptions)
-                focusComboBox.Items.Add(focus);
+            foreach (string category in categories)
+                focusComboBox.Items.Add(category);
 
             if (focusComboBox.Items.Count > 0)
+                focusComboBox.SelectedIndex = 0;
+        }
+
+        private void LoadDrillsForSelectedCategory()
+        {
+            drillCheckedListBox.Items.Clear();
+
+            string selectedCategory = focusComboBox.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedCategory))
+                return;
+
+            var filteredDrills = currentSportDrills
+                .Where(d => d.SkillCategory.Equals(selectedCategory, StringComparison.OrdinalIgnoreCase))  // ← Use SkillCategory
+                .OrderBy(d => d.Name)
+                .ToList();
+
+            foreach (Drill drill in filteredDrills)
+                drillCheckedListBox.Items.Add($"{drill.Name} ({drill.Duration} min)");
+        }
+        private void OpenVideoPlaylist()
+        {
+            List<string> selectedDrills = new List<string>();
+            foreach (var item in drillCheckedListBox.CheckedItems)
+                selectedDrills.Add(item.ToString());
+
+            if (selectedDrills.Count == 0)
             {
-                int existingIndex = focusComboBox.Items.IndexOf(_user.TargetArea);
-                focusComboBox.SelectedIndex = existingIndex >= 0 ? existingIndex : 0;
+                MessageBox.Show("Please check at least one drill before opening the video playlist.",
+                    "No Drills Selected");
+                return;
+            }
+
+            using (var playerForm = new VideoPlayerForm(_user, selectedDrills))
+            {
+                playerForm.ShowDialog(this);
             }
         }
 
@@ -966,45 +1028,7 @@ namespace SkillBuilderPro.WinForms
         // TRAINING DATA
         // ------------------------------
 
-        private void LoadTrainingFocusOptions()
-        {
-            focusComboBox.Items.Clear();
-
-            currentSportDrills = DrillDatabase.GetDrillsBySport(_user.Sport);
-
-            var focusOptions = currentSportDrills
-                .Select(d => d.SkillCategory)
-                .Distinct()
-                .OrderBy(f => f)
-                .ToList();
-
-            foreach (string focus in focusOptions)
-                focusComboBox.Items.Add(focus);
-
-            if (focusComboBox.Items.Count > 0)
-            {
-                int existingIndex = focusComboBox.Items.IndexOf(_user.TargetArea);
-                focusComboBox.SelectedIndex = existingIndex >= 0 ? existingIndex : 0;
-            }
-        }
-
-        private void LoadDrillsForSelectedFocus()
-        {
-            drillCheckedListBox.Items.Clear();
-
-            string selectedFocus = focusComboBox.SelectedItem?.ToString();
-            if (string.IsNullOrWhiteSpace(selectedFocus))
-                return;
-
-            var filteredDrills = currentSportDrills
-                .Where(d => d.SkillCategory.Equals(selectedFocus, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(d => d.Name)
-                .ToList();
-
-            foreach (Drill drill in filteredDrills)
-                drillCheckedListBox.Items.Add($"{drill.Name} ({drill.Duration} min)");
-        }
-
+      
         private void GenerateScheduleButton_Click(object sender, EventArgs e)
         {
             scheduleListBox.Items.Clear();
@@ -1251,26 +1275,6 @@ namespace SkillBuilderPro.WinForms
                 form.ShowDialog(this);
             }
         }
-        private void OpenVideoPlaylist()
-        {
-            List<string> selectedDrills = new List<string>();
-            foreach (var item in drillCheckedListBox.CheckedItems)
-                selectedDrills.Add(item.ToString());
-
-            if (selectedDrills.Count == 0)
-            {
-                MessageBox.Show("Please check at least one drill before opening the video playlist.",
-                    "No Drills Selected");
-                return;
-            }
-
-            using (var playerForm = new VideoPlayerForm(_user, selectedDrills))
-            {
-                playerForm.ShowDialog(this);
-            }
-        }
-
-
         public class BufferedGoalPanel : Panel
         {
             public BufferedGoalPanel()

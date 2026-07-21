@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using SkillBuilderPro.WinForms.Models;
+﻿using SkillBuilderPro.WinForms.Models;
+using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Services;
-using CoreDrill = SkillBuilderPro.Core.Models.Drill;
+using SkillBuilderPro.WinForms.Theming;
+using static SkillBuilderPro.WinForms.Theming.TeamThemes;
 
 namespace SkillBuilderPro.WinForms
 {
     /// <summary>
     /// Modal video player form with playlist support.
     /// Fetches VideoUrl from the API for each drill and plays them in sequence.
-    /// Auto-advances to the next video when the current one finishes.
+    /// Opens YouTube videos in the default browser.
     /// </summary>
     public partial class VideoPlayerForm : Form
     {
@@ -78,7 +74,7 @@ namespace SkillBuilderPro.WinForms
             };
             this.Controls.Add(statusLabel);
 
-            // VIDEO PANEL (placeholder for WMP or black screen)
+            // VIDEO PANEL (black placeholder)
             videoPanel = new Panel
             {
                 BackColor = Color.Black,
@@ -128,6 +124,22 @@ namespace SkillBuilderPro.WinForms
             nextButton.Click += (s, e) => NextVideo();
             buttonPanel.Controls.Add(nextButton);
 
+            // OPEN IN BROWSER BUTTON
+            Button openButton = new Button
+            {
+                Text = "OPEN VIDEO",
+                Size = new Size(140, 40),
+                Location = new Point(280, 10),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(30, 120, 180),
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            openButton.FlatAppearance.BorderSize = 0;
+            openButton.Click += (s, e) => OpenCurrentVideoInBrowser();
+            buttonPanel.Controls.Add(openButton);
+
             // CLOSE BUTTON
             closeButton = new Button
             {
@@ -151,7 +163,7 @@ namespace SkillBuilderPro.WinForms
             await LoadPlaylistAsync();
             if (_videoUrls.Count > 0)
             {
-                PlayCurrentVideo();
+                DisplayCurrentVideo();
             }
             else
             {
@@ -167,7 +179,7 @@ namespace SkillBuilderPro.WinForms
 
             _videoUrls.Clear();
 
-            // Extract drill names from the input (e.g., "Hitting Drills (20 min)" → "Hitting Drills")
+            // Extract drill names from the input (e.g., "Shooting Form Fundamentals (8 min)" → "Shooting Form Fundamentals")
             var cleanedDrillNames = _drillNames
                 .Select(name =>
                 {
@@ -178,11 +190,9 @@ namespace SkillBuilderPro.WinForms
 
             try
             {
-                // Fetch all drills from the API for the user's sport
+                // Fetch all drills from the API
                 var apiService = new DrillApiService();
                 var allDrills = await apiService.GetAllAsync(_user.Sport);
-               // MessageBox.Show(_user.Sport);
-
 
                 // Match by name and extract VideoUrl
                 foreach (var drillName in cleanedDrillNames)
@@ -196,8 +206,8 @@ namespace SkillBuilderPro.WinForms
                     }
                     else
                     {
-                        // If no match or no VideoUrl, add a placeholder or skip
-                        _videoUrls.Add(""); // Empty URL means "not available"
+                        // If no match or no VideoUrl, add empty placeholder
+                        _videoUrls.Add("");
                     }
                 }
             }
@@ -210,20 +220,12 @@ namespace SkillBuilderPro.WinForms
             UpdateStatus();
         }
 
-        private void PlayCurrentVideo()
+        private void DisplayCurrentVideo()
         {
             if (_currentIndex < 0 || _currentIndex >= _videoUrls.Count)
                 return;
 
             string url = _videoUrls[_currentIndex];
-
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                titleLabel.Text = $"Video {_currentIndex + 1} of {_videoUrls.Count}";
-                statusLabel.Text = "No video URL available for this drill.";
-                videoPanel.BackColor = Color.Black;
-                return;
-            }
 
             // Extract drill name from the original list
             string drillName = _drillNames[_currentIndex];
@@ -232,15 +234,52 @@ namespace SkillBuilderPro.WinForms
                 drillName = drillName.Substring(0, idx).Trim();
 
             titleLabel.Text = drillName;
-            statusLabel.Text = $"Video {_currentIndex + 1} of {_videoUrls.Count}";
+            statusLabel.Text = $"Video {_currentIndex + 1} of {_videoUrls.Count}  •  Click 'OPEN VIDEO' to watch on YouTube";
 
-            // Open URL in default browser (simple approach)
-            // For a full in-app player, use AxWindowsMediaPlayer or similar
+            // Clear the video panel and show a message
+            videoPanel.Controls.Clear();
+            Label instructionLabel = new Label
+            {
+                Text = string.IsNullOrWhiteSpace(url)
+                    ? "No video available for this drill."
+                    : "Click 'OPEN VIDEO' above to watch this drill on YouTube.",
+                Font = new Font("Segoe UI", 12F, FontStyle.Regular),
+                ForeColor = Color.White,
+                BackColor = Color.Transparent,
+                AutoSize = false,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            videoPanel.Controls.Add(instructionLabel);
+        }
+
+        private void OpenCurrentVideoInBrowser()
+        {
+            if (_currentIndex < 0 || _currentIndex >= _videoUrls.Count)
+                return;
+
+            string url = _videoUrls[_currentIndex];
+
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                MessageBox.Show("No video URL available for this drill.", "Video Not Available");
+                return;
+            }
+
+            // Convert embed URL to watch URL if needed
+            string watchUrl = url;
+            if (url.Contains("/embed/"))
+            {
+                // Extract video ID from embed URL: https://www.youtube.com/embed/dQw4w9WgXcQ → dQw4w9WgXcQ
+                string videoId = url.Replace("https://www.youtube.com/embed/", "").Replace("http://www.youtube.com/embed/", "");
+                watchUrl = $"https://www.youtube.com/watch?v={videoId}";
+            }
+
             try
             {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = url,
+                    FileName = watchUrl,
                     UseShellExecute = true
                 });
             }
@@ -255,7 +294,7 @@ namespace SkillBuilderPro.WinForms
             if (_currentIndex > 0)
             {
                 _currentIndex--;
-                PlayCurrentVideo();
+                DisplayCurrentVideo();
             }
         }
 
@@ -264,7 +303,7 @@ namespace SkillBuilderPro.WinForms
             if (_currentIndex < _videoUrls.Count - 1)
             {
                 _currentIndex++;
-                PlayCurrentVideo();
+                DisplayCurrentVideo();
             }
         }
 

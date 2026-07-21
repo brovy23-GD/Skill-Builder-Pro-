@@ -3,7 +3,7 @@
 DELETE FROM Drills;
 DBCC CHECKIDENT (Drills, RESEED, 0);
 
-INSERT INTO Drills (Sport, Category, SubCategory, Name, Description, DifficultyLevel, Duration, VideoUrl, DateCreated) VALUES
+INSERT INTO Drills (Sport, Category, SubCategory, Name, Description, Difficulty, Duration, VideoUrl, DateCreated) VALUES
 ('Basketball', 'Offense', 'Shooting', 'Shooting Form Fundamentals', 'Master the fundamentals of proper shooting technique', 1, 8, 'https://www.youtube.com/embed/UcnB9e5O5NY', '2026-07-20'),
 ('Basketball', 'Offense', 'Dribbling', 'Crossover Dribble Drill', 'Develop ball handling skills with crossover moves', 2, 7, 'https://www.youtube.com/embed/BnvGa0I8bMc', '2026-07-20'),
 ('Basketball', 'Offense', 'Passing', 'Passing Accuracy Drill', 'Improve passing precision and court vision', 2, 8, 'https://www.youtube.com/embed/OUskjh1r4Aw', '2026-07-20'),

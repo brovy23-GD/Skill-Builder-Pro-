@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using SkillBuilderPro.WinForms.Models;          // WinForms Drill
-using CoreDrill = SkillBuilderPro.Core.Models.Drill;
+using System.Windows.Forms;
+using SkillBuilderPro.WinForms.Models;
 
 namespace SkillBuilderPro.WinForms.Services
 {
@@ -23,36 +24,49 @@ namespace SkillBuilderPro.WinForms.Services
         {
             try
             {
-                List<CoreDrill> apiDrills = await _api.GetAllAsync(sport);
+                var apiDrills = await _api.GetAllAsync(sport);
                 if (apiDrills != null && apiDrills.Count > 0)
                 {
                     LastSource = "API";
                     return apiDrills.Select(MapToWinForms).ToList();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // API down, wrong port, no network — fall through to offline
+                Debug.WriteLine($"[DrillProvider] API error: {ex.GetType().Name}");
+                Debug.WriteLine($"Message: {ex.Message}");
+                Debug.WriteLine($"StackTrace:\n{ex.StackTrace}");
+
+                // Show error popup to user
+                string errorMsg = $"API Error:\n\n{ex.GetType().Name}\n\n{ex.Message}";
+                if (ex.InnerException != null)
+                    errorMsg += $"\n\nInner: {ex.InnerException.Message}";
+
+                MessageBox.Show(errorMsg, "DrillProvider - API Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                LastSource = $"Offline ({ex.GetType().Name}: {ex.Message})";
             }
 
-            LastSource = "Offline";
+            // Fallback to offline
             return DrillDatabase.GetDrillsBySport(sport);
         }
 
         /// <summary>
-        /// The one place the two Drill models meet. Core uses Category/DifficultyLevel
-        /// and an int Id; WinForms uses SkillCategory/Difficulty and a Guid Id.
+        /// Maps Core.Models.Drill to WinForms.Models.Drill.
+        /// Core has Category, SubCategory, int Id; WinForms has SkillCategory, Guid Id.
         /// </summary>
-        private static Drill MapToWinForms(CoreDrill c) => new Drill
+        private static Drill MapToWinForms(dynamic coreDrill)
         {
-            Id = Guid.NewGuid(),
-            Name = c.Name,
-            Description = c.Description,
-            SkillCategory = c.SubCategory,
-            Sport = c.Sport,
-            Difficulty = c.DifficultyLevel,
-            Duration = c.Duration,
-            DateCreated = DateTime.Now
-        };
+            return new Drill
+            {
+                Id = Guid.NewGuid(),
+                Name = coreDrill.Name,
+                Sport = coreDrill.Sport,
+                SkillCategory = coreDrill.Category ?? "",  // Core only has Category, not SubCategory
+                Description = coreDrill.Description,
+                VideoUrl = coreDrill.VideoUrl,
+                Difficulty = coreDrill.Difficulty
+            };
+        }
     }
 }
