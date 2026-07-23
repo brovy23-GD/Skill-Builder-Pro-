@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SkillBuilderPro.WinForms.Models;
 
-namespace SkillBuilderPro.WinForms
+namespace SkillBuilderPro.WinForms.Models
 {
     /// <summary>
     /// In-memory store for athletes created during the session.

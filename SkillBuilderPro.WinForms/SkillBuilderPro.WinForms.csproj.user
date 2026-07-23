@@ -2,46 +2,46 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
-    <Compile Update="AdminDashboard.cs">
+    <Compile Update="Forms\AdminDashboardFrom.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Api\ApiDrillsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="CoachDashboard.cs">
+    <Compile Update="Forms\CoachDashboard.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Controls\RoundedTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="CreateProfileForm.cs">
+    <Compile Update="Forms\CreateProfileForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="GlassRow.cs">
+    <Compile Update="Forms\GlassRow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="LockerRoomForm.cs">
+    <Compile Update="Forms\LockerRoomForm.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="LoginCredentialsForm.cs">
+    <Compile Update="Forms\LoginCredentialsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LoginForm.cs">
+    <Compile Update="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LoginFormDesigners.cs">
+    <Compile Update="Forms\LoginFormDesigners.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="MainForm.cs">
+    <Compile Update="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ParentDashboard.cs">
+    <Compile Update="Forms\ParentDashboard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="RoleSelectForm.cs">
+    <Compile Update="Forms\RoleSelectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="VideoPlayerForm.cs">
+    <Compile Update="Forms\VideoPlayerForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

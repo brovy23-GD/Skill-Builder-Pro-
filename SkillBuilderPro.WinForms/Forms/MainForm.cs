@@ -58,10 +58,14 @@ namespace SkillBuilderPro.WinForms
             BuildHeader();
             BuildTabControl();
             BuildNavBar();
+            AddMusicControlsToMainForm();
 
-            Controls.Add(mainTabControl);
-            Controls.Add(navPanel);
             Controls.Add(headerPanel);
+            Controls.Add(navPanel);
+            Controls.Add(mainTabControl);
+
+            mainTabControl.BringToFront();
+
 
             SelectNavTab(1);
         }
@@ -143,7 +147,7 @@ namespace SkillBuilderPro.WinForms
             PositionExitButton();
 
             NavHelper.AddBackButton(this, headerPanel, () => { NextUser = null; Close(); });
-            NavHelper.AddMuteButton(headerPanel);
+            
         }
         // ------------------------------
         // NAV BAR + TABS
@@ -187,7 +191,9 @@ namespace SkillBuilderPro.WinForms
                 BackColor = AppColors.TrainingCard
             };
 
-            string[] sections = { "ATHLETE PROFILE", "TRAINING", "GOALS", "CALENDAR" };
+            string profileName = _user.Role == "Admin" ? "ADMIN PROFILE" : "ATHLETE PROFILE";
+            string[] sections = { profileName, "TRAINING", "GOALS", "CALENDAR" };
+
 
             int x = 20;
             for (int i = 0; i < sections.Length; i++)
@@ -320,6 +326,7 @@ namespace SkillBuilderPro.WinForms
 
         private void SetupProfileLandingTab(TabPage tab)
         {
+            
             SetTabBackground(tab);
 
             tab.Padding = new Padding(0, 30, 0, 0);
@@ -346,6 +353,7 @@ namespace SkillBuilderPro.WinForms
         // ============ ASYNC VERSION — wire MainForm.SetupTrainingTab and LoadTrainingFocusOptions to DrillProvider ============
         private async void SetupTrainingTab(TabPage tab)
         {
+            
             SetTabBackground(tab);
             tab.AutoScroll = true;
 
@@ -624,6 +632,7 @@ namespace SkillBuilderPro.WinForms
 
         private void SetupGoalsTab(TabPage tab)
         {
+            
             SetTabBackground(tab);
             tab.AutoScroll = true;              // scroll if window is short
 
@@ -788,6 +797,7 @@ namespace SkillBuilderPro.WinForms
 
         private void SetupCalendarTab(TabPage tab)
         {
+           
             // Sport-specific calendar background (calendar_* image set)
             Image calBg = GetCalendarBackground(_user.Sport);
             if (calBg != null)
@@ -1282,5 +1292,39 @@ namespace SkillBuilderPro.WinForms
                 DoubleBuffered = true;
             }
         }
-    }
+        private void AddMusicControlsToMainForm()
+        {
+            Button musicButton = new Button
+            {
+                Text = "🎵",
+                Font = new Font("Arial", 14F),
+                BackColor = MusicPlayer.IsMuted ? Color.FromArgb(100, 100, 100) : Color.FromArgb(59, 130, 246),
+                ForeColor = Color.White,
+                Size = new Size(44, 40),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Location = new Point(this.ClientSize.Width - 280, 12)
+            };
+            musicButton.FlatAppearance.BorderSize = 0;
+
+            musicButton.Click += (s, e) =>
+            {
+                MusicPlayer.ToggleMute();
+                musicButton.BackColor = MusicPlayer.IsMuted
+                    ? Color.FromArgb(100, 100, 100)
+                    : Color.FromArgb(59, 130, 246);
+            };
+
+            this.Controls.Add(musicButton);
+            musicButton.BringToFront();
+
+            this.Resize += (s, e) =>
+            {
+                musicButton.Location = new Point(this.ClientSize.Width - 280, 12);
+            };
+        }
+
+
+
+    }  // ← closing brace of MainForm class
 }

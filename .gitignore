@@ -1,4 +1,11 @@
+# Visual Studio & VS Code compiler files
+.vs/
 bin/
 obj/
+*.tmp
 *.user
-.vs/
+*.suo
+
+# Build outputs
+[Dd]ebug/
+[Rr]elease/

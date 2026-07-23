@@ -1,7 +1,8 @@
+using Microsoft.VisualBasic.ApplicationServices;
+using SkillBuilderPro.WinForms.AdminScreens;
 using SkillBuilderPro.WinForms.Models;
 using System;
 using System.Windows.Forms;
-
 namespace SkillBuilderPro.WinForms
 {
     internal static class Program
@@ -26,7 +27,8 @@ namespace SkillBuilderPro.WinForms
                 if (login.ShowDialog() != DialogResult.OK)
                     continue;   // back to role screen
 
-                User current = login.LoggedInUser;
+                SkillBuilderPro.WinForms.Models.User current = login.LoggedInUser;
+
                 bool demo = login.IsDemoMode;
 
                 // 3. Dashboard loop — stays here while athletes switch users
@@ -45,7 +47,9 @@ namespace SkillBuilderPro.WinForms
                             break;
 
                         case "Admin":
-                            dashboard = new AdminDashboard(current);
+                            dashboard = new AdminDashboardForm(current);
+
+
                             break;
 
                         case "Athlete":

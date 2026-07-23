@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace SkillBuilderPro.WinForms
+namespace SkillBuilderPro.WinForms.Models
 {
     /// <summary>Single source of truth for app colors, type, and image treatment.</summary>
     public static class Brand

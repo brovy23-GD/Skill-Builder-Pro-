@@ -296,7 +296,10 @@ namespace SkillBuilderPro.WinForms
             using (Form picker = new Form())
             {
                 // ... rest unchanged ...
-                picker.Text = "Choose Demo Athlete";
+                picker.Text = SelectedRole == "Admin"
+                    ? "Choose Admin Demo"
+                    : "Choose Demo Athlete";
+
                 picker.StartPosition = FormStartPosition.CenterParent;
                 picker.Size = new Size(430, 460);
                 picker.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -306,7 +309,11 @@ namespace SkillBuilderPro.WinForms
 
                 Label header = new Label
                 {
-                    Text = "WHO ARE YOU TRAINING AS?",
+                    Text = (SelectedRole == "Admin"
+                        ? "ADMIN DEMO MODE"
+                        : "WHO ARE YOU TRAINING AS?"),
+
+
                     Font = new Font("Segoe UI Black", 13F),
                     ForeColor = Color.White,
                     AutoSize = false,
@@ -328,10 +335,9 @@ namespace SkillBuilderPro.WinForms
                 foreach (User u in roster)
                     rosterList.Items.Add($"{u.FullName}  -  {u.Sport} ({u.ExperienceLevel})");
                 rosterList.SelectedIndex = 0;
-
                 Button okButton = new Button
                 {
-                    Text = "ENTER AS ATHLETE",
+                    Text = SelectedRole == "Admin" ? "ENTER AS ADMIN" : "ENTER AS ATHLETE",
                     Size = new Size(200, 42),
                     Location = new Point(20, 358),
                     BackColor = Color.FromArgb(0, 120, 215),
@@ -339,6 +345,7 @@ namespace SkillBuilderPro.WinForms
                     FlatStyle = FlatStyle.Flat,
                     Font = new Font("Segoe UI Semibold", 10.5F)
                 };
+
                 okButton.FlatAppearance.BorderSize = 0;
                 okButton.Click += (s, e) => { picker.DialogResult = DialogResult.OK; };
 

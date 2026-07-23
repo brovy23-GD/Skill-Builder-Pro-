@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using SkillBuilderPro.WinForms.Models;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SkillBuilderPro.WinForms
+namespace SkillBuilderPro.WinForms.Forms
 {
     /// <summary>A translucent row/card that paints its own fill, stripe, and text.</summary>
     public class GlassRow : Panel

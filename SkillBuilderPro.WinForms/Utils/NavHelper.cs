@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SkillBuilderPro.WinForms.Models;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SkillBuilderPro.WinForms
+namespace SkillBuilderPro.WinForms.Utils
 {
     public static class NavHelper
     {
