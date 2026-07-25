@@ -59,15 +59,5 @@ namespace SkillBuilderPro.WinForms.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap DrillLibrary {
-            get {
-                object obj = ResourceManager.GetObject("DrillLibrary", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }
