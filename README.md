@@ -1,6 +1,12 @@
-<div align="center">
+# SkillBuilderPro
 
-<img src="assets/default.png" alt="SkillBuilderPro Banner" width="100%" style="border-radius:12px;" />
+**By Bobby Rovy**
+
+![SkillBuilderPro Banner](assets/default.png)
+
+> Built for Athletes. Powered by Precision.
+
+MSSA Capstone Project — Cloud Application Development | Cohort PCAD20 | July 2026
 
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com)
 [![C#](https://img.shields.io/badge/C%23-12-239120?style=flat-square&logo=csharp)](https://docs.microsoft.com/en-us/dotnet/csharp/)
@@ -8,24 +14,16 @@
 [![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-Web%20API-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/apps/aspnet)
 [![WinForms](https://img.shields.io/badge/WinForms-Desktop-512BD4?style=flat-square&logo=windows)](https://github.com/dotnet/winforms)
 [![MAUI](https://img.shields.io/badge/MAUI-Mobile-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/maui)
-[![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)](https://github.com)
 
-**SkillBuilderPro**
+[GitHub](https://github.com/brovy23-GD) • [LinkedIn](https://www.linkedin.com/in/bobby-rovy/) • [Email](mailto:brovy23@gmail.com)
 
-Built for Athletes. Powered by Precision.
-
-MSSA Capstone Project — Cloud Application Development | Cohort PCAD20 | July 2026
-
-[GitHub](https://github.com/YOUR_USERNAME/SkillBuilderPro) • [LinkedIn](https://linkedin.com/in/YOUR_PROFILE) • [Contact](#author)
-
-</div>
-
+---
 ---
 
 ## Executive Summary
 
-SkillBuilderPro is a full-stack, multi-role athletic development platform that bridges the gap between structured coaching and athlete performance. Built with C#/.NET 10 across four integrated projects — a RESTful Web API backend, WinForms desktop frontend, shared Core library, and MAUI mobile scaffold — it delivers a professional-grade drill library, YouTube video integration, multi-role authentication, and analytics dashboards in a single cohesive solution.
+SkillBuilderPro is a full-stack, multi-role athletic development platform built with C#/.NET 10 across four integrated projects: a RESTful Web API backend, WinForms desktop frontend, shared Core library, and MAUI mobile scaffold. It delivers a professional-grade drill library (60 drills, 6 sports), YouTube video integration, multi-role authentication, and analytics dashboards in a single cohesive solution.
 
 ---
 
@@ -64,9 +62,9 @@ SkillBuilderPro replaces fragmented coaching with a precision-engineered platfor
 
 ---
 
-## System Architecture — All 4 Projects
+## System Architecture
 
-### Overview: Four-Tier Integration
+### Four-Tier Integration
 
 ```mermaid
 graph TB
@@ -143,7 +141,7 @@ graph TD
     style PROG fill:#168FE5,color:#F5F7FA
 ```
 
-### WinForms Component Interaction (MVVM-Style)
+### WinForms Component Interaction
 
 ```mermaid
 graph LR
@@ -168,27 +166,22 @@ graph LR
 
 ## Project 2: SkillBuilderPro.API — Web API Backend
 
-### REST Controller Architecture (O(1) Routing)
+
+### REST Controller Architecture
 
 ```mermaid
 graph TB
     CLIENT["Client Request<br/>WinForms / MAUI"]
     
-    CLIENT -->|GET /api/drils| DC["DrilsController<br/>60-drill seed query"]
-    CLIENT -->|GET /api/drils/{id}| DC
-    CLIENT -->|GET /api/drils/sport/{sport}| DC
+    CLIENT -->|GET /api/drils| DC["DrilsController"]
+    CLIENT -->|POST login| UC["UsersController"]
+    CLIENT -->|POST progress| PC["ProgressController"]
     
-    CLIENT -->|POST /api/users/login| UC["UsersController<br/>Authenticate & return Role"]
-    CLIENT -->|GET /api/users| UC
+    DC -->|EF Core| DB["SQL Server<br/>SkillBuilderDb"]
+    UC -->|EF Core| DB
+    PC -->|EF Core| DB
     
-    CLIENT -->|POST /api/progress| PC["ProgressController<br/>Log completion"]
-    CLIENT -->|GET /api/progress/{userId}| PC
-    
-    DC -->|EF Core Query| DB["SQL Server<br/>Drills Table<br/>O(1) lookup by ID<br/>O(n) by sport"]
-    UC -->|EF Core Query| DB
-    PC -->|EF Core Create| DB
-    
-    DB -->|JSON Response| CLIENT
+    DB -->|JSON| CLIENT
     
     style CLIENT fill:#0078D4,color:#F5F7FA
     style DC fill:#168FE5,color:#F5F7FA
@@ -199,31 +192,33 @@ graph TB
 
 ### API Data Flow — Request/Response Cycle
 
+
 ```mermaid
-sequenceDiagram
-    participant WF as WinForms Client
-    participant API as Web API<br/>Startup.cs
-    participant CTRL as Controllers<br/>DrilsController
-    participant EF as Entity Framework<br/>DbContext
-    participant SQL as SQL Server<br/>SkillBuilderDb
+graph LR
+    A["Request<br/>GET /api/drils"]
+    B["DrilsController<br/>Route"]
+    C["Entity Framework<br/>Query Builder"]
+    D["SQL Server<br/>Execute"]
+    E["Serialize<br/>JSON"]
+    F["Response<br/>200 OK"]
     
-    WF->>API: GET /api/drils/sport/basketball
-    activate API
-    API->>CTRL: Route to DrilsController
-    activate CTRL
-    CTRL->>EF: _context.Drills.Where(d => d.Sport == "basketball")
-    activate EF
-    EF->>SQL: SELECT * FROM Drills WHERE Sport = 'basketball'
-    SQL-->>EF: Return drill records
-    deactivate SQL
-    EF-->>CTRL: IEnumerable<Drill>
-    deactivate EF
-    CTRL->>CTRL: Serialize to JSON
-    CTRL-->>API: JSON response
-    deactivate CTRL
-    API-->>WF: 200 OK + drill list
-    deactivate API
+    A --> B --> C --> D --> E --> F
+    
+    style A fill:#0078D4,color:#F5F7FA
+    style B fill:#168FE5,color:#F5F7FA
+    style C fill:#121212,stroke:#0078D4,color:#F5F7FA
+    style D fill:#005A9E,color:#F5F7FA
+    style E fill:#168FE5,color:#F5F7FA
+    style F fill:#0078D4,color:#F5F7FA
 ```
+How to use it:
+Copy the text above (everything between the lines)
+Go to GitHub → Edit README.md
+Find the section "### REST Controller Architecture"
+Replace it with the code above
+Commit
+
+That's it. ✅
 
 ---
 
@@ -278,7 +273,7 @@ graph TB
     
     subgraph "ViewModel Layer"
         LVM["LoginViewModel<br/>Username property<br/>AuthCommand"]
-        DLVM["DrillListViewModel<br/>ObservableCollection<br/>LoadDrillsCommand<br/>SelectDrillCommand"]
+        DLVM["DrillListViewModel<br/>ObservableCollection<br/>LoadDrillsCommand"]
         VVM["VideoPlayerViewModel<br/>CurrentDrill<br/>LogProgressCommand"]
     end
     
@@ -317,7 +312,7 @@ graph TB
 
 ## Database Schema — SQL Server
 
-### Entity Relationship Diagram (ERD)
+### Entity Relationship Diagram
 
 ```mermaid
 erDiagram
@@ -356,11 +351,11 @@ erDiagram
 
 ## Full Solution Data Flow
 
-### End-to-End Request: Athlete Logs a Completed Drill
+### End-to-End: Athlete Logs a Completed Drill
 
 ```mermaid
 graph LR
-    A["Athlete<br/>Clicks 'Log Drill'<br/>in VideoPlayerForm"]
+    A["Athlete<br/>Clicks Log Drill<br/>VideoPlayerForm"]
     
     B["WinForms Service<br/>ProgressService<br/>.LogDrillAsync"]
     
@@ -390,101 +385,74 @@ graph LR
 
 ---
 
-## Project Structure — All 4 Projects
+## Project Structure
 
 ```
 SkillBuilderPro/
-├── SkillBuilderPro.sln                   # Main solution file
+├── SkillBuilderPro.sln
 │
-├── SkillBuilderPro.WinForms/             # Desktop Client (Presentation)
+├── SkillBuilderPro.WinForms/
 │   ├── Forms/
-│   │   ├── LoginForm.cs                  # Role-based authentication
-│   │   ├── AthleteForm.cs                # Athlete-specific dashboard
-│   │   ├── CoachForm.cs                  # Coach management interface
-│   │   ├── ParentForm.cs                 # Parent monitoring view
-│   │   ├── AdminForm.cs                  # System administration
-│   │   ├── DrillLibraryForm.cs           # Browse 60 drills
-│   │   └── VideoPlayerForm.cs            # WebView2 YouTube embed
+│   │   ├── LoginForm.cs
+│   │   ├── AthleteForm.cs
+│   │   ├── CoachForm.cs
+│   │   ├── ParentForm.cs
+│   │   ├── AdminForm.cs
+│   │   ├── DrillLibraryForm.cs
+│   │   └── VideoPlayerForm.cs (WebView2 YouTube embed)
 │   ├── Services/
-│   │   ├── ApiService.cs                 # HTTP client for REST calls
-│   │   ├── AuthService.cs                # Authentication logic
-│   │   └── DrillService.cs               # Drill business logic
+│   │   ├── ApiService.cs
+│   │   ├── AuthService.cs
+│   │   └── DrillService.cs
 │   ├── Models/
-│   │   ├── User.cs
-│   │   ├── Drill.cs
-│   │   └── Progress.cs
 │   └── Utils/
-│       └── FormExtensions.cs             # Helper methods
 │
-├── SkillBuilderPro.API/                  # Web API Backend (Application)
+├── SkillBuilderPro.API/
 │   ├── Controllers/
-│   │   ├── DrilsController.cs            # CRUD for drills (60 seeded)
-│   │   ├── UsersController.cs            # Authentication & user mgmt
-│   │   └── ProgressController.cs         # Log athlete progress
+│   │   ├── DrilsController.cs
+│   │   ├── UsersController.cs
+│   │   └── ProgressController.cs
 │   ├── Data/
-│   │   ├── AppDbContext.cs               # EF Core DbContext
-│   │   ├── DataSeeder.cs                 # Seed 60 drills, 6 sports
-│   │   └── SkillBuilderDb.sql            # SQL initialization
-│   ├── Migrations/
-│   │   ├── [timestamp]_InitialCreate.cs
-│   │   └── [timestamp]_SeedDrills.cs
-│   ├── Startup.cs / Program.cs           # API configuration
-│   └── appsettings.json                  # Connection string
+│   │   ├── AppDbContext.cs
+│   │   └── Migrations/
+│   ├── Program.cs
+│   └── appsettings.json
 │
-├── SkillBuilderPro.Core/                 # Shared Models & Contracts
-│   ├── Models/
-│   │   ├── User.cs                       # Shared user model
-│   │   ├── Drill.cs                      # Drill domain model
-│   │   └── Progress.cs                   # Progress tracking model
-│   └── Interfaces/
-│       ├── IAuthService.cs
-│       └── IApiClient.cs
-│
-├── SkillBuilderPro.MAUI/                 # Mobile Client (Scaffold)
-│   ├── Views/
-│   │   ├── LoginPage.xaml                # Mobile login UI
-│   │   ├── DrillListPage.xaml            # Mobile drill list
-│   │   └── VideoPlayerPage.xaml          # Mobile video player
-│   ├── ViewModels/
-│   │   ├── LoginViewModel.cs             # MVVM login logic
-│   │   ├── DrillListViewModel.cs         # MVVM drill list logic
-│   │   └── VideoPlayerViewModel.cs       # MVVM video logic
-│   ├── Services/
-│   │   └── ApiService.cs                 # HTTP client (shared logic)
+├── SkillBuilderPro.Core/
 │   ├── Models/
 │   │   ├── User.cs
 │   │   ├── Drill.cs
 │   │   └── Progress.cs
-│   └── MauiProgram.cs                    # MAUI app config
+│   └── Interfaces/
 │
-└── assets/
-    ├── default.png                       # Elite banner (1200×400)
-    └── screenshots/
-        ├── login.png
-        ├── athlete-dashboard.png
-        ├── drill-library.png
-        ├── video-player.png
-        └── coach-analytics.png
+└── SkillBuilderPro.MAUI/
+    ├── Views/
+    │   ├── LoginPage.xaml
+    │   ├── DrillListPage.xaml
+    │   └── VideoPlayerPage.xaml
+    ├── ViewModels/
+    │   ├── LoginViewModel.cs
+    │   ├── DrillListViewModel.cs
+    │   └── VideoPlayerViewModel.cs
+    ├── Services/
+    │   └── ApiService.cs
+    └── MauiProgram.cs
 ```
 
 ---
 
-## Technologies — Complete Stack
+## Technologies
 
-| Layer | Technology | Version | Purpose | Project(s) |
-|-------|-----------|---------|---------|------------|
-| **Language** | C# | 12 | Primary language | All |
-| **Runtime** | .NET | 10 | Core runtime | All |
-| **Desktop UI** | WinForms | .NET 10 | Desktop framework | WinForms |
-| **Mobile UI** | MAUI | Latest | Cross-platform mobile | MAUI |
-| **Backend** | ASP.NET Core | .NET 10 | Web API framework | API |
-| **Video Embed** | WebView2 | Latest | YouTube integration | WinForms, MAUI |
-| **ORM** | EF Core | 8.x | Database mapping | API |
-| **Database** | SQL Server | 2022 | Relational DB | API (backend) |
-| **HTTP Client** | HttpClient | .NET 10 | REST communication | WinForms, MAUI |
-| **MVVM** | MVVM Toolkit | Latest | Mobile pattern | MAUI |
-| **External API** | YouTube API | v3 | Video playback | WinForms, MAUI |
-| **Version Control** | Git / GitHub | — | Source control | All |
+| Layer | Technology | Version | Purpose |
+|-------|-----------|---------|---------|
+| Language | C# | 12 | Primary language |
+| Runtime | .NET | 10 | Application runtime |
+| Desktop UI | Windows Forms | .NET 10 | Desktop framework |
+| Mobile UI | MAUI | Latest | Cross-platform mobile |
+| Backend | ASP.NET Core Web API | .NET 10 | REST API framework |
+| ORM | Entity Framework Core | 8.x | Database access |
+| Database | SQL Server | 2022 | Data store |
+| Video Embed | WebView2 | Latest | YouTube integration |
 
 ---
 
@@ -492,15 +460,15 @@ SkillBuilderPro/
 
 ### Prerequisites
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- .NET 10 SDK
 - SQL Server 2022 (or LocalDB)
-- Visual Studio 2022 (recommended)
-- WebView2 Runtime (bundled with Windows 11+)
+- Visual Studio 2022
+- WebView2 Runtime
 
 ### Clone & Restore
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/SkillBuilderPro.git
+git clone https://github.com/brovy23-GD/Skill-Builder-Pro.git
 cd SkillBuilderPro
 dotnet restore SkillBuilderPro.sln
 ```
@@ -522,7 +490,7 @@ Update `appsettings.json`:
 }
 ```
 
-### Build All Projects
+### Build
 
 ```bash
 dotnet build SkillBuilderPro.sln
@@ -530,7 +498,7 @@ dotnet build SkillBuilderPro.sln
 
 ---
 
-## Usage — Running All Projects
+## Usage — Running All 4 Projects
 
 ### Terminal 1: Start Web API
 
@@ -556,145 +524,87 @@ dotnet run
 
 ---
 
-## API Endpoints — Complete Reference
+## API Endpoints — Quick Reference
 
-### Drills Controller
-
-| Method | Endpoint | Purpose | Returns | O(n) |
-|--------|----------|---------|---------|------|
-| GET | `/api/drils` | List all 60 drills | Array[Drill] | O(n) |
-| GET | `/api/drils/{id}` | Get drill by ID | Drill | O(1) |
-| GET | `/api/drils/sport/{sport}` | Filter by sport | Array[Drill] | O(n) |
-
-### Users Controller
-
-| Method | Endpoint | Purpose | Returns | Notes |
-|--------|----------|---------|---------|-------|
-| GET | `/api/users` | List users | Array[User] | Admin only |
-| POST | `/api/users/login` | Authenticate | { userId, role, token } | Returns role for routing |
-
-### Progress Controller
-
-| Method | Endpoint | Purpose | Request | Returns |
-|--------|----------|---------|---------|---------|
-| GET | `/api/progress/{userId}` | Get user progress history | — | Array[Progress] |
-| POST | `/api/progress` | Log completed drill | { userId, drillId, reps } | 201 Created |
+| Method | Endpoint | Purpose | Complexity |
+|--------|----------|---------|-----------|
+| GET | /api/drils | List all 60 drills | O(n) |
+| GET | /api/drils/{id} | Get drill by ID | O(1) |
+| GET | /api/drils/sport/{sport} | Filter by sport | O(n) |
+| POST | /api/users/login | Authenticate user | O(1) |
+| GET | /api/users | List all users | O(n) |
+| POST | /api/progress | Log completion | O(1) |
+| GET | /api/progress/{userId} | Get history | O(n) |
 
 ---
 
-## Key Concepts — Advanced Patterns
+## Key Concepts
 
-### 1. Multi-Role Architecture (WinForms)
+**Multi-Role Architecture:** After login, API returns role. WinForms switches to appropriate dashboard form using role-based routing.
 
-Role-based routing at login determines which dashboard instantiates. Follows enterprise RBAC patterns.
+**WebView2 Video Integration:** Embeds YouTube IFrame without local codec dependencies. Full-screen capable for professional instruction.
 
-```
-LoginForm → API.Login() → returns Role
-          → Switch(role) → Instantiate appropriate form
-          → AthleteForm | CoachForm | ParentForm | AdminForm
-```
+**EF Core Code-First Migrations:** Entire database schema defined in C# models. Fully reproducible via migrations in one command.
 
-### 2. WebView2 Video Integration
+**REST API Design:** Noun-based endpoints, standard HTTP verbs, JSON responses. Extensible for future resources.
 
-Embeds YouTube via IFrame API without local codec dependencies. Full-screen capable.
-
-```
-VideoPlayerForm → WebView2 → YouTube IFrame → Embedded video
-                           → Full-screen support
-```
-
-### 3. EF Core Code-First Database
-
-Entire schema defined in C# models. Migrations fully reproducible.
-
-```
-Drill.cs + Progress.cs + User.cs → dotnet ef migrations add
-                                  → dotnet ef database update
-                                  → SQL Server synced
-```
-
-### 4. REST API Design
-
-Noun-based endpoints, standard HTTP verbs, JSON responses. Supports future expansion.
-
-```
-/api/drils          ← Resource naming
-GET | POST | PUT    ← Standard verbs
-Content-Type: application/json
-```
-
-### 5. MVVM Pattern (MAUI)
-
-Separation of concerns: Views bind to ViewModels which call Services.
-
-```
-DrillListPage.xaml → Binding → DrillListViewModel
-                            → Calls ApiService
-                            → Updates ObservableCollection
-                            → UI refreshes automatically
-```
+**MVVM Pattern (MAUI):** Views bind to ViewModels. Services call API. UI updates automatically via ObservableCollection.
 
 ---
 
 ## Brand Standards — Locked Design System
 
-| Element | Hex | Usage | Palette |
-|---------|-----|-------|---------|
-| **Primary** | `#0078D4` | Buttons, accents, headings | Performance Blue |
-| **Hover** | `#168FE5` | Button hover state | Hover Blue |
-| **Pressed** | `#005A9E` | Button pressed state | Deep Blue |
-| **Background** | `#0A0F1E` | Main app background | Elite Black |
-| **Surface** | `#121212` | Panels, cards, modals | Charcoal Black |
-| **Text** | `#F5F7FA` | Body text, UI text | Soft White |
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Primary Blue | #0078D4 | Buttons, accents |
+| Hover Blue | #168FE5 | Button hover state |
+| Pressed Blue | #005A9E | Button pressed state |
+| Elite Black | #0A0F1E | App background |
+| Charcoal | #121212 | Panels, surfaces |
+| Soft White | #F5F7FA | Body text |
 
 **Personality:** Elite · Professional · Disciplined · Motivational · Precision-Focused
 
-**Never:** Childish, cartoonish, generic fitness app aesthetic
+**Never:** Childish, cartoonish, generic fitness app look
 
 ---
 
 ## Interview Talking Points
 
-1. **Problem & Solution**: Replaced fragmented coaching with centralized athletic platform
-2. **Architecture**: Full-stack C#/.NET across 4 integrated projects (desktop, API, mobile, shared)
-3. **Tech Depth**: Multi-tier architecture, REST API design, EF Core migrations, MVVM patterns
-4. **Scale**: 60 drills, 4 user roles, role-based routing, YouTube integration
-5. **Quality**: Enterprise-grade UI, brand system locked, production-ready code
-6. **Versatility**: Desktop (WinForms), Web (API), Mobile (MAUI) — shows cross-platform thinking
+1. **Problem & Solution:** Replaced fragmented coaching with centralized, measurable athletic platform
+2. **Full-Stack Architecture:** 4 integrated projects spanning desktop (WinForms), web API, mobile (MAUI), and shared core
+3. **Technical Depth:** Multi-role RBAC, REST API design, EF Core migrations, MVVM patterns, WebView2 integration
+4. **Scale & Polish:** 60 seeded drills, 4 user roles, YouTube video integration, locked brand system, enterprise-grade UI
+5. **Versatility:** Desktop, backend, and mobile platforms — demonstrates cross-platform thinking
+6. **Production Quality:** Migrations tracked, code organized, error handling, Git versioned
 
 ---
 
-## Performance & Complexity Analysis
+## Performance Analysis
 
 ### API Endpoint Complexity
 
-| Endpoint | Operation | Complexity | Index |
-|----------|-----------|-----------|-------|
-| GET /api/drils/{id} | PK lookup | **O(1)** | Primary key |
-| GET /api/drils/sport/{sport} | Filter scan | **O(n)** | Sport index |
-| POST /api/progress | Insert + log | **O(1)** | Auto-increment PK |
-
-### WinForms Role Router
-
-```
-Login → API call O(1)
-     → Role switch O(1) 
-     → Form instantiation O(1)
-     → Total: O(1) routing
-```
+| Endpoint | Operation | Big-O | Index |
+|----------|-----------|-------|-------|
+| GET /api/drils/{id} | Primary key lookup | O(1) | PK index |
+| GET /api/drils/sport/{sport} | Filtered scan | O(n) | Sport index |
+| POST /api/progress | Insert with FK | O(1) | Auto-increment PK |
+| GET /api/progress/{userId} | Range query | O(n) | FK index |
 
 ---
 
 ## Deployment Ready
 
 - ✅ Solution compiles cleanly
-- ✅ All migrations tested
-- ✅ 60 drills seeded
-- ✅ Brand colors locked
-- ✅ API endpoints verified
+- ✅ All EF Core migrations tested
+- ✅ 60 drills seeded with YouTube URLs
+- ✅ Brand colors locked and consistent
+- ✅ API endpoints verified and documented
 - ✅ MVVM pattern implemented
 - ✅ Error handling in place
-- ✅ Git tracked and committed
+- ✅ Git tracked and pushed
+- ✅ Professional README with diagrams
+- ✅ Contact information linked
 
 ---
 
@@ -706,11 +616,11 @@ MSSA Graduate — Cloud Application Development | Cohort PCAD20 | July 2026
 
 📍 Oak Lawn, IL
 
-🔗 [GitHub](https://github.com/YOUR_USERNAME)
+🔗 [GitHub](https://github.com/brovy23-GD)
 
-🔗 [LinkedIn](https://linkedin.com/in/YOUR_PROFILE)
+🔗 [LinkedIn](https://www.linkedin.com/in/bobby-rovy/)
 
-✉️ your.email@example.com
+✉️ [brovy23@gmail.com](mailto:brovy23@gmail.com)
 
 ---
 
@@ -719,5 +629,7 @@ MSSA Graduate — Cloud Application Development | Cohort PCAD20 | July 2026
 **SkillBuilderPro — Built for Athletes. Powered by Precision.**
 
 *A full-stack, multi-role athletic development platform across desktop, web, and mobile.*
+
+*Engineered for performance. Designed for scale.*
 
 </div>
