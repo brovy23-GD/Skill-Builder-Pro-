@@ -168,25 +168,21 @@ graph LR
 
 ### REST Controller Architecture
 
+### REST Controller Architecture
+
 ```mermaid
 graph TB
     CLIENT["Client Request<br/>WinForms / MAUI"]
     
-    CLIENT -->|GET /api/drils<br/>List all 60| DC["DrilsController<br/>O(n) complexity"]
-    CLIENT -->|GET by ID<br/>O(1) lookup| DC
-    CLIENT -->|GET by sport<br/>O(n) filter| DC
+    CLIENT -->|GET /api/drils| DC["DrilsController"]
+    CLIENT -->|POST login| UC["UsersController"]
+    CLIENT -->|POST progress| PC["ProgressController"]
     
-    CLIENT -->|POST login<br/>Authenticate| UC["UsersController<br/>O(1) routing"]
-    CLIENT -->|GET users| UC
+    DC -->|EF Core| DB["SQL Server<br/>SkillBuilderDb"]
+    UC -->|EF Core| DB
+    PC -->|EF Core| DB
     
-    CLIENT -->|POST progress<br/>Log completion| PC["ProgressController<br/>O(1) insert"]
-    CLIENT -->|GET progress<br/>Query history| PC
-    
-    DC -->|EF Core Query| DB["SQL Server<br/>SkillBuilderDb<br/>60 Drills Indexed"]
-    UC -->|EF Core Query| DB
-    PC -->|EF Core Create| DB
-    
-    DB -->|JSON Response| CLIENT
+    DB -->|JSON| CLIENT
     
     style CLIENT fill:#0078D4,color:#F5F7FA
     style DC fill:#168FE5,color:#F5F7FA
@@ -197,31 +193,34 @@ graph TB
 
 ### API Data Flow — Request/Response Cycle
 
+### API Data Flow
+
 ```mermaid
-sequenceDiagram
-    participant WF as WinForms Client
-    participant API as Web API
-    participant CTRL as DrilsController
-    participant EF as Entity Framework
-    participant SQL as SQL Server
+graph LR
+    A["Request<br/>GET /api/drils"]
+    B["DrilsController<br/>Route"]
+    C["Entity Framework<br/>Query Builder"]
+    D["SQL Server<br/>Execute"]
+    E["Serialize<br/>JSON"]
+    F["Response<br/>200 OK"]
     
-    WF->>API: GET /api/drils/sport/basketball
-    activate API
-    API->>CTRL: Route to Controller
-    activate CTRL
-    CTRL->>EF: Query Drills by Sport
-    activate EF
-    EF->>SQL: SELECT FROM Drills WHERE Sport
-    SQL-->>EF: Return Records
-    deactivate SQL
-    EF-->>CTRL: IEnumerable Drill
-    deactivate EF
-    CTRL->>CTRL: Serialize JSON
-    CTRL-->>API: Response
-    deactivate CTRL
-    API-->>WF: 200 OK + Drills
-    deactivate API
+    A --> B --> C --> D --> E --> F
+    
+    style A fill:#0078D4,color:#F5F7FA
+    style B fill:#168FE5,color:#F5F7FA
+    style C fill:#121212,stroke:#0078D4,color:#F5F7FA
+    style D fill:#005A9E,color:#F5F7FA
+    style E fill:#168FE5,color:#F5F7FA
+    style F fill:#0078D4,color:#F5F7FA
 ```
+How to use it:
+Copy the text above (everything between the lines)
+Go to GitHub → Edit README.md
+Find the section "### REST Controller Architecture"
+Replace it with the code above
+Commit
+
+That's it. ✅
 
 ---
 
