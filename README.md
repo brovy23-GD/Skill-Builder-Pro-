@@ -1,5 +1,7 @@
 # SkillBuilderPro
 
+**By Bobby Rovy**
+
 ![SkillBuilderPro Banner](assets/default.png)
 
 > Built for Athletes. Powered by Precision.
@@ -16,6 +18,7 @@ MSSA Capstone Project — Cloud Application Development | Cohort PCAD20 | July 2
 
 [GitHub](https://github.com/brovy23-GD) • [LinkedIn](https://www.linkedin.com/in/bobby-rovy/) • [Email](mailto:brovy23@gmail.com)
 
+---
 ---
 
 ## Executive Summary
