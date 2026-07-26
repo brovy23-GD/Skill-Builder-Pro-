@@ -289,7 +289,11 @@ namespace SkillBuilderPro.WinForms.Forms
             }
             else
             {
-                foreach (var drill in filtered.Take(5))
+                var grouped = filtered
+                    .GroupBy(d => d.Category)
+                    .SelectMany(g => g.Take(5));
+
+                foreach (var drill in grouped)
                 {
                     _drillNames.Add(drill.Name);
                     _videoUrls.Add(drill.VideoUrl);

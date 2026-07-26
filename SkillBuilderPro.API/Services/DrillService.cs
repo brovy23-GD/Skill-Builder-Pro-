@@ -1,72 +1,67 @@
-using Microsoft.EntityFrameworkCore;
-using SkillBuilderPro.Core.Models;
+using SkillBuilderPro.API.Repositories;
 using SkillBuilderPro.Core.Interfaces;
-using SkillBuilderPro.API.Data;
+using SkillBuilderPro.Core.Models;
 
-namespace SkillBuilderPro.API.Services;
-
-
-public class DrillService : IDrillService
+namespace SkillBuilderPro.API.Services
 {
-    private readonly AppDbContext _context;
-
-    public DrillService(AppDbContext context)
+    /// <summary>
+    /// Service implementation for drill-related business logic.
+    /// </summary>
+    public class DrillService : IDrillService
     {
-        _context = context;
-    }
+        private readonly IRepository<Drill> _drillRepository;
 
-    public async Task<List<Drill>> GetAllAsync(string? sport = null, string? category = null)
-    {
-        IQueryable<Drill> query = _context.Drills.AsNoTracking();
+        public DrillService(IRepository<Drill> drillRepository)
+        {
+            _drillRepository = drillRepository;
+        }
 
-        if (!string.IsNullOrWhiteSpace(sport))
-            query = query.Where(d => d.Sport.ToLower() == sport.ToLower());
+        public async Task<List<Drill>> GetAllAsync(string? sport = null, string? category = null)
+        {
+            var drills = await _drillRepository.GetAllAsync();
+            var result = drills.ToList();
 
-        if (!string.IsNullOrWhiteSpace(category))
-            query = query.Where(d => d.Category.ToLower() == category.ToLower());
+            if (!string.IsNullOrEmpty(sport))
+            {
+                result = result.Where(d => d.Sport.ToLower() == sport.ToLower()).ToList();
+            }
 
-        return await query.OrderBy(d => d.Name).ToListAsync();
-    }
+            if (!string.IsNullOrEmpty(category))
+            {
+                result = result.Where(d => d.Category.ToLower() == category.ToLower()).ToList();
+            }
 
-    public async Task<Drill?> GetByIdAsync(int id)
-    {
-        return await _context.Drills
-            .Include(d => d.Schedules)
-            .Include(d => d.ProgressLogs)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(d => d.Id == id);
-    }
+            return result;
+        }
 
-    public async Task<Drill> CreateAsync(Drill drill)
-    {
-        _context.Drills.Add(drill);
-        await _context.SaveChangesAsync();
-        return drill;
-    }
+        public async Task<Drill?> GetByIdAsync(int id)
+        {
+            return await _drillRepository.GetByIdAsync(id);
+        }
 
-    public async Task<bool> UpdateAsync(int id, Drill drill)
-    {
-        Drill? existing = await _context.Drills.FindAsync(id);
-        if (existing is null) return false;
+        public async Task<Drill> CreateAsync(Drill drill)
+        {
+            await _drillRepository.AddAsync(drill);
+            await _drillRepository.SaveAsync();
+            return drill;
+        }
 
-        existing.Name = drill.Name;
-        existing.Sport = drill.Sport;
-        existing.Category = drill.Category;
-        existing.Description = drill.Description;
-        existing.VideoUrl = drill.VideoUrl;
-        existing.Difficulty = drill.Difficulty;
+        public async Task<bool> UpdateAsync(int id, Drill drill)
+        {
+            drill.Id = id;
+            await _drillRepository.UpdateAsync(drill);
+            await _drillRepository.SaveAsync();
+            return true;
+        }
 
-        await _context.SaveChangesAsync();
-        return true;
-    }
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var drill = await _drillRepository.GetByIdAsync(id);
+            if (drill == null) return false;
 
-    public async Task<bool> DeleteAsync(int id)
-    {
-        Drill? existing = await _context.Drills.FindAsync(id);
-        if (existing is null) return false;
-
-        _context.Drills.Remove(existing);
-        await _context.SaveChangesAsync();
-        return true;
+            await _drillRepository.DeleteAsync(drill);
+            await _drillRepository.SaveAsync();
+            return true;
+        }
     }
 }

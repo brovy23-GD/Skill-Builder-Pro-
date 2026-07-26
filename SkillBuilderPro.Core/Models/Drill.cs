@@ -24,7 +24,7 @@ namespace SkillBuilderPro.Core.Models
         public string VideoUrl { get; set; } = string.Empty;
 
         [JsonPropertyName("difficulty")]
-        public int Difficulty { get; set; }
+        public int DifficultyLevel { get; set; }
 
         [JsonPropertyName("schedules")]
         public ICollection<TrainingSchedule> Schedules { get; set; } = new List<TrainingSchedule>();

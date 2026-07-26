@@ -62,11 +62,12 @@ namespace SkillBuilderPro.WinForms.Services
                 Id = Guid.NewGuid(),
                 Name = coreDrill.Name,
                 Sport = coreDrill.Sport,
-                SkillCategory = coreDrill.Category ?? "",  // Core only has Category, not SubCategory
+                SkillCategory = coreDrill.Category ?? "",
                 Description = coreDrill.Description,
                 VideoUrl = coreDrill.VideoUrl,
-                Difficulty = coreDrill.Difficulty
+                Difficulty = coreDrill.DifficultyLevel  // ← Changed
             };
         }
     }
+    
 }

@@ -4,35 +4,15 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Web;
-// ALIAS: WinForms has its own Drill class (Guid key, Duration, SkillCategory).
-// Core has a DIFFERENT Drill (int key, Sport, VideoUrl). Alias avoids ambiguity.
 using CoreDrill = SkillBuilderPro.Core.Models.Drill;
 
 namespace SkillBuilderPro.WinForms;
 
-/// <summary>
-/// HTTP implementation of IDrillService. This class is the WinForms client
-/// that talks to the SkillBuilderPro Web API.
-/// </summary>
 public class DrillApiService : IDrillService
 {
-    // ---------------------------------------------------------
-    // UPDATED BASE ADDRESS — THIS IS THE FIX
-    // ---------------------------------------------------------
-    // Your API is running at:
-    //   http://localhost:5000
-    //   https://localhost:5001
-    //
-    // The old port (62978) was DEAD, so WinForms always fell back to offline mode.
-    // Updating this BaseAddress brings the API ONLINE again.
-    //
-    // Trailing slash REQUIRED: BaseAddress + "api/drills" concatenates correctly.
-    // ---------------------------------------------------------
     private static readonly HttpClient _http = new HttpClient
     {
-        BaseAddress = new Uri("http://localhost:5000/"),   // HTTP, not HTTPS
-
-        // Fail fast if API is down — 10 seconds instead of hanging forever.
+        BaseAddress = new Uri("http://localhost:5000/"),
         Timeout = TimeSpan.FromSeconds(10)
     };
 
@@ -53,7 +33,6 @@ public class DrillApiService : IDrillService
 
             System.Diagnostics.Debug.WriteLine($"[DrillApiService] Requesting: {fullUrl}");
 
-            // Retry 3 times with 1-second delays (API may be starting up)
             int retries = 3;
             while (retries > 0)
             {
@@ -67,7 +46,7 @@ public class DrillApiService : IDrillService
                 {
                     retries--;
                     System.Diagnostics.Debug.WriteLine($"[DrillApiService] Connection failed, retrying... ({retries} left)");
-                    await Task.Delay(1000);  // Wait 1 second before retry
+                    await Task.Delay(1000);
                 }
             }
 
@@ -76,7 +55,6 @@ public class DrillApiService : IDrillService
         catch (HttpRequestException ex)
         {
             System.Diagnostics.Debug.WriteLine($"[DrillApiService] HttpRequestException: {ex.Message}");
-            System.Diagnostics.Debug.WriteLine($"[DrillApiService] InnerException: {ex.InnerException?.Message}");
             return new List<CoreDrill>();
         }
         catch (JsonException ex)

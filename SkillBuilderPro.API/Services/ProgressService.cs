@@ -1,67 +1,64 @@
-using Microsoft.EntityFrameworkCore;
-using SkillBuilderPro.Core.Models;
+using SkillBuilderPro.API.Repositories;
 using SkillBuilderPro.Core.Interfaces;
-using SkillBuilderPro.API.Data;
+using SkillBuilderPro.Core.Models;
 
-namespace SkillBuilderPro.API.Services;
-
-
-public class ProgressService : IProgressService
+namespace SkillBuilderPro.API.Services
 {
-    private readonly AppDbContext _context;
-
-    public ProgressService(AppDbContext context)
+    /// <summary>
+    /// Service implementation for progress tracking.
+    /// </summary>
+    public class ProgressService : IProgressService
     {
-        _context = context;
-    }
+        private readonly IRepository<ProgressLog> _progressRepository;
 
-    public async Task<List<ProgressLog>> GetAllAsync(int? drillId = null)
-    {
-        IQueryable<ProgressLog> query = _context.ProgressLogs
-            .Include(p => p.Drill)
-            .AsNoTracking();
+        public ProgressService(IRepository<ProgressLog> progressRepository)
+        {
+            _progressRepository = progressRepository;
+        }
 
-        if (drillId.HasValue)
-            query = query.Where(p => p.DrillId == drillId.Value);
+        public async Task<List<ProgressLog>> GetAllAsync(int? drillId = null)
+        {
+            var logs = await _progressRepository.GetAllAsync();
+            var result = logs.ToList();
 
-        return await query.OrderByDescending(p => p.LogDate).ToListAsync();
-    }
+            if (drillId.HasValue)
+            {
+                result = result.Where(l => l.DrillId == drillId.Value).ToList();
+            }
 
-    public async Task<ProgressLog?> GetByIdAsync(int id)
-    {
-        return await _context.ProgressLogs
-            .Include(p => p.Drill)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == id);
-    }
+            return result;
+        }
 
-    public async Task<ProgressLog?> CreateAsync(ProgressLog log)
-    {
-        bool drillExists = await _context.Drills.AnyAsync(d => d.Id == log.DrillId);
-        if (!drillExists) return null;
+        public async Task<ProgressLog?> GetByIdAsync(int id)
+        {
+            return await _progressRepository.GetByIdAsync(id);
+        }
 
-        _context.ProgressLogs.Add(log);
-        await _context.SaveChangesAsync();
-        return log;
-    }
+        public async Task<ProgressLog?> CreateAsync(ProgressLog log)
+        {
+            await _progressRepository.AddAsync(log);
+            await _progressRepository.SaveAsync();
+            return log;
+        }
 
-    public async Task<bool> DeleteAsync(int id)
-    {
-        ProgressLog? existing = await _context.ProgressLogs.FindAsync(id);
-        if (existing is null) return false;
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var log = await _progressRepository.GetByIdAsync(id);
+            if (log == null) return false;
 
-        _context.ProgressLogs.Remove(existing);
-        await _context.SaveChangesAsync();
-        return true;
-    }
+            await _progressRepository.DeleteAsync(log);
+            await _progressRepository.SaveAsync();
+            return true;
+        }
 
-    public async Task<double?> GetAverageRatingAsync(int drillId)
-    {
-        bool hasLogs = await _context.ProgressLogs.AnyAsync(p => p.DrillId == drillId);
-        if (!hasLogs) return null;
+        public async Task<double?> GetAverageRatingAsync(int drillId)
+        {
+            var logs = await _progressRepository.FindAsync(l => l.DrillId == drillId);
+            var logList = logs.ToList();
 
-        return await _context.ProgressLogs
-            .Where(p => p.DrillId == drillId)
-            .AverageAsync(p => (double)p.Rating);
+            if (!logList.Any()) return null;
+
+            return logList.Average(l => l.Rating);
+        }
     }
 }

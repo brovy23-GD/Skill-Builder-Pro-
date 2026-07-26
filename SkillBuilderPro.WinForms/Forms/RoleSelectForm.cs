@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using SkillBuilderPro.WinForms.Properties;
+using SkillBuilderPro.WinForms.Models;
 
 namespace SkillBuilderPro.WinForms
 {

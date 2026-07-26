@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
+
 namespace SkillBuilderPro.WinForms.Models
 {
     /// <summary>Single source of truth for app colors, type, and image treatment.</summary>

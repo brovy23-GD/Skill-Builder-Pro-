@@ -1,11 +1,7 @@
 ﻿using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Properties;
-using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Linq;
-
+using SkillBuilderPro.WinForms.Utils;
 namespace SkillBuilderPro.WinForms
 {
     /// <summary>

@@ -6,7 +6,7 @@ namespace SkillBuilderPro.Core.Models
     /// Database entity for an athlete. PasswordHash never leaves the API —
     /// clients receive UserDto instead.
     /// </summary>
-    public class UserEntity
+    public class User
     {
         [Key]
         public int Id { get; set; }

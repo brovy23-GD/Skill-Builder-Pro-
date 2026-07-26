@@ -3598,6 +3598,7 @@
       "Microsoft.EntityFrameworkCore.Design >= 10.0.10",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.10",
       "Microsoft.EntityFrameworkCore.Tools >= 10.0.10",
+      "Microsoft.OpenApi >= 2.7.5",
       "SkillBuilderPro.Core >= 1.0.0",
       "Swashbuckle.AspNetCore >= 10.2.3"
     ]
@@ -3676,6 +3677,10 @@
           "Microsoft.EntityFrameworkCore.Tools": {
             "target": "Package",
             "version": "[10.0.10, )"
+          },
+          "Microsoft.OpenApi": {
+            "target": "Package",
+            "version": "[2.7.5, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
