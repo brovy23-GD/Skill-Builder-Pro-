@@ -166,7 +166,6 @@ graph LR
 
 ## Project 2: SkillBuilderPro.API — Web API Backend
 
-### REST Controller Architecture
 
 ### REST Controller Architecture
 
@@ -193,7 +192,6 @@ graph TB
 
 ### API Data Flow — Request/Response Cycle
 
-### API Data Flow
 
 ```mermaid
 graph LR
