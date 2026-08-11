@@ -66,6 +66,25 @@ public class Program
                         Url = new Uri("https://github.com/brovy23-GD")
                     }
                 });
+
+            c.AddSecurityDefinition(
+                "Bearer",
+                new Microsoft.OpenApi.OpenApiSecurityScheme
+                {
+                    Type = Microsoft.OpenApi.SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "Enter the JWT access token."
+                });
+
+            c.AddSecurityRequirement(document =>
+                new Microsoft.OpenApi.OpenApiSecurityRequirement
+                {
+                    [new Microsoft.OpenApi.OpenApiSecuritySchemeReference(
+                        "Bearer",
+                        document,
+                        null)] = []
+                });
         });
 
         // ==========================================
