@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using SkillBuilderPro.API.Data;
 using SkillBuilderPro.API.Middleware;
 using SkillBuilderPro.API.Services;
 using SkillBuilderPro.Core.Data;
+using SkillBuilderPro.Core.Identity;
 using SkillBuilderPro.Core.Interfaces;
 using SkillBuilderPro.Core.Models;
 using SkillBuilderPro.Core.Repositories;
@@ -78,6 +80,15 @@ public class Program
                         maxRetryCount: 3);
                 });
         });
+
+        builder.Services
+            .AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddRoles<IdentityRole<int>>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
 
         // ==========================================
         // 3. CORE DEPENDENCY INJECTION REGISTRATION
@@ -270,6 +281,9 @@ public class Program
                     "Verifying SkillBuilderPro database infrastructure...");
 
                 await dbContext.Database.EnsureCreatedAsync();
+
+                await IdentityRoleInitializer.InitializeAsync(
+                    scope.ServiceProvider);
 
                 // ==================================================
                 // AUTOMATIC DRILL SEEDING IS DISABLED

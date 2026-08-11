@@ -25,7 +25,7 @@ namespace SkillBuilderPro.Core.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.LegacyUsers.ToListAsync();
         }
 
         public async Task<User?> FindAsync(Expression<Func<User, bool>> predicate)
@@ -35,18 +35,18 @@ namespace SkillBuilderPro.Core.Repositories
 
         public async Task AddAsync(User entity)
         {
-            await _context.Users.AddAsync(entity);
+            await _context.LegacyUsers.AddAsync(entity);
         }
 
         public Task UpdateAsync(User entity)
         {
-            _context.Users.Update(entity);
+            _context.LegacyUsers.Update(entity);
             return Task.CompletedTask;
         }
 
         public Task DeleteAsync(User entity)
         {
-            _context.Users.Remove(entity);
+            _context.LegacyUsers.Remove(entity);
             return Task.CompletedTask;
         }
 
