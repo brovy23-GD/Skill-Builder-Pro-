@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using SkillBuilderPro.API.Authentication;
 using SkillBuilderPro.API.Data;
 using SkillBuilderPro.API.Middleware;
 using SkillBuilderPro.API.Services;
@@ -16,6 +19,7 @@ using SkillBuilderPro.Core.Models;
 using SkillBuilderPro.Core.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SkillBuilderPro.API;
@@ -88,7 +92,41 @@ public class Program
             })
             .AddRoles<IdentityRole<int>>()
             .AddEntityFrameworkStores<AppDbContext>()
+            .AddSignInManager()
             .AddDefaultTokenProviders();
+
+        builder.Services
+            .AddOptions<JwtOptions>()
+            .Bind(builder.Configuration.GetSection(JwtOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        var jwtOptions = builder.Configuration
+            .GetSection(JwtOptions.SectionName)
+            .Get<JwtOptions>() ?? new JwtOptions();
+
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.MapInboundClaims = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtOptions.Audience,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(1),
+                    NameClaimType = "email",
+                    RoleClaimType = "role"
+                };
+            });
+
+        builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
         // ==========================================
         // 3. CORE DEPENDENCY INJECTION REGISTRATION
@@ -217,6 +255,8 @@ public class Program
 
         app.UseCors("AllowAll");
 
+        app.UseAuthentication();
+
         app.UseAuthorization();
 
         app.MapControllers();
@@ -280,7 +320,19 @@ public class Program
                 logger.LogInformation(
                     "Verifying SkillBuilderPro database infrastructure...");
 
-                await dbContext.Database.EnsureCreatedAsync();
+                var pendingMigrations =
+                    (await dbContext.Database.GetPendingMigrationsAsync())
+                    .ToArray();
+
+                if (pendingMigrations.Length > 0)
+                {
+                    logger.LogWarning(
+                        "Database initialization is paused because {PendingMigrationCount} migration(s) are pending: {PendingMigrations}. Apply reviewed migrations explicitly before starting Identity role initialization.",
+                        pendingMigrations.Length,
+                        string.Join(", ", pendingMigrations));
+
+                    return;
+                }
 
                 await IdentityRoleInitializer.InitializeAsync(
                     scope.ServiceProvider);

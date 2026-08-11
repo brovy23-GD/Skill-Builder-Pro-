@@ -5,7 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
-	</PropertyGroup>
+	  <UserSecretsId>ca39d78b-2569-4fad-a749-1aa41568024b</UserSecretsId>
+  </PropertyGroup>
 
 	<!-- Explicit content items since default content is disabled -->
 
@@ -19,6 +20,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="ClosedXML" Version="0.105.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
