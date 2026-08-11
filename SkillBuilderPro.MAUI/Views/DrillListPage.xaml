@@ -1,8 +1,142 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SkillBuilderPro.MAUI.Views.DrillListPage"
-             Title="Drill Library"
-             BackgroundColor="#0A0F1E">
-    <!-- Content here -->
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SkillBuilderPro.MAUI.Views.DrillListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Drills"
+    BackgroundColor="#121212">
+
+    <Grid
+        RowDefinitions="Auto,*,Auto,Auto"
+        Padding="0"
+        RowSpacing="0">
+
+        <VerticalStackLayout
+            Grid.Row="0"
+            Padding="20,15,20,10"
+            Spacing="4"
+            BackgroundColor="#0A0F1E">
+
+            <Label
+                Text="Drills"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="White" />
+
+            <Label
+                Text="{Binding SelectedSport, StringFormat='Sport: {0}'}"
+                FontSize="14"
+                TextColor="#3B82F6"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="{Binding SelectedCategory, StringFormat='Category: {0}'}"
+                FontSize="14"
+                TextColor="#9CA3AF"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="{Binding StatusMessage}"
+                FontSize="13"
+                TextColor="Gray"
+                Margin="0,2,0,0" />
+        </VerticalStackLayout>
+
+        <CollectionView
+            x:Name="DrillsCollection"
+            Grid.Row="1"
+            ItemsSource="{Binding FilteredDrills}"
+            SelectionMode="Multiple"
+            SelectionChanged="OnCollectionViewSelectionChanged"
+            Margin="0,10,0,0">
+
+            <CollectionView.EmptyView>
+                <Label
+                    Text="No drills found for this category."
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    TextColor="Gray" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0,6">
+                        <Border
+                            Stroke="#2E2E2E"
+                            StrokeThickness="1"
+                            BackgroundColor="#1E1E1E"
+                            Padding="15"
+                            Margin="20,0,20,0">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+
+                            <VerticalStackLayout>
+                                <Label
+                                    Text="{Binding Name}"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="White" />
+
+                                <HorizontalStackLayout
+                                    Spacing="6"
+                                    Margin="0,3,0,0">
+
+                                    <Label
+                                        Text="{Binding SubCategory}"
+                                        FontSize="12"
+                                        TextColor="#3B82F6"
+                                        FontAttributes="Bold" />
+
+                                    <Label
+                                        Text="•"
+                                        FontSize="12"
+                                        TextColor="DimGray" />
+
+                                    <Label
+                                        Text="{Binding Difficulty, StringFormat='Difficulty {0}'}"
+                                        FontSize="12"
+                                        TextColor="Gray" />
+                                </HorizontalStackLayout>
+
+                                <Label
+                                    Text="{Binding Duration, StringFormat='{0} min'}"
+                                    FontSize="12"
+                                    TextColor="Gray"
+                                    Margin="0,3,0,0" />
+
+                                <Label
+                                    Text="{Binding Description}"
+                                    FontSize="14"
+                                    TextColor="DarkGray"
+                                    Margin="0,5,0,0" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button
+            Grid.Row="2"
+            Text="Play Selected Training Video"
+            Clicked="OnPlayDrillsClicked"
+            BackgroundColor="#0078D4"
+            TextColor="White"
+            FontAttributes="Bold"
+            HeightRequest="48"
+            CornerRadius="10"
+            Margin="20,10,20,0" />
+
+        <Button
+            Grid.Row="3"
+            Text="Clear All"
+            Clicked="OnClearDrillsClicked"
+            BackgroundColor="Transparent"
+            TextColor="#EF4444"
+            HeightRequest="48"
+            Margin="20,10,20,16" />
+
+    </Grid>
 </ContentPage>

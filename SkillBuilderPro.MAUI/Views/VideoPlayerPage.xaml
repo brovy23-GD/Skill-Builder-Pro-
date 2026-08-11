@@ -1,12 +1,178 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SkillBuilderPro.MAUI.Views.VideoPlayerPage"
-             Title="VideoPlayerPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage
+    x:Class="SkillBuilderPro.MAUI.Views.VideoPlayerPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#080B14"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid
+            Grid.Row="0"
+            HeightRequest="76"
+            Padding="24,0"
+            BackgroundColor="#0B1120"
+            ColumnDefinitions="Auto,*,Auto">
+
+            <Button
+                Grid.Column="0"
+                Text="‹  Back"
+                Clicked="OnBackClicked"
+                BackgroundColor="Transparent"
+                TextColor="#1689E8"
+                FontSize="16"
+                FontAttributes="Bold"
+                Padding="0"
+                HorizontalOptions="Start"
+                VerticalOptions="Center" />
+
+            <Label
+                Grid.Column="1"
+                Text="VIDEO PLAYER"
+                FontSize="25"
+                FontAttributes="Bold"
+                TextColor="#F8FAFC"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <BoxView
+                Grid.Column="2"
+                WidthRequest="70"
+                Opacity="0" />
+        </Grid>
+
+        <!-- Main content -->
+        <ScrollView
+            Grid.Row="1"
+            HorizontalScrollBarVisibility="Never"
+            VerticalScrollBarVisibility="Never">
+
+            <Grid
+                MaximumWidthRequest="1040"
+                HorizontalOptions="Center"
+                Padding="24,24,24,40"
+                RowDefinitions="Auto,Auto,Auto,Auto"
+                RowSpacing="18">
+
+                <!-- Drill title -->
+                <VerticalStackLayout
+                    Grid.Row="0"
+                    Spacing="6">
+
+                    <Label
+                        Text="CURRENT DRILL"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        TextColor="#94A3B8"
+                        CharacterSpacing="1.2" />
+
+                    <Label
+                        x:Name="DrillNameLabel"
+                        Text="ACTIVE DRILL"
+                        FontSize="28"
+                        FontAttributes="Bold"
+                        TextColor="#1689E8"
+                        LineBreakMode="TailTruncation" />
+                </VerticalStackLayout>
+
+                <!-- Video player -->
+                <Border
+                    Grid.Row="1"
+                    HeightRequest="540"
+                    HorizontalOptions="Fill"
+                    BackgroundColor="#171717"
+                    Stroke="#253047"
+                    StrokeThickness="1"
+                    Padding="0">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+
+                    <WebView
+                        x:Name="VideoWebView"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill" />
+                </Border>
+
+                <!-- Controls -->
+                <Grid
+                    Grid.Row="2"
+                    ColumnDefinitions="Auto,Auto,Auto"
+                    ColumnSpacing="16"
+                    HorizontalOptions="Center">
+
+                    <Button
+                        Grid.Column="0"
+                        Text="‹"
+                        Clicked="OnPrevClicked"
+                        WidthRequest="58"
+                        HeightRequest="50"
+                        CornerRadius="12"
+                        BackgroundColor="#101827"
+                        TextColor="White"
+                        FontSize="28"
+                        FontAttributes="Bold" />
+
+                    <Button
+                        Grid.Column="1"
+                        Text="Open in YouTube"
+                        Clicked="OnOpenExternallyClicked"
+                        HeightRequest="50"
+                        MinimumWidthRequest="210"
+                        CornerRadius="12"
+                        BackgroundColor="#1689E8"
+                        TextColor="White"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        Padding="24,0" />
+
+                    <Button
+                        Grid.Column="2"
+                        Text="›"
+                        Clicked="OnNextClicked"
+                        WidthRequest="58"
+                        HeightRequest="50"
+                        CornerRadius="12"
+                        BackgroundColor="#101827"
+                        TextColor="White"
+                        FontSize="28"
+                        FontAttributes="Bold" />
+                </Grid>
+
+                <!-- Playlist details -->
+                <Border
+                    Grid.Row="3"
+                    HorizontalOptions="Fill"
+                    BackgroundColor="#111111"
+                    Stroke="#253047"
+                    StrokeThickness="1"
+                    Padding="20">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            Text="PLAYLIST"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#94A3B8"
+                            CharacterSpacing="1.2" />
+
+                        <Label
+                            x:Name="DrillsListLabel"
+                            Text="Selected drill: General Training"
+                            FontSize="16"
+                            TextColor="#E2E8F0"
+                            LineBreakMode="TailTruncation" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </Grid>
+        </ScrollView>
+    </Grid>
 </ContentPage>

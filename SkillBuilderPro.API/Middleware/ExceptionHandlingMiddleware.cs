@@ -1,5 +1,5 @@
-﻿using System.Net;
-using System.Text.Json;
+﻿using SkillBuilderPro.Core.Data; // 🟢 Points to the correct Core home
+
 
 namespace SkillBuilderPro.API.Middleware
 {

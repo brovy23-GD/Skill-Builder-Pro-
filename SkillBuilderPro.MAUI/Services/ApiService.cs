@@ -6,7 +6,12 @@ namespace SkillBuilderPro.MAUI.Services;
 public class ApiService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _baseUrl = "http://localhost:5000/api";
+
+#if DEBUG
+    private readonly string _baseUrl = "http://10.0.2.2:5000/api";
+#else
+    private readonly string _baseUrl = "https://your-prod-url/api";
+#endif
 
     public ApiService()
     {
@@ -17,7 +22,7 @@ public class ApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/drils");
+            var response = await _httpClient.GetAsync($"{_baseUrl}/drills");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -29,7 +34,6 @@ public class ApiService
         {
             Debug.WriteLine($"Error fetching drills: {ex.Message}");
         }
-
         return new List<Drill>();
     }
 
@@ -37,42 +41,25 @@ public class ApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/drils/sport/{sport}");
+            var response = await _httpClient.GetAsync($"{_baseUrl}/drills?sport={sport}");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                return System.Text.Json.JsonSerializer.Deserialize<List<Drill>>(json)
+                Debug.WriteLine($"API Response: {json}");
+                var drills = System.Text.Json.JsonSerializer.Deserialize<List<Drill>>(json)
                     ?? new List<Drill>();
+                Debug.WriteLine($"Deserialized {drills.Count} drills");
+                return drills;
+            }
+            else
+            {
+                Debug.WriteLine($"API Error: {response.StatusCode} - {response.ReasonPhrase}");
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error fetching drills by sport: {ex.Message}");
+            Debug.WriteLine($"Error fetching drills by sport: {ex.Message}\n{ex.StackTrace}");
         }
-
         return new List<Drill>();
-    }
-
-    public async Task LogProgressAsync(int userId, int drillId, int reps)
-    {
-        try
-        {
-            var progress = new AthleteProgress
-            {
-                UserId = userId,
-                DrillId = drillId,
-                CompletedDate = DateTime.Now,
-                RepetitionsCompleted = reps
-            };
-
-            var json = System.Text.Json.JsonSerializer.Serialize(progress);
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-            await _httpClient.PostAsync($"{_baseUrl}/progress", content);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error logging progress: {ex.Message}");
-        }
     }
 }

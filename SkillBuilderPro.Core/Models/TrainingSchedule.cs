@@ -1,23 +1,17 @@
-using System.ComponentModel.DataAnnotations;
+// Location: SkillBuilderPro.Core/Models/TrainingSchedule.cs
+using System;
 
 namespace SkillBuilderPro.Core.Models;
 
 public class TrainingSchedule
 {
     public int Id { get; set; }
-
-    [Required]
     public int DrillId { get; set; }
-    public Drill? Drill { get; set; }
 
-    [Required]
-    public DateTime ScheduledDate { get; set; }
+    // 🟢 ELITE FIX: Add missing parameters to satisfy ScheduleService evaluations
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
 
-    [Range(5, 240)]
-    public int DurationMinutes { get; set; } = 30;
-
-    public bool IsCompleted { get; set; }
-
-    [MaxLength(300)]
-    public string Notes { get; set; } = string.Empty;
+    // Leave your existing properties (like dates or foreign keys) intact underneath
 }

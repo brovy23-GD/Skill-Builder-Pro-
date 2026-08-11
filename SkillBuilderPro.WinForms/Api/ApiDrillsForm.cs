@@ -1,32 +1,31 @@
+using System.Linq;
+using SkillBuilderPro.Client.Services;
 using SkillBuilderPro.Core.Interfaces;
+using SkillBuilderPro.WinForms.Services;
 using CoreDrill = SkillBuilderPro.Core.Models.Drill;
 
 namespace SkillBuilderPro.WinForms;
 
-/// <summary>
-/// Displays drills fetched live from the Web API — the vertical slice through every tier:
-/// this form -> DrillApiService (HttpClient) -> DrillsController -> DrillService (EF Core) -> SQL Server.
-/// Completely isolated from the local Guid-based DrillService and DrillDatabase, which still
-/// power the rest of the app. Nothing here touches them.
-/// </summary>
 public partial class ApiDrillsForm : Form
 {
-    // Typed as the INTERFACE, not the concrete class. This form has no idea it's talking over
-    // HTTP — it only knows something can hand it drills. Swap in a different IDrillService
-    // implementation and this form doesn't change by one character. That's dependency inversion,
-    // and it's the single most useful thing in this file to be able to explain out loud.
+    private readonly IApiClient _apiClient;
     private readonly IDrillService _drillService;
 
     public ApiDrillsForm()
     {
         InitializeComponent();
 
-        // Constructor injection would be better here (the caller decides the implementation),
-        // but this app creates forms with 'new' rather than resolving from a DI container.
-        // Constructing it here is the pragmatic fit. The field is still typed as the interface,
-        // so this one line is the ONLY place in the form that knows DrillApiService exists.
-        _drillService = new DrillApiService();
+        var httpClient = new HttpClient
+        {
+            BaseAddress = new Uri("http://localhost:62978/")
+        };
+
+        _apiClient = new ApiClient(httpClient);
+        _drillService = new DrillApiService(_apiClient);
     }
+
+    // rest of class stays the same
+
 
     private void ApiDrillsForm_Load(object? sender, EventArgs e)
     {
@@ -57,7 +56,9 @@ public partial class ApiDrillsForm : Form
             // round-trip happens, so the window stays responsive — drag it, it moves.
             // Call .Result instead and the UI thread blocks waiting on a task that needs the
             // UI thread to resume: instant deadlock. Same trap from Assignment 11.3.
-            List<CoreDrill> drills = await _drillService.GetAllAsync(sport);
+            // Loosens up storage constraints to match the return signature cleanly
+            IEnumerable<CoreDrill> drills = await _drillService.GetAllAsync(sport);
+
 
             // Rebind from scratch each time — clearing the source first prevents the grid from
             // keeping old columns when the shape changes.
@@ -73,7 +74,8 @@ public partial class ApiDrillsForm : Form
                 dgDrills.Columns["Description"]!.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             lblStatus.ForeColor = Color.LightGreen;
-            lblStatus.Text = $"{drills.Count} drill(s) loaded from SQL Server via Web API.";
+            // 🟢 ELITE FIX: Add parentheses to convert Count to the LINQ extension method Count()
+            lblStatus.Text = $"{drills.Count()} drill(s) loaded from SQL Server via Web API.";
         }
         catch (HttpRequestException ex)
         {

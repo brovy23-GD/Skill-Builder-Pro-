@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SkillBuilderPro.Core.Models;
 using SkillBuilderPro.Core.Interfaces;
-using SkillBuilderPro.API.Data;
+using SkillBuilderPro.Core.Data;
 
 namespace SkillBuilderPro.API.Services;
 
@@ -16,20 +16,20 @@ public class ScheduleService : IScheduleService
 
     public async Task<List<TrainingSchedule>> GetAllAsync(bool? completed = null)
     {
-        IQueryable<TrainingSchedule> query = _context.Schedules
-            .Include(s => s.Drill)
-            .AsNoTracking();
+        IQueryable<TrainingSchedule> query = _context.Schedules.AsNoTracking();
 
         if (completed.HasValue)
-            query = query.Where(s => s.IsCompleted == completed.Value);
+        {
+            string status = completed.Value ? "Completed" : "Pending";
+            query = query.Where(s => s.Status == status);
+        }
 
-        return await query.OrderBy(s => s.ScheduledDate).ToListAsync();
+        return await query.OrderBy(s => s.Id).ToListAsync();
     }
 
     public async Task<TrainingSchedule?> GetByIdAsync(int id)
     {
         return await _context.Schedules
-            .Include(s => s.Drill)
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id);
     }
@@ -49,10 +49,10 @@ public class ScheduleService : IScheduleService
         TrainingSchedule? existing = await _context.Schedules.FindAsync(id);
         if (existing is null) return false;
 
-        existing.ScheduledDate = schedule.ScheduledDate;
-        existing.DurationMinutes = schedule.DurationMinutes;
-        existing.IsCompleted = schedule.IsCompleted;
-        existing.Notes = schedule.Notes;
+        existing.DrillId = schedule.DrillId;
+        existing.Title = schedule.Title;
+        existing.Description = schedule.Description;
+        existing.Status = schedule.Status;
 
         await _context.SaveChangesAsync();
         return true;
@@ -63,7 +63,7 @@ public class ScheduleService : IScheduleService
         TrainingSchedule? existing = await _context.Schedules.FindAsync(id);
         if (existing is null) return false;
 
-        existing.IsCompleted = true;
+        existing.Status = "Completed";
         await _context.SaveChangesAsync();
         return true;
     }

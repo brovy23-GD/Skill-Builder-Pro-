@@ -9,3 +9,9 @@ obj/
 # Build outputs
 [Dd]ebug/
 [Rr]elease/
+
+# Local backup and generated scratch files
+*.BACKUP
+*.BACKUP_*
+migration_preview.sql
+*CONTAMINATED_OLD*

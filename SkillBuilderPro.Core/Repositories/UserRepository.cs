@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using SkillBuilderPro.API.Data;
+using SkillBuilderPro.Core.Data;
 using SkillBuilderPro.Core.Models;
 
-namespace SkillBuilderPro.API.Repositories
+namespace SkillBuilderPro.Core.Repositories
 {
     /// <summary>
     /// Repository implementation for User entity.
@@ -18,9 +18,9 @@ namespace SkillBuilderPro.API.Repositories
             _context = context;
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Set<User>().FindAsync(id);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
@@ -28,9 +28,9 @@ namespace SkillBuilderPro.API.Repositories
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<IEnumerable<User>> FindAsync(Expression<Func<User, bool>> predicate)
+        public async Task<User?> FindAsync(Expression<Func<User, bool>> predicate)
         {
-            return await _context.Users.Where(predicate).ToListAsync();
+            return await _context.Set<User>().FirstOrDefaultAsync(predicate);
         }
 
         public async Task AddAsync(User entity)
@@ -38,16 +38,16 @@ namespace SkillBuilderPro.API.Repositories
             await _context.Users.AddAsync(entity);
         }
 
-        public async Task UpdateAsync(User entity)
+        public Task UpdateAsync(User entity)
         {
             _context.Users.Update(entity);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task DeleteAsync(User entity)
+        public Task DeleteAsync(User entity)
         {
             _context.Users.Remove(entity);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         public async Task SaveAsync()
@@ -55,5 +55,4 @@ namespace SkillBuilderPro.API.Repositories
             await _context.SaveChangesAsync();
         }
     }
-
 }

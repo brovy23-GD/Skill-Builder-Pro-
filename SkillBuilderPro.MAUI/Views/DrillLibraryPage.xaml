@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SkillBuilderPro.MAUI.Views.DrillLibraryPage"
+             Padding="0"
+             BackgroundColor="#050A12"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid>
+        <!-- Background Canvas Layer -->
+        <Image Source="drill_library.png"
+               Aspect="AspectFill"
+               Opacity="1"
+               HorizontalOptions="Fill"
+               VerticalOptions="Fill" />
+
+        <!--
+           ✅ FIXED: Wrapping your content container inside a centered ScrollView
+           with a restricted width forces the layout to look exactly like a tall,
+           clean WinForms dashboard window rather than stretching long.
+        -->
+        <ScrollView VerticalOptions="CenterAndExpand" HorizontalOptions="Center" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="16" WidthRequest="700" Padding="20,30" HorizontalOptions="Center">
+
+                <!-- 1. Top Section Tracker: Selected Drills Header Block -->
+                <Border Padding="0"
+                        BackgroundColor="#D9102035"
+                        Stroke="#2384D5"
+                        StrokeThickness="2"
+                        StrokeShape="RoundRectangle 10"
+                        HorizontalOptions="Center"
+                        WidthRequest="400">
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="SELECTED DRILLS"
+                               FontSize="12"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalTextAlignment="Center"
+                               Padding="12,6,12,2" />
+                        <Label x:Name="SelectedDrillLabel"
+                               Text="1. Shooting Form Basics"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               BackgroundColor="#2B83D8"
+                               HorizontalTextAlignment="Center"
+                               Padding="12,8" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--
+                   2. Center Core Player: The Video Box
+                   ✅ FIXED: Forcing rigid dimensions (600w x 480h) stops the horizontal
+                   stretching bug completely and locks the container into a clean, tall profile.
+                -->
+                <Border HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HeightRequest="480"
+                        WidthRequest="600"
+                        BackgroundColor="#0E141E"
+                        Stroke="#1F4C78"
+                        StrokeThickness="2"
+                        StrokeShape="RoundRectangle 4">
+                    <WebView x:Name="DrillVideoWebView"
+                             HorizontalOptions="Fill"
+                             VerticalOptions="Fill"
+                             BackgroundColor="Black" />
+                </Border>
+
+                <!--
+                   3. Middle Action Buttons
+                   ✅ FIXED: Explicitly set BackgroundColor properties to standard blues and charcoals
+                   to bypass your system styles and wipe out all purple accent tones entirely.
+                -->
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" HorizontalOptions="Center">
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Padding="4,2">
+                        <Button Text="☆ Save"
+                                BackgroundColor="#1E293B"
+                                TextColor="White"
+                                CornerRadius="6"
+                                Padding="15,0"
+                                HeightRequest="42"
+                                Clicked="OnSaveDrillClicked" />
+
+                        <Button Text="▶ Start"
+                                BackgroundColor="#087DD5"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="6"
+                                Padding="20,0"
+                                HeightRequest="42"
+                                Clicked="OnStartTrainingClicked" />
+
+                        <Button x:Name="OpenYouTubeButton"
+                                Text="Open in YouTube"
+                                BackgroundColor="#1E293B"
+                                TextColor="White"
+                                CornerRadius="6"
+                                Padding="15,0"
+                                HeightRequest="42"
+                                Clicked="OnOpenExternallyClicked" />
+
+                        <Button Text="✓ Complete"
+                                BackgroundColor="#1E293B"
+                                TextColor="White"
+                                CornerRadius="6"
+                                Padding="15,0"
+                                HeightRequest="42"
+                                Clicked="OnCompleteDrillClicked" />
+                    </HorizontalStackLayout>
+                </ScrollView>
+
+                <!-- 4. Footer Media Controls -->
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15" WidthRequest="600" HorizontalOptions="Center">
+                    <Button Grid.Column="0"
+                            Text="‹"
+                            BackgroundColor="#1E293B"
+                            TextColor="White"
+                            FontSize="22"
+                            WidthRequest="56"
+                            HeightRequest="46"
+                            CornerRadius="8"
+                            Clicked="OnPreviousClicked" />
+
+                    <Label Grid.Column="1"
+                           Text="DRILL PLAYER"
+                           TextColor="#A5B8CA"
+                           FontAttributes="Bold"
+                           FontSize="13"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" />
+
+                    <Button Grid.Column="2"
+                            Text="›"
+                            BackgroundColor="#1E293B"
+                            TextColor="White"
+                            FontSize="22"
+                            WidthRequest="56"
+                            HeightRequest="46"
+                            CornerRadius="8"
+                            Clicked="OnNextClicked" />
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

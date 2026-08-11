@@ -67,5 +67,8 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4126-prerelease" />
     <PackageReference Include="NAudio" Version="2.3.0" />
   </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SkillBuilderPro.Client\SkillBuilderPro.Client.csproj" />
+	</ItemGroup>
 
 </Project>

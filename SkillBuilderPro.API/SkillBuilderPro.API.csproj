@@ -4,12 +4,24 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
 	</PropertyGroup>
 
+	<!-- Explicit content items since default content is disabled -->
+
 	<ItemGroup>
+		<Content Remove="drills_seed.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="SkillBuilderPro_240_YouTube_Drill_Links.xlsx" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ClosedXML" Version="0.105.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		  <PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.10" />
@@ -20,6 +32,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\SkillBuilderPro.Core\SkillBuilderPro.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Resources\" />
 	</ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using SkillBuilderPro.API.Services;
-using SkillBuilderPro.Core.Models;
 using SkillBuilderPro.Core.Interfaces;
+using SkillBuilderPro.Core.Models;
 
 namespace SkillBuilderPro.API.Controllers
 {
@@ -24,16 +23,12 @@ namespace SkillBuilderPro.API.Controllers
             return Ok(drills);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("range/{startId}/{endId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Drill>> GetDrill(int id)
+        public async Task<ActionResult<IEnumerable<Drill>>> GetDrillRange(int startId, int endId)
         {
-            var drill = await _drillService.GetByIdAsync(id);
-            if (drill == null)
-                return NotFound();
-
-            return Ok(drill);
+            var drills = await _drillService.GetDrillRangeAsync(startId, endId);
+            return Ok(drills);
         }
 
         [HttpPost]
@@ -41,7 +36,7 @@ namespace SkillBuilderPro.API.Controllers
         public async Task<ActionResult<Drill>> CreateDrill([FromBody] Drill drill)
         {
             var createdDrill = await _drillService.CreateAsync(drill);
-            return CreatedAtAction(nameof(GetDrill), new { id = createdDrill.Id }, createdDrill);
+            return CreatedAtAction(nameof(GetDrills), new { id = createdDrill.Id }, createdDrill);
         }
 
         [HttpPut("{id}")]

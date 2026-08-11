@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.WinForms;
+using SkillBuilderPro.Client.Services;
+using SkillBuilderPro.WinForms.Services;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -7,9 +11,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.WinForms;
-using SkillBuilderPro.WinForms.Services;
 using User = SkillBuilderPro.WinForms.Models.User;
 
 namespace SkillBuilderPro.WinForms.Forms
@@ -42,7 +43,14 @@ namespace SkillBuilderPro.WinForms.Forms
             _selectedDrillNames = drillNames ?? new List<string>();
             _drillNames = new List<string>();
             _videoUrls = new List<string>();
-            _drillApiService = new DrillApiService();
+
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("http://localhost:5000/")
+            };
+
+            IApiClient apiClient = new ApiClient(httpClient);
+            _drillApiService = new DrillApiService(apiClient);
 
             InitializeComponent();
         }

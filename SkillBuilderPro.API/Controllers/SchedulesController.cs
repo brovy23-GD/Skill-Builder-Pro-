@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SkillBuilderPro.Core.Interfaces;
-using SkillBuilderPro.Core.Models;
+using SkillBuilderPro.Core.Data;          // 🟢 Points to the new DbContext location
+using SkillBuilderPro.Core.Repositories;  // 🟢 Points to the new Repositories location
+using SkillBuilderPro.Core.Models;        // 🟢 Points to your domain models
+
 
 namespace SkillBuilderPro.API.Controllers;
 

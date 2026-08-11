@@ -1,6 +1,7 @@
-using SkillBuilderPro.API.Repositories;
 using SkillBuilderPro.Core.Interfaces;
 using SkillBuilderPro.Core.Models;
+using SkillBuilderPro.Core.Repositories;
+using Microsoft.EntityFrameworkCore; // 🟢 Essential for high-performance database materializations
 
 namespace SkillBuilderPro.API.Services
 {
@@ -53,12 +54,20 @@ namespace SkillBuilderPro.API.Services
 
         public async Task<double?> GetAverageRatingAsync(int drillId)
         {
-            var logs = await _progressRepository.FindAsync(l => l.DrillId == drillId);
-            var logList = logs.ToList();
+            // 1. Fetch all raw progress items asynchronously from the data layer
+            var allLogs = await _progressRepository.GetAllAsync();
 
-            if (!logList.Any()) return null;
+            // 2. Filter down to the matching drillId and materialize into memory
+            var logList = allLogs.Where(l => l.DrillId == drillId).ToList();
 
-            return logList.Average(l => l.Rating);
+            // 3. Defensive Boundary: If no records match this drill, return null cleanly
+            if (!logList.Any())
+            {
+                return null;
+            }
+
+            // 4. Safely compute the double calculation over the matching Rating parameters
+            return logList.Average(l => (double?)l.Rating);
         }
     }
 }

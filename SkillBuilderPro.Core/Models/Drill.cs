@@ -1,35 +1,59 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace SkillBuilderPro.Core.Models
+namespace SkillBuilderPro.Core.Models;
+
+public class Drill
 {
-    public class Drill
-    {
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = string.Empty;
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = string.Empty;
 
-        [JsonPropertyName("sport")]
-        public string Sport { get; set; } = string.Empty;
+    // Level 1
+    // Example: BASKETBALL, FOOTBALL, BASEBALL
+    [JsonPropertyName("sport")]
+    public string Sport { get; set; } = string.Empty;
 
-        [JsonPropertyName("category")]
-        public string Category { get; set; } = string.Empty;
+    // Level 2
+    // Example: Offense, Defense, Workout
+    [JsonPropertyName("category")]
+    public string Category { get; set; } = string.Empty;
 
-        [JsonPropertyName("description")]
-        public string Description { get; set; } = string.Empty;
+    // Level 3
+    // Example: Foundational Skills, Position-Specific Skills,
+    // Infield, Hitting Fundamentals, QB Drills, etc.
+    [JsonPropertyName("drillGroup")]
+    public string? DrillGroup { get; set; }
 
-        [JsonPropertyName("videoUrl")]
-        public string VideoUrl { get; set; } = string.Empty;
+    // Level 4
+    // Example: Shooting, Defensive Rebounding,
+    // Ground Balls, WR, Tackling, etc.
+    [JsonPropertyName("subCategory")]
+    public string? SubCategory { get; set; }
 
-        [JsonPropertyName("difficulty")]
-        public int DifficultyLevel { get; set; }
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
 
-        [JsonPropertyName("schedules")]
-        public ICollection<TrainingSchedule> Schedules { get; set; } = new List<TrainingSchedule>();
+    [JsonPropertyName("difficulty")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    public int? Difficulty { get; set; }
+    [JsonPropertyName("duration")]
+    public string? Duration { get; set; }
 
-        [JsonPropertyName("progressLogs")]
-        public ICollection<ProgressLog> ProgressLogs { get; set; } = new List<ProgressLog>();
-    }
+    [JsonPropertyName("videoUrl")]
+    public string? VideoUrl { get; set; }
+
+    [JsonPropertyName("dateCreated")]
+    public DateTime? DateCreated { get; set; }
+
+    [JsonIgnore]
+    public ICollection<TrainingSchedule> Schedules { get; set; }
+        = new List<TrainingSchedule>();
+
+    [JsonIgnore]
+    public ICollection<ProgressLog> ProgressLogs { get; set; }
+        = new List<ProgressLog>();
 }

@@ -1,33 +1,55 @@
-﻿using System.Net.Http;
+// Location: SkillBuilderPro.WinForms/Services/DrillApiClient.cs
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
-using SkillBuilderPro.WinForms.Models;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using SkillBuilderPro.Core.Models; // ?? Directly maps to the global shared Drill domain model
 
-namespace SkillBuilderPro.WinForms.Services
+namespace SkillBuilderPro.WinForms.Services;
+
+/// <summary>
+/// Modernized Data Client providing the WinForms desktop presentation layer
+/// with type-safe access to backend RESTful API endpoints.
+/// </summary>
+public class DrillApiClient
 {
-    public class DrillApiClient
+    private readonly HttpClient _http;
+
+    /// <summary>
+    /// Unified Dependency Injection Constructor.
+    /// Automatically ingests the HttpClient managed by your app startup service container framework.
+    /// </summary>
+    public DrillApiClient(HttpClient http)
     {
-        private readonly HttpClient _http;
+        _http = http ?? throw new ArgumentNullException(nameof(http));
+    }
 
-        public DrillApiClient(string baseUrl)
+    /// <summary>
+    /// Asynchronously streams and deserializes athletic drill records from the live backend server.
+    /// </summary>
+    public async Task<List<Drill>> GetAllDrillsAsync()
+    {
+        try
         {
-            _http = new HttpClient
-            {
-                BaseAddress = new Uri(baseUrl)
-            };
+            // Leverages the base address routed from your central Program.cs container configuration
+            var drills = await _http.GetFromJsonAsync<List<Drill>>("api/drills");
+            return drills ?? new List<Drill>();
         }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"API Connection Failure: {ex.Message}", "Network Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return new List<Drill>();
+        }
+    }
 
-        public async Task<List<ApiDrill>> GetAllDrillsAsync()
-        {
-            try
-            {
-                var drills = await _http.GetFromJsonAsync<List<ApiDrill>>("api/drills");
-                return drills ?? new List<ApiDrill>();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"API Error: {ex.Message}");
-                return new List<ApiDrill>();
-            }
-        }
+    /// <summary>
+    /// ?? FIXED: Fully implements the missing contract lookup endpoint.
+    /// Diverts execution safely to clear out the runtime NotImplementedException crash completely.
+    /// </summary>
+    internal async Task<List<Drill>> GetAllAsync()
+    {
+        return await GetAllDrillsAsync();
     }
 }

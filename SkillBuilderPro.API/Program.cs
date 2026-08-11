@@ -1,171 +1,316 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SkillBuilderPro.API.Data;
 using SkillBuilderPro.API.Middleware;
-using SkillBuilderPro.API.Repositories;
 using SkillBuilderPro.API.Services;
+using SkillBuilderPro.Core.Data;
 using SkillBuilderPro.Core.Interfaces;
 using SkillBuilderPro.Core.Models;
+using SkillBuilderPro.Core.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
+namespace SkillBuilderPro.API;
 
-namespace SkillBuilderPro.API
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(args);
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                ?? "Server=(localdb)\\MSSQLLocalDB;Database=SkillBuilderDb;Trusted_Connection=true;";
+        var connectionString =
+            builder.Configuration.GetConnectionString("SkillBuilderDb")
+            ?? throw new InvalidOperationException(
+                "Connection string 'SkillBuilderDb' was not found.");
 
-            var isDevelopment = builder.Environment.IsDevelopment();
+        var isDevelopment = builder.Environment.IsDevelopment();
 
-            // ====== SERVICES ======
+        // ==========================================
+        // 1. SERVICES & SERIALIZATION
+        // ==========================================
 
-            builder.Services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
-                    options.JsonSerializerOptions.WriteIndented = isDevelopment;
-                });
-
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(c =>
+        builder.Services
+            .AddControllers()
+            .AddJsonOptions(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                options.JsonSerializerOptions.WriteIndented = isDevelopment;
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            });
+
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc(
+                "v1",
+                new Microsoft.OpenApi.OpenApiInfo
                 {
                     Title = "SkillBuilderPro API",
                     Version = "v1.0",
                     Description = "Full-stack athletic development platform",
-                    Contact = new OpenApiContact
+                    Contact = new Microsoft.OpenApi.OpenApiContact
                     {
                         Name = "Bobby Rovy",
                         Email = "brovy23@gmail.com",
                         Url = new Uri("https://github.com/brovy23-GD")
                     }
                 });
-            });
+        });
 
-            // ====== DATABASE ======
+        // ==========================================
+        // 2. DATABASE INFRASTRUCTURE
+        // ==========================================
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(connectionString, sqlOptions =>
+        builder.Services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseSqlServer(
+                connectionString,
+                sqlOptions =>
                 {
                     sqlOptions.CommandTimeout(30);
-                    sqlOptions.EnableRetryOnFailure(maxRetryCount: 3);
+
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 3);
                 });
-            });
+        });
 
-            // ====== DEPENDENCY INJECTION ======
+        // ==========================================
+        // 3. CORE DEPENDENCY INJECTION REGISTRATION
+        // ==========================================
 
-            builder.Services.AddScoped<IRepository<Drill>, DrillRepository>();
-            builder.Services.AddScoped<IRepository<ProgressLog>, ProgressRepository>();
-            builder.Services.AddScoped<IDrillService, DrillService>();
-            builder.Services.AddScoped<IProgressService, ProgressService>();
-            // Remove: builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IDrillService, DrillApiService>();
 
-            // ====== CORS ======
+        builder.Services.AddScoped<IRepository<Drill>, DrillRepository>();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", policy =>
+        builder.Services.AddScoped<IDrillRepository, DrillRepository>();
+
+        // Seeder remains registered so it can be used later
+        // for an explicit, validated import operation.
+        // It is NOT automatically executed at application startup.
+        builder.Services.AddScoped<DrillExcelSeeder>();
+
+        builder.Services.AddScoped<IScheduleService, ScheduleService>();
+
+        builder.Services.AddScoped<
+            IRepository<ProgressLog>,
+            ProgressRepository>();
+
+        builder.Services.AddScoped<IProgressService, ProgressService>();
+
+        // ==========================================
+        // 4. CROSS-ORIGIN RESOURCE SHARING (CORS)
+        // ==========================================
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(
+                "AllowAll",
+                policy =>
                 {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
                 });
+        });
+
+        // ==========================================
+        // 5. DIAGNOSTIC LOGGING PROVIDERS
+        // ==========================================
+
+        builder.Logging.ClearProviders();
+
+        builder.Logging.AddConsole();
+
+        builder.Logging.AddDebug();
+
+        if (isDevelopment)
+        {
+            builder.Logging.SetMinimumLevel(LogLevel.Debug);
+        }
+
+        // ==========================================
+        // 6. PIPELINE ORCHESTRATION BUILD
+        // ==========================================
+
+        var app = builder.Build();
+
+        // ==========================================
+        // 7. MIDDLEWARE PIPELINE
+        // ==========================================
+
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+        if (isDevelopment)
+        {
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint(
+                    "/swagger/v1/swagger.json",
+                    "SkillBuilderPro API v1.0");
+
+                c.RoutePrefix = string.Empty;
             });
+        }
+        else
+        {
+            app.UseHttpsRedirection();
+        }
 
-            // ====== LOGGING ======
+        // ==========================================
+        // REQUEST DIAGNOSTIC TRACKER
+        // ==========================================
 
-            builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
-            builder.Logging.AddDebug();
+        app.Use(async (context, next) =>
+        {
+            var logger =
+                context.RequestServices
+                    .GetRequiredService<ILogger<Program>>();
 
-            if (isDevelopment)
-            {
-                builder.Logging.SetMinimumLevel(LogLevel.Debug);
-            }
-
-            // ====== BUILD ======
-
-            var app = builder.Build();
-
-            // ====== MIDDLEWARE ======
-
-            app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-            if (isDevelopment)
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SkillBuilderPro API v1.0");
-                    c.RoutePrefix = string.Empty;
-                });
-            }
-            else
-            {
-                app.UseHttpsRedirection();
-            }
-
-            app.Use(async (context, next) =>
-            {
-                var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-                try
-                {
-                    await next();
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Request failed");
-                    throw;
-                }
-            });
-
-            app.UseCors("AllowAll");
-            app.UseAuthorization();
-            app.MapControllers();
-
-            app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
-            app.MapGet("/api/info", () => Results.Ok(new { name = "SkillBuilderPro API", version = "1.0" }));
-
-            // ====== DATABASE INITIALIZATION ======
-
-            using (var scope = app.Services.CreateScope())
-            {
-                try
-                {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
-                    logger.LogInformation("Applying migrations...");
-                    await dbContext.Database.MigrateAsync();
-                    logger.LogInformation("✅ Database ready");
-                }
-                catch (Exception ex)
-                {
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Database initialization failed");
-                    throw;
-                }
-            }
-
-            app.Logger.LogInformation("🎯 SkillBuilderPro API started");
+            var stopwatch =
+                System.Diagnostics.Stopwatch.StartNew();
 
             try
             {
-                await app.RunAsync();
+                await next();
+
+                stopwatch.Stop();
+
+                logger.LogDebug(
+                    "{Method} {Path} completed with {StatusCode} in {ElapsedMilliseconds} ms.",
+                    context.Request.Method,
+                    context.Request.Path,
+                    context.Response.StatusCode,
+                    stopwatch.ElapsedMilliseconds);
             }
             catch (Exception ex)
             {
-                app.Logger.LogCritical(ex, "Application crashed");
+                stopwatch.Stop();
+
+                logger.LogError(
+                    ex,
+                    "Request failed while processing {Method} {Path}.",
+                    context.Request.Method,
+                    context.Request.Path);
+
                 throw;
             }
+        });
+
+        app.UseCors("AllowAll");
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        // ==========================================
+        // DIAGNOSTIC ENDPOINTS
+        // ==========================================
+
+        app.MapGet(
+            "/health",
+            () => Results.Ok(
+                new
+                {
+                    status = "healthy"
+                }));
+
+        app.MapGet(
+            "/api/info",
+            () => Results.Ok(
+                new
+                {
+                    name = "SkillBuilderPro API",
+                    version = "1.0"
+                }));
+
+        // ==========================================
+        // 8. DATABASE STARTUP VERIFICATION
+        // ==========================================
+        //
+        // IMPORTANT:
+        //
+        // Automatic drill seeding is intentionally disabled.
+        //
+        // The previous startup pipeline:
+        //   - deleted all rows from Drills
+        //   - loaded the legacy 900-drill JSON
+        //   - loaded hardcoded drills
+        //   - generated dummy drills
+        //
+        // That legacy JSON contains contaminated cross-sport data
+        // and must NOT be automatically imported.
+        //
+        // Future drill imports must be explicitly initiated and
+        // validated before DrillExcelSeeder.SeedAsync() is used.
+        // ==========================================
+
+        _ = Task.Run(async () =>
+        {
+            using var scope = app.Services.CreateScope();
+
+            var logger =
+                scope.ServiceProvider
+                    .GetRequiredService<ILogger<Program>>();
+
+            try
+            {
+                var dbContext =
+                    scope.ServiceProvider
+                        .GetRequiredService<AppDbContext>();
+
+                logger.LogInformation(
+                    "Verifying SkillBuilderPro database infrastructure...");
+
+                await dbContext.Database.EnsureCreatedAsync();
+
+                // ==================================================
+                // AUTOMATIC DRILL SEEDING IS DISABLED
+                // ==================================================
+                //
+                // DO NOT uncomment this until drills_seed.json has
+                // been replaced with the validated production dataset.
+                //
+                // var drillSeeder =
+                //     scope.ServiceProvider
+                //         .GetRequiredService<DrillExcelSeeder>();
+                //
+                // await drillSeeder.SeedAsync();
+                //
+                // ==================================================
+
+                logger.LogInformation(
+                    "SkillBuilderPro database infrastructure verified and ready.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(
+                    ex,
+                    "Database background initialization sequence faulted.");
+            }
+        });
+
+        app.Logger.LogInformation(
+            "SkillBuilderPro API started.");
+
+        try
+        {
+            await app.RunAsync();
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogCritical(
+                ex,
+                "Application host crashed unexpectedly.");
+
+            throw;
         }
     }
 }

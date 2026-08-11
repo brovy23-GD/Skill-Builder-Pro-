@@ -1,19 +1,26 @@
 ﻿using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Services;
 using SkillBuilderPro.WinForms.Properties;
+using SkillBuilderPro.Client.ApiClients;
+using SkillBuilderPro.Client.Services;
+using SkillBuilderPro.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Net.Http;
 using System.Windows.Forms;
+using WinFormsUser = SkillBuilderPro.WinForms.Models.User;
+using CoreDrill = SkillBuilderPro.Core.Models.Drill;
+using DrillApiClient = SkillBuilderPro.Client.ApiClients.DrillApiClient;
 
 namespace SkillBuilderPro.WinForms.AdminScreens
 {
     public partial class AdminDashboardForm : Form
     {
-        private readonly User _user;
+        private readonly WinFormsUser _user;
 
         private Panel profileDropdownMenu;
-      
 
         private Panel pageAthletes;
         private Panel pageDrills;
@@ -29,34 +36,40 @@ namespace SkillBuilderPro.WinForms.AdminScreens
 
         private List<(string Title, string Category, string Description)> drills = new()
         {
-            ("Sprint Warmup", "Speed", "High‑intensity sprint warmup for acceleration."),
+            ("Sprint Warmup", "Speed", "High-intensity sprint warmup for acceleration."),
             ("Cone Agility", "Agility", "Quick footwork around cones."),
             ("Vertical Jump", "Power", "Explosive jump training."),
-            ("Lateral Shuffle", "Defense", "Side‑to‑side movement for defensive positioning."),
-            ("Endurance Run", "Conditioning", "Long‑distance stamina building."),
+            ("Lateral Shuffle", "Defense", "Side-to-side movement for defensive positioning."),
+            ("Endurance Run", "Conditioning", "Long-distance stamina building."),
         };
 
-        private DrillApiClient apiClient;
-        private List<ApiDrill> apiDrills = new();
+        private readonly DrillApiClient apiClient;
+        private List<CoreDrill> apiDrills = new();
 
-        public AdminDashboardForm(User user)
+        public AdminDashboardForm(WinFormsUser user)
         {
             _user = user;
 
             InitializeComponent();
 
-            this.WindowState = FormWindowState.Maximized;
-            this.MinimumSize = new Size(1280, 800);
+            WindowState = FormWindowState.Maximized;
+            MinimumSize = new Size(1280, 800);
 
-            this.BackgroundImage = Brand.Hero(Resource1.NewestAdminDash);
-            this.BackgroundImageLayout = ImageLayout.None;
+            BackgroundImage = Brand.Hero(Resource1.NewestAdminDash);
+            BackgroundImageLayout = ImageLayout.None;
 
             BuildTopBar();
             BuildProfileDropdown();
-           
             BuildPages();
 
-            apiClient = new DrillApiClient("http://localhost:5000/");
+            var http = new HttpClient
+            {
+                BaseAddress = new Uri("http://localhost:5000/")
+            };
+
+            IApiClient api = new ApiClient(http);
+            apiClient = new DrillApiClient(api);
+
             LoadApiDrillsAsync();
         }
 
@@ -68,7 +81,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
                 Dock = DockStyle.Top,
                 BackColor = Color.FromArgb(20, 20, 20)
             };
-            this.Controls.Add(topBar);
+            Controls.Add(topBar);
 
             PictureBox sbProIcon = new PictureBox
             {
@@ -83,14 +96,19 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             Panel profileCircle = new Panel
             {
                 Size = new Size(40, 40),
-                Location = new Point(this.Width - 240, 15),
+                Location = new Point(Width - 240, 15),
                 BackColor = Color.Transparent,
                 Cursor = Cursors.Hand
             };
             profileCircle.Paint += (s, e) =>
             {
                 e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(0, 120, 215)), 0, 0, 40, 40);
-                TextRenderer.DrawText(e.Graphics, "BR", new Font("Segoe UI", 12, FontStyle.Bold), new Point(8, 10), Color.White);
+                TextRenderer.DrawText(
+                    e.Graphics,
+                    "BR",
+                    new Font("Segoe UI", 12, FontStyle.Bold),
+                    new Point(8, 10),
+                    Color.White);
             };
             profileCircle.Click += (s, e) => ToggleProfileDropdown();
             topBar.Controls.Add(profileCircle);
@@ -99,7 +117,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             {
                 Text = _user.FullName.ToUpper(),
                 ForeColor = Color.White,
-                Location = new Point(this.Width - 190, 18),
+                Location = new Point(Width - 190, 18),
                 AutoSize = true,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold)
             };
@@ -109,24 +127,23 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             {
                 Text = _user.Role.ToUpper(),
                 ForeColor = Color.Gray,
-                Location = new Point(this.Width - 190, 38),
+                Location = new Point(Width - 190, 38),
                 AutoSize = true,
                 Font = new Font("Segoe UI", 9)
             };
             topBar.Controls.Add(profileRole);
         }
 
-       
         private void BuildProfileDropdown()
         {
             profileDropdownMenu = new Panel
             {
-                Size = new Size(180, 200),   // fixed height
+                Size = new Size(180, 200),
                 BackColor = Color.FromArgb(30, 30, 30),
                 Visible = false,
-                Location = new Point(this.Width - 200, 70)
+                Location = new Point(Width - 200, 70)
             };
-            this.Controls.Add(profileDropdownMenu);
+            Controls.Add(profileDropdownMenu);
             profileDropdownMenu.BringToFront();
 
             AddDropdownItem("ATHLETES", 0);
@@ -135,7 +152,6 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             AddDropdownItem("SETTINGS", 120);
             AddDropdownItem("LOGOUT", 160);
         }
-
 
         private void AddDropdownItem(string text, int y)
         {
@@ -155,48 +171,53 @@ namespace SkillBuilderPro.WinForms.AdminScreens
                 AutoSize = false,
                 Size = new Size(180, 40),
                 TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(15, 0, 0, 0)
+                Padding = new Padding(15, 0, 0, 0),
+                Cursor = Cursors.Hand
             };
+
+            EventHandler clickHandler = (s, e) => HandleDropdownSelection(text);
+
+            itemPanel.Click += clickHandler;
+            itemLabel.Click += clickHandler;
 
             itemPanel.Controls.Add(itemLabel);
-
-            itemPanel.Click += (s, e) =>
-            {
-                switch (text)
-                {
-                    case "ATHLETES":
-                        pageAthletes.Visible = true;
-                        pageDrills.Visible = false;
-                        pageReports.Visible = false;
-                        pageAthletes.BringToFront();
-                        break;
-
-                    case "DRILL LIBRARY":
-                        pageAthletes.Visible = false;
-                        pageReports.Visible = false;
-
-                        drillLibraryBackground.Visible = true;
-                        pageDrills.Visible = true;
-
-                        drillLibraryBackground.SendToBack();
-                        pageDrills.BringToFront();
-                        break;
-
-                    case "PROFILE":
-                        MessageBox.Show("Profile clicked");
-                        break;
-
-                    case "SETTINGS":
-                        MessageBox.Show("Settings clicked");
-                        break;
-
-                    case "LOGOUT":
-                        this.Close();
-                        break;
-                }
-            };
-
             profileDropdownMenu.Controls.Add(itemPanel);
+        }
+
+        private void HandleDropdownSelection(string text)
+        {
+            switch (text)
+            {
+                case "ATHLETES":
+                    pageAthletes.Visible = true;
+                    pageDrills.Visible = false;
+                    pageReports.Visible = false;
+                    pageAthletes.BringToFront();
+                    break;
+
+                case "DRILL LIBRARY":
+                    pageAthletes.Visible = false;
+                    pageReports.Visible = false;
+                    drillLibraryBackground.Visible = true;
+                    pageDrills.Visible = true;
+                    drillLibraryBackground.SendToBack();
+                    pageDrills.BringToFront();
+                    break;
+
+                case "PROFILE":
+                    MessageBox.Show("Profile clicked");
+                    break;
+
+                case "SETTINGS":
+                    MessageBox.Show("Settings clicked");
+                    break;
+
+                case "LOGOUT":
+                    Close();
+                    break;
+            }
+
+            profileDropdownMenu.Visible = false;
         }
 
         private void ToggleProfileDropdown()
@@ -205,39 +226,36 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             profileDropdownMenu.BringToFront();
         }
 
-
-
-
         private void BuildPages()
         {
             pageAthletes = new Panel
             {
-                Size = new Size(this.Width, this.Height - 70),
+                Size = new Size(Width, Height - 70),
                 Location = new Point(0, 70),
                 BackColor = Color.FromArgb(25, 25, 25),
                 Visible = false
             };
-            this.Controls.Add(pageAthletes);
+            Controls.Add(pageAthletes);
 
             pageDrills = new Panel
             {
-                Size = new Size(this.Width, this.Height - 70),
+                Size = new Size(Width, Height - 70),
                 Location = new Point(0, 70),
                 BackColor = Color.FromArgb(25, 25, 25),
                 Visible = false
             };
-            this.Controls.Add(pageDrills);
+            Controls.Add(pageDrills);
 
             BuildDrillLibraryPage();
 
             pageReports = new Panel
             {
-                Size = new Size(this.Width, this.Height - 70),
+                Size = new Size(Width, Height - 70),
                 Location = new Point(0, 70),
                 BackColor = Color.FromArgb(25, 25, 25),
                 Visible = false
             };
-            this.Controls.Add(pageReports);
+            Controls.Add(pageReports);
 
             BuildReportsPage();
         }
@@ -252,7 +270,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
                 BackgroundImageLayout = ImageLayout.Stretch,
                 Visible = false
             };
-            this.Controls.Add(drillLibraryBackground);
+            Controls.Add(drillLibraryBackground);
             drillLibraryBackground.SendToBack();
 
             pageDrills.Controls.Add(new Label
@@ -312,7 +330,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
                 BackgroundImageLayout = ImageLayout.Stretch,
                 Visible = false
             };
-            this.Controls.Add(reportsBackground);
+            Controls.Add(reportsBackground);
             reportsBackground.SendToBack();
 
             pageReports.Controls.Add(new Label
@@ -336,8 +354,27 @@ namespace SkillBuilderPro.WinForms.AdminScreens
 
         private async void LoadApiDrillsAsync()
         {
-            apiDrills = await apiClient.GetAllDrillsAsync();
-            LoadApiDrillCards();
+            try
+            {
+                apiDrills = await apiClient.GetAllAsync() ?? new List<CoreDrill>();
+                LoadApiDrillCards();
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show(
+                    $"Could not load API drills.\n\n{ex.Message}",
+                    "API Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Unexpected error loading drills.\n\n{ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         private void LoadApiDrillCards()
@@ -349,7 +386,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             {
                 var card = new Button
                 {
-                    Text = drill.Title,
+                    Text = string.IsNullOrWhiteSpace(drill.Name) ? "(Unnamed Drill)" : drill.Name,
                     Location = new Point(10, y),
                     Size = new Size(460, 80),
                     Font = new Font("Segoe UI", 12, FontStyle.Bold),
@@ -359,7 +396,6 @@ namespace SkillBuilderPro.WinForms.AdminScreens
                 };
 
                 card.FlatAppearance.BorderSize = 0;
-
                 card.Click += (s, e) => OpenDrillVideo(drill.VideoUrl);
 
                 apiDrillsColumn.Controls.Add(card);
@@ -486,11 +522,17 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             }
         }
 
-        private void OpenDrillVideo(string url)
+        private void OpenDrillVideo(string? url)
         {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                MessageBox.Show("This drill does not have a video URL.");
+                return;
+            }
+
             try
             {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                Process.Start(new ProcessStartInfo
                 {
                     FileName = url,
                     UseShellExecute = true
@@ -507,7 +549,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             if (drillSourceSelector.SelectedItem == null)
                 return;
 
-            string selected = drillSourceSelector.SelectedItem.ToString();
+            string selected = drillSourceSelector.SelectedItem.ToString() ?? "Both";
 
             switch (selected)
             {

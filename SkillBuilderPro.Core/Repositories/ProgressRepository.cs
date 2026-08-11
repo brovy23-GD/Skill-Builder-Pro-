@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using SkillBuilderPro.API.Data;
+using SkillBuilderPro.Core.Data;
 using SkillBuilderPro.Core.Models;
 
-namespace SkillBuilderPro.API.Repositories
+namespace SkillBuilderPro.Core.Repositories
 {
     /// <summary>
     /// Repository implementation for ProgressLog entity.
@@ -18,9 +18,10 @@ namespace SkillBuilderPro.API.Repositories
             _context = context;
         }
 
-        public async Task<ProgressLog> GetByIdAsync(int id)
+        // 🟢 FIXED: Change signature return type to include '?' to match the IRepository contract
+        public async Task<ProgressLog?> GetByIdAsync(int id)
         {
-            return await _context.ProgressLogs.FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Set<ProgressLog>().FindAsync(id);
         }
 
         public async Task<IEnumerable<ProgressLog>> GetAllAsync()
@@ -28,9 +29,10 @@ namespace SkillBuilderPro.API.Repositories
             return await _context.ProgressLogs.ToListAsync();
         }
 
-        public async Task<IEnumerable<ProgressLog>> FindAsync(Expression<Func<ProgressLog, bool>> predicate)
+        // 🟢 ELITE CORRECTION: Match the Task<ProgressLog?> contract return signature
+        public async Task<ProgressLog?> FindAsync(System.Linq.Expressions.Expression<Func<ProgressLog, bool>> predicate)
         {
-            return await _context.ProgressLogs.Where(predicate).ToListAsync();
+            return await _context.Set<ProgressLog>().FirstOrDefaultAsync(predicate);
         }
 
         public async Task AddAsync(ProgressLog entity)
