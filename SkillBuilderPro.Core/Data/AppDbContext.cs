@@ -29,6 +29,18 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>
             .WithOne(profile => profile.User)
             .HasForeignKey<UserProfile>(profile => profile.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ProgressLog>()
+            .HasOne(log => log.Owner)
+            .WithMany()
+            .HasForeignKey(log => log.OwnerUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<TrainingSchedule>()
+            .HasOne(schedule => schedule.Owner)
+            .WithMany()
+            .HasForeignKey(schedule => schedule.OwnerUserId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     public static List<Drill> GetHardcodedDrills()

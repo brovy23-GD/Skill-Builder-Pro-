@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SkillBuilderPro.API.Contracts.Progress;
+using SkillBuilderPro.API.Security;
 using SkillBuilderPro.Core.Interfaces;
-using SkillBuilderPro.Core.Data;          // 🟢 Points to the new DbContext location
-using SkillBuilderPro.Core.Repositories;  // 🟢 Points to the new Repositories location
-using SkillBuilderPro.Core.Models;        // 🟢 Points to your domain models
-
+using SkillBuilderPro.Core.Models;
 
 namespace SkillBuilderPro.API.Controllers;
 
@@ -14,51 +13,93 @@ namespace SkillBuilderPro.API.Controllers;
 public class ProgressController : ControllerBase
 {
     private readonly IProgressService _progressService;
+    private readonly ICurrentUser _currentUser;
 
-    public ProgressController(IProgressService progressService)
+    public ProgressController(
+        IProgressService progressService,
+        ICurrentUser currentUser)
     {
         _progressService = progressService;
+        _currentUser = currentUser;
     }
 
-    // GET api/progress?drillId=1
     [HttpGet]
-    public async Task<ActionResult<List<ProgressLog>>> GetAll([FromQuery] int? drillId)
+    public async Task<ActionResult<List<ProgressLog>>> GetAll(
+        [FromQuery] int? drillId)
     {
-        List<ProgressLog> logs = await _progressService.GetAllAsync(drillId);
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        var logs = await _progressService.GetAllAsync(drillId, ownerScope);
         return Ok(logs);
     }
 
-    // GET api/progress/1
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProgressLog>> GetById(int id)
     {
-        ProgressLog? log = await _progressService.GetByIdAsync(id);
-        return log is null ? NotFound($"Progress log {id} not found.") : Ok(log);
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        var log = await _progressService.GetByIdAsync(id, ownerScope);
+        return log is null ? NotFound() : Ok(log);
     }
 
-    // GET api/progress/average/1
     [HttpGet("average/{drillId:int}")]
     public async Task<ActionResult<double>> GetAverageRating(int drillId)
     {
-        double? average = await _progressService.GetAverageRatingAsync(drillId);
-        return average is null ? NotFound($"No progress logs for drill {drillId}.") : Ok(average);
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        var average = await _progressService.GetAverageRatingAsync(
+            drillId,
+            ownerScope);
+
+        return average is null ? NotFound() : Ok(average);
     }
 
-    // POST api/progress
     [HttpPost]
-    public async Task<ActionResult<ProgressLog>> Create([FromBody] ProgressLog log)
+    public async Task<ActionResult<ProgressLog>> Create(
+        ProgressLogRequest request)
     {
-        ProgressLog? created = await _progressService.CreateAsync(log);
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        var log = new ProgressLog
+        {
+            DrillId = request.DrillId,
+            LogDate = request.LogDate ?? DateTime.UtcNow,
+            Rating = request.Rating,
+            Notes = request.Notes,
+            OwnerUserId = userId
+        };
+
+        var created = await _progressService.CreateAsync(log);
         return created is null
-            ? BadRequest($"Drill {log.DrillId} does not exist.")
+            ? BadRequest($"Drill {request.DrillId} does not exist.")
             : CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // DELETE api/progress/1
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        bool deleted = await _progressService.DeleteAsync(id);
-        return deleted ? NoContent() : NotFound($"Progress log {id} not found.");
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        bool deleted = await _progressService.DeleteAsync(id, ownerScope);
+        return deleted ? NoContent() : NotFound();
     }
 }

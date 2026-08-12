@@ -1,73 +1,97 @@
+using Microsoft.EntityFrameworkCore;
+using SkillBuilderPro.Core.Data;
 using SkillBuilderPro.Core.Interfaces;
 using SkillBuilderPro.Core.Models;
-using SkillBuilderPro.Core.Repositories;
-using Microsoft.EntityFrameworkCore; // 🟢 Essential for high-performance database materializations
 
-namespace SkillBuilderPro.API.Services
+namespace SkillBuilderPro.API.Services;
+
+public class ProgressService : IProgressService
 {
-    /// <summary>
-    /// Service implementation for progress tracking.
-    /// </summary>
-    public class ProgressService : IProgressService
+    private readonly AppDbContext _context;
+
+    public ProgressService(AppDbContext context)
     {
-        private readonly IRepository<ProgressLog> _progressRepository;
+        _context = context;
+    }
 
-        public ProgressService(IRepository<ProgressLog> progressRepository)
+    public async Task<List<ProgressLog>> GetAllAsync(
+        int? drillId,
+        int? ownerUserId)
+    {
+        IQueryable<ProgressLog> query = _context.ProgressLogs.AsNoTracking();
+
+        if (ownerUserId.HasValue)
         {
-            _progressRepository = progressRepository;
+            query = query.Where(log => log.OwnerUserId == ownerUserId.Value);
         }
 
-        public async Task<List<ProgressLog>> GetAllAsync(int? drillId = null)
+        if (drillId.HasValue)
         {
-            var logs = await _progressRepository.GetAllAsync();
-            var result = logs.ToList();
-
-            if (drillId.HasValue)
-            {
-                result = result.Where(l => l.DrillId == drillId.Value).ToList();
-            }
-
-            return result;
+            query = query.Where(log => log.DrillId == drillId.Value);
         }
 
-        public async Task<ProgressLog?> GetByIdAsync(int id)
+        return await query.OrderBy(log => log.Id).ToListAsync();
+    }
+
+    public async Task<ProgressLog?> GetByIdAsync(int id, int? ownerUserId)
+    {
+        IQueryable<ProgressLog> query = _context.ProgressLogs.AsNoTracking();
+
+        if (ownerUserId.HasValue)
         {
-            return await _progressRepository.GetByIdAsync(id);
+            query = query.Where(log => log.OwnerUserId == ownerUserId.Value);
         }
 
-        public async Task<ProgressLog?> CreateAsync(ProgressLog log)
+        return await query.FirstOrDefaultAsync(log => log.Id == id);
+    }
+
+    public async Task<ProgressLog?> CreateAsync(ProgressLog log)
+    {
+        bool drillExists = await _context.Drills.AnyAsync(drill =>
+            drill.Id == log.DrillId);
+        if (!drillExists)
         {
-            await _progressRepository.AddAsync(log);
-            await _progressRepository.SaveAsync();
-            return log;
+            return null;
         }
 
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var log = await _progressRepository.GetByIdAsync(id);
-            if (log == null) return false;
+        _context.ProgressLogs.Add(log);
+        await _context.SaveChangesAsync();
+        return log;
+    }
 
-            await _progressRepository.DeleteAsync(log);
-            await _progressRepository.SaveAsync();
-            return true;
+    public async Task<bool> DeleteAsync(int id, int? ownerUserId)
+    {
+        IQueryable<ProgressLog> query = _context.ProgressLogs;
+
+        if (ownerUserId.HasValue)
+        {
+            query = query.Where(log => log.OwnerUserId == ownerUserId.Value);
         }
 
-        public async Task<double?> GetAverageRatingAsync(int drillId)
+        var log = await query.FirstOrDefaultAsync(log => log.Id == id);
+        if (log is null)
         {
-            // 1. Fetch all raw progress items asynchronously from the data layer
-            var allLogs = await _progressRepository.GetAllAsync();
-
-            // 2. Filter down to the matching drillId and materialize into memory
-            var logList = allLogs.Where(l => l.DrillId == drillId).ToList();
-
-            // 3. Defensive Boundary: If no records match this drill, return null cleanly
-            if (!logList.Any())
-            {
-                return null;
-            }
-
-            // 4. Safely compute the double calculation over the matching Rating parameters
-            return logList.Average(l => (double?)l.Rating);
+            return false;
         }
+
+        _context.ProgressLogs.Remove(log);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<double?> GetAverageRatingAsync(
+        int drillId,
+        int? ownerUserId)
+    {
+        IQueryable<ProgressLog> query = _context.ProgressLogs
+            .AsNoTracking()
+            .Where(log => log.DrillId == drillId);
+
+        if (ownerUserId.HasValue)
+        {
+            query = query.Where(log => log.OwnerUserId == ownerUserId.Value);
+        }
+
+        return await query.AverageAsync(log => (double?)log.Rating);
     }
 }

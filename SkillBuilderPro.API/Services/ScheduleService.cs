@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SkillBuilderPro.Core.Models;
-using SkillBuilderPro.Core.Interfaces;
 using SkillBuilderPro.Core.Data;
+using SkillBuilderPro.Core.Interfaces;
+using SkillBuilderPro.Core.Models;
 
 namespace SkillBuilderPro.API.Services;
 
@@ -14,40 +14,76 @@ public class ScheduleService : IScheduleService
         _context = context;
     }
 
-    public async Task<List<TrainingSchedule>> GetAllAsync(bool? completed = null)
+    public async Task<List<TrainingSchedule>> GetAllAsync(
+        bool? completed,
+        int? ownerUserId)
     {
         IQueryable<TrainingSchedule> query = _context.Schedules.AsNoTracking();
+
+        if (ownerUserId.HasValue)
+        {
+            query = query.Where(schedule =>
+                schedule.OwnerUserId == ownerUserId.Value);
+        }
 
         if (completed.HasValue)
         {
             string status = completed.Value ? "Completed" : "Pending";
-            query = query.Where(s => s.Status == status);
+            query = query.Where(schedule => schedule.Status == status);
         }
 
-        return await query.OrderBy(s => s.Id).ToListAsync();
+        return await query.OrderBy(schedule => schedule.Id).ToListAsync();
     }
 
-    public async Task<TrainingSchedule?> GetByIdAsync(int id)
+    public async Task<TrainingSchedule?> GetByIdAsync(
+        int id,
+        int? ownerUserId)
     {
-        return await _context.Schedules
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == id);
+        IQueryable<TrainingSchedule> query = _context.Schedules.AsNoTracking();
+
+        if (ownerUserId.HasValue)
+        {
+            query = query.Where(schedule =>
+                schedule.OwnerUserId == ownerUserId.Value);
+        }
+
+        return await query.FirstOrDefaultAsync(schedule => schedule.Id == id);
     }
 
-    public async Task<TrainingSchedule?> CreateAsync(TrainingSchedule schedule)
+    public async Task<TrainingSchedule?> CreateAsync(
+        TrainingSchedule schedule)
     {
-        bool drillExists = await _context.Drills.AnyAsync(d => d.Id == schedule.DrillId);
-        if (!drillExists) return null;
+        bool drillExists = await _context.Drills.AnyAsync(drill =>
+            drill.Id == schedule.DrillId);
+        if (!drillExists)
+        {
+            return null;
+        }
 
         _context.Schedules.Add(schedule);
         await _context.SaveChangesAsync();
         return schedule;
     }
 
-    public async Task<bool> UpdateAsync(int id, TrainingSchedule schedule)
+    public async Task<bool> UpdateAsync(
+        int id,
+        TrainingSchedule schedule,
+        int? ownerUserId)
     {
-        TrainingSchedule? existing = await _context.Schedules.FindAsync(id);
-        if (existing is null) return false;
+        IQueryable<TrainingSchedule> query = _context.Schedules;
+
+        if (ownerUserId.HasValue)
+        {
+            query = query.Where(existing =>
+                existing.OwnerUserId == ownerUserId.Value);
+        }
+
+        var existing = await query.FirstOrDefaultAsync(existing =>
+            existing.Id == id);
+        if (existing is null)
+        {
+            return false;
+        }
 
         existing.DrillId = schedule.DrillId;
         existing.Title = schedule.Title;
@@ -58,20 +94,44 @@ public class ScheduleService : IScheduleService
         return true;
     }
 
-    public async Task<bool> MarkCompleteAsync(int id)
+    public async Task<bool> MarkCompleteAsync(int id, int? ownerUserId)
     {
-        TrainingSchedule? existing = await _context.Schedules.FindAsync(id);
-        if (existing is null) return false;
+        IQueryable<TrainingSchedule> query = _context.Schedules;
+
+        if (ownerUserId.HasValue)
+        {
+            query = query.Where(existing =>
+                existing.OwnerUserId == ownerUserId.Value);
+        }
+
+        var existing = await query.FirstOrDefaultAsync(existing =>
+            existing.Id == id);
+        if (existing is null)
+        {
+            return false;
+        }
 
         existing.Status = "Completed";
         await _context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, int? ownerUserId)
     {
-        TrainingSchedule? existing = await _context.Schedules.FindAsync(id);
-        if (existing is null) return false;
+        IQueryable<TrainingSchedule> query = _context.Schedules;
+
+        if (ownerUserId.HasValue)
+        {
+            query = query.Where(existing =>
+                existing.OwnerUserId == ownerUserId.Value);
+        }
+
+        var existing = await query.FirstOrDefaultAsync(existing =>
+            existing.Id == id);
+        if (existing is null)
+        {
+            return false;
+        }
 
         _context.Schedules.Remove(existing);
         await _context.SaveChangesAsync();

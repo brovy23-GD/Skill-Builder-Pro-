@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using SkillBuilderPro.API.Authentication;
 using SkillBuilderPro.API.Data;
 using SkillBuilderPro.API.Middleware;
+using SkillBuilderPro.API.Security;
 using SkillBuilderPro.API.Services;
 using SkillBuilderPro.Core.Data;
 using SkillBuilderPro.Core.Identity;
@@ -146,6 +147,8 @@ public class Program
             });
 
         builder.Services.AddScoped<ITokenService, JwtTokenService>();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<ICurrentUser, HttpCurrentUser>();
 
         // ==========================================
         // 3. CORE DEPENDENCY INJECTION REGISTRATION

@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SkillBuilderPro.API.Contracts.Schedules;
+using SkillBuilderPro.API.Security;
 using SkillBuilderPro.Core.Interfaces;
-using SkillBuilderPro.Core.Data;          // 🟢 Points to the new DbContext location
-using SkillBuilderPro.Core.Repositories;  // 🟢 Points to the new Repositories location
-using SkillBuilderPro.Core.Models;        // 🟢 Points to your domain models
-
+using SkillBuilderPro.Core.Models;
 
 namespace SkillBuilderPro.API.Controllers;
 
@@ -14,59 +13,119 @@ namespace SkillBuilderPro.API.Controllers;
 public class SchedulesController : ControllerBase
 {
     private readonly IScheduleService _scheduleService;
+    private readonly ICurrentUser _currentUser;
 
-    public SchedulesController(IScheduleService scheduleService)
+    public SchedulesController(
+        IScheduleService scheduleService,
+        ICurrentUser currentUser)
     {
         _scheduleService = scheduleService;
+        _currentUser = currentUser;
     }
 
-    // GET api/schedules?completed=false
     [HttpGet]
-    public async Task<ActionResult<List<TrainingSchedule>>> GetAll([FromQuery] bool? completed)
+    public async Task<ActionResult<List<TrainingSchedule>>> GetAll(
+        [FromQuery] bool? completed)
     {
-        List<TrainingSchedule> schedules = await _scheduleService.GetAllAsync(completed);
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        var schedules = await _scheduleService.GetAllAsync(
+            completed,
+            ownerScope);
         return Ok(schedules);
     }
 
-    // GET api/schedules/1
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TrainingSchedule>> GetById(int id)
     {
-        TrainingSchedule? schedule = await _scheduleService.GetByIdAsync(id);
-        return schedule is null ? NotFound($"Schedule {id} not found.") : Ok(schedule);
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        var schedule = await _scheduleService.GetByIdAsync(id, ownerScope);
+        return schedule is null ? NotFound() : Ok(schedule);
     }
 
-    // POST api/schedules
     [HttpPost]
-    public async Task<ActionResult<TrainingSchedule>> Create([FromBody] TrainingSchedule schedule)
+    public async Task<ActionResult<TrainingSchedule>> Create(
+        TrainingScheduleRequest request)
     {
-        TrainingSchedule? created = await _scheduleService.CreateAsync(schedule);
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        var schedule = CreateSchedule(request, userId);
+        var created = await _scheduleService.CreateAsync(schedule);
         return created is null
-            ? BadRequest($"Drill {schedule.DrillId} does not exist.")
+            ? BadRequest($"Drill {request.DrillId} does not exist.")
             : CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // PUT api/schedules/1
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] TrainingSchedule schedule)
+    public async Task<IActionResult> Update(
+        int id,
+        TrainingScheduleRequest request)
     {
-        bool updated = await _scheduleService.UpdateAsync(id, schedule);
-        return updated ? NoContent() : NotFound($"Schedule {id} not found.");
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        var schedule = CreateSchedule(request, userId);
+        bool updated = await _scheduleService.UpdateAsync(
+            id,
+            schedule,
+            ownerScope);
+        return updated ? NoContent() : NotFound();
     }
 
-    // PATCH api/schedules/1/complete
     [HttpPatch("{id:int}/complete")]
     public async Task<IActionResult> MarkComplete(int id)
     {
-        bool completed = await _scheduleService.MarkCompleteAsync(id);
-        return completed ? NoContent() : NotFound($"Schedule {id} not found.");
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        bool completed = await _scheduleService.MarkCompleteAsync(
+            id,
+            ownerScope);
+        return completed ? NoContent() : NotFound();
     }
 
-    // DELETE api/schedules/1
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        bool deleted = await _scheduleService.DeleteAsync(id);
-        return deleted ? NoContent() : NotFound($"Schedule {id} not found.");
+        if (_currentUser.UserId is not int userId)
+        {
+            return Unauthorized();
+        }
+
+        int? ownerScope = _currentUser.IsAdministrator ? null : userId;
+        bool deleted = await _scheduleService.DeleteAsync(id, ownerScope);
+        return deleted ? NoContent() : NotFound();
+    }
+
+    private static TrainingSchedule CreateSchedule(
+        TrainingScheduleRequest request,
+        int ownerUserId)
+    {
+        return new TrainingSchedule
+        {
+            DrillId = request.DrillId,
+            Title = request.Title,
+            Description = request.Description,
+            Status = request.Status,
+            OwnerUserId = ownerUserId
+        };
     }
 }

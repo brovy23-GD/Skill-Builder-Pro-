@@ -4,9 +4,9 @@ namespace SkillBuilderPro.Core.Interfaces;
 
 public interface IProgressService
 {
-    Task<List<ProgressLog>> GetAllAsync(int? drillId = null);
-    Task<ProgressLog?> GetByIdAsync(int id);
+    Task<List<ProgressLog>> GetAllAsync(int? drillId, int? ownerUserId);
+    Task<ProgressLog?> GetByIdAsync(int id, int? ownerUserId);
     Task<ProgressLog?> CreateAsync(ProgressLog log);
-    Task<bool> DeleteAsync(int id);
-    Task<double?> GetAverageRatingAsync(int drillId);
+    Task<bool> DeleteAsync(int id, int? ownerUserId);
+    Task<double?> GetAverageRatingAsync(int drillId, int? ownerUserId);
 }
