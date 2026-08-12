@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SkillBuilderPro.Core.Identity;
 using SkillBuilderPro.Core.Interfaces;
 using SkillBuilderPro.Core.Models;
 
 namespace SkillBuilderPro.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class DrillsController : ControllerBase
     {
@@ -32,6 +35,7 @@ namespace SkillBuilderPro.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = ApplicationRoles.Coach + "," + ApplicationRoles.Administrator)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<Drill>> CreateDrill([FromBody] Drill drill)
         {
@@ -40,6 +44,7 @@ namespace SkillBuilderPro.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = ApplicationRoles.Coach + "," + ApplicationRoles.Administrator)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateDrill(int id, [FromBody] Drill drill)
@@ -54,6 +59,7 @@ namespace SkillBuilderPro.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = ApplicationRoles.Coach + "," + ApplicationRoles.Administrator)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteDrill(int id)

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkillBuilderPro.Core.Interfaces;
 using SkillBuilderPro.Core.Data;          // 🟢 Points to the new DbContext location
@@ -8,6 +9,7 @@ using SkillBuilderPro.Core.Models;        // 🟢 Points to your domain models
 namespace SkillBuilderPro.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class SchedulesController : ControllerBase
 {
