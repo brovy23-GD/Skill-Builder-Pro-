@@ -301,4 +301,9 @@ public partial class VideoPlayerPage : ContentPage
     {
         await Shell.Current.GoToAsync("..");
     }
+
+    private async void OnExitClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//Home");
+    }
 }

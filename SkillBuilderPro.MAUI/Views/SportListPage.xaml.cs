@@ -20,4 +20,7 @@ public partial class SportListPage : ContentPage
         if (_viewModel.Sports.Count == 0)
             await _viewModel.LoadAllDrillsAsync();
     }
+
+    private async void BackClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//Home");
+    private async void ExitClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//Home");
 }

@@ -82,8 +82,28 @@ namespace SkillBuilderPro.WinForms
             passwordTextBox = new TextBox
             {
                 Location = new Point(40, 140),
-                Size = new Size(320, 25),
+                Size = new Size(280, 25),
                 UseSystemPasswordChar = true
+            };
+            var passwordEye = new Button
+            {
+                Text = "👁",
+                AccessibleName = "Show password",
+                Location = new Point(325, 138),
+                Size = new Size(35, 29),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(24, 36, 50),
+                ForeColor = Color.FromArgb(196, 211, 226)
+            };
+            passwordEye.FlatAppearance.BorderColor = Color.FromArgb(83, 127, 170);
+            passwordEye.Click += (_, _) =>
+            {
+                var selectionStart = passwordTextBox.SelectionStart;
+                passwordTextBox.UseSystemPasswordChar = !passwordTextBox.UseSystemPasswordChar;
+                passwordEye.Text = passwordTextBox.UseSystemPasswordChar ? "👁" : "⊘";
+                passwordEye.AccessibleName = passwordTextBox.UseSystemPasswordChar ? "Show password" : "Hide password";
+                passwordTextBox.Focus();
+                passwordTextBox.SelectionStart = Math.Min(selectionStart, passwordTextBox.TextLength);
             };
 
             loginButton = new Button
@@ -119,6 +139,7 @@ namespace SkillBuilderPro.WinForms
             this.Controls.Add(emailTextBox);
             this.Controls.Add(passwordLabel);
             this.Controls.Add(passwordTextBox);
+            this.Controls.Add(passwordEye);
             this.Controls.Add(loginButton);
             this.Controls.Add(cancelButton);
         }

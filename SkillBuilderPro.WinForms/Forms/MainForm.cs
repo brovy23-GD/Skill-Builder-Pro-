@@ -5,6 +5,7 @@ using SkillBuilderPro.WinForms.Services;
 using SkillBuilderPro.WinForms.Theming;
 using SkillBuilderPro.WinForms.Utils;
 using SkillBuilderPro.WinForms.Forms;
+using SkillBuilderPro.WinForms.Controls;
 
 
 namespace SkillBuilderPro.WinForms
@@ -68,7 +69,7 @@ namespace SkillBuilderPro.WinForms
             mainTabControl.BringToFront();
 
 
-            SelectNavTab(1);
+            SelectNavTab(0);
         }
 
         private void SetupForm()
@@ -167,16 +168,19 @@ namespace SkillBuilderPro.WinForms
             mainTabControl.ItemSize = new Size(0, 1);
             mainTabControl.SizeMode = TabSizeMode.Fixed;
 
+            TabPage homeTab = new TabPage("Home");
             TabPage profileTab = new TabPage("Athlete Profile");
             TabPage trainingTab = new TabPage("Training");
             TabPage goalsTab = new TabPage("Goals");
             TabPage calendarTab = new TabPage("Calendar");
 
+            homeTab.Controls.Add(new HomePageControl(_user,_isDemoMode));
             SetupProfileLandingTab(profileTab);
             SetupTrainingTab(trainingTab);
-            SetupGoalsTab(goalsTab);
+            SetupEliteGoalsTab(goalsTab);
             SetupCalendarTab(calendarTab);
 
+            mainTabControl.TabPages.Add(homeTab);
             mainTabControl.TabPages.Add(profileTab);
             mainTabControl.TabPages.Add(trainingTab);
             mainTabControl.TabPages.Add(goalsTab);
@@ -193,7 +197,7 @@ namespace SkillBuilderPro.WinForms
             };
 
             string profileName = _user.Role == "Admin" ? "ADMIN PROFILE" : "ATHLETE PROFILE";
-            string[] sections = { profileName, "TRAINING", "GOALS", "CALENDAR" };
+            string[] sections = { "HOME", profileName, "TRAINING", "GOALS", "CALENDAR" };
 
 
             int x = 20;
@@ -204,7 +208,7 @@ namespace SkillBuilderPro.WinForms
                 Button navBtn = new Button
                 {
                     Text = sections[i],
-                    Width = i == 0 ? 190 : 140,
+                    Width = i == 1 ? 190 : 140,
                     Height = 48,
                     Location = new Point(x, 0),
                     FlatStyle = FlatStyle.Flat,
@@ -259,7 +263,7 @@ namespace SkillBuilderPro.WinForms
             Panel card = new Panel
             {
                 Size = new Size(width, height),
-                BackColor = Color.FromArgb(205, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
+                BackColor = Color.FromArgb(96, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
             };
 
             void PositionCard() => card.Location = new Point(
@@ -368,12 +372,12 @@ namespace SkillBuilderPro.WinForms
             Panel leftCard = new Panel
             {
                 Size = new Size(leftWidth, leftHeight),
-                BackColor = Color.FromArgb(150, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
+                BackColor = Color.FromArgb(82, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B)
             };
             Panel rightCard = new Panel
             {
                 Size = new Size(rightWidth, rightHeight),
-                BackColor = Color.FromArgb(150, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B),
+                BackColor = Color.FromArgb(82, AppColors.TrainingCard.R, AppColors.TrainingCard.G, AppColors.TrainingCard.B),
                 Visible = false
             };
             scheduleCard = rightCard;
@@ -576,7 +580,7 @@ namespace SkillBuilderPro.WinForms
         {
             focusComboBox.Items.Clear();
 
-            currentSportDrills = await DrillProvider.GetBySportAsync(_user.Sport);
+            currentSportDrills = await DrillProvider.GetBySportAsync(_user.Sport, _isDemoMode);
 
             var categories = currentSportDrills
                 .Select(d => d.SkillCategory)  // ← Use SkillCategory
@@ -621,7 +625,7 @@ namespace SkillBuilderPro.WinForms
                 return;
             }
 
-            using (var playerForm = new VideoPlayerForm(_user, selectedDrills))
+            using (var playerForm = new VideoPlayerForm(_user, selectedDrills, _isDemoMode))
             {
                 playerForm.ShowDialog(this);
             }
@@ -631,10 +635,36 @@ namespace SkillBuilderPro.WinForms
         // GOALS TAB - branded goal roadmap + progress
         // ------------------------------
 
+        private void SetupEliteGoalsTab(TabPage tab)
+        {
+            string approvedGoalsPath = Path.Combine(AppContext.BaseDirectory, "Resources", "goals_background_approved.png");
+            if (File.Exists(approvedGoalsPath))
+            {
+                using Image source = Image.FromFile(approvedGoalsPath);
+                tab.BackgroundImage = new Bitmap(source);
+                tab.BackgroundImageLayout = ImageLayout.Zoom;
+            }
+            else
+            {
+                SetTabBackground(tab);
+            }
+
+            tab.Controls.Add(new Controls.GoalsPageControl(_user, _isDemoMode));
+        }
+
         private void SetupGoalsTab(TabPage tab)
         {
-            
-            SetTabBackground(tab);
+            string approvedGoalsPath = Path.Combine(AppContext.BaseDirectory, "Resources", "goals_background_approved.png");
+            if (File.Exists(approvedGoalsPath))
+            {
+                using Image source = Image.FromFile(approvedGoalsPath);
+                tab.BackgroundImage = new Bitmap(source);
+                tab.BackgroundImageLayout = ImageLayout.Zoom;
+            }
+            else
+            {
+                SetTabBackground(tab);
+            }
             tab.AutoScroll = true;              // scroll if window is short
 
             var theme = TeamThemes.GetThemeForSport(_user.Sport);
@@ -1145,57 +1175,57 @@ namespace SkillBuilderPro.WinForms
             switch ((sport ?? "").Trim().ToLowerInvariant())
             {
                 case "basketball":
-                    return Resource1.Chicago_Basketball;
+                    return Resource1.basketball_training;
 
                 case "football":
-                    return Resource1.Chicago_Football;
+                    return Resource1.football_training;
 
                 case "baseball":
-                    return Resource1.Chicago_Baseball;
+                    return Resource1.baseball_training;
 
                 case "softball":
-                    return Resource1.softball_field;
+                    return Resource1.softball_training;
 
                 case "soccer":
-                    return Resource1.Chicago_Soccer;
+                    return Resource1.soccer_training;
 
                 case "hockey":
-                    return Resource1.Chicago_Hockey;
+                    return Resource1.hockey_training;
 
                 default:
-                    return Resource1.weight_room;
+                    return Resource1.strength_training;
             }
         }
 
 
 
         /// <summary>
-        /// Sport-specific calendar backgrounds from the calendar_* image set.
+        /// Sport-specific calendar backgrounds from the organized sport_training image set.
         /// </summary>
         private Image GetCalendarBackground(string sport)
         {
             switch ((sport ?? "").Trim().ToLower())
             {
                 case "basketball":
-                    return Resource1.calendar_basketball;
+                    return Resource1.basketball_training;
 
                 case "football":
-                    return Resource1.calendar_football;
+                    return Resource1.football_training;
 
                 case "baseball":
-                    return Resource1.calendar_baseball;
+                    return Resource1.baseball_training;
 
                 case "softball":
-                    return Resource1.calendar_softball;
+                    return Resource1.softball_training;
 
                 case "soccer":
-                    return Resource1.calendar_soccer;
+                    return Resource1.soccer_training;
 
                 case "hockey":
-                    return Resource1.calendar_hockey;
+                    return Resource1.hockey_training;
 
                 default:
-                    return Resource1.calendar_gym;
+                    return Resource1.strength_training;
             }
         }
 

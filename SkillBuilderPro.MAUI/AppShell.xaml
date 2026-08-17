@@ -3,21 +3,19 @@
     x:Class="SkillBuilderPro.MAUI.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:SkillBuilderPro.MAUI"
     xmlns:views="clr-namespace:SkillBuilderPro.MAUI.Views"
     Title="SkillBuilderPro">
 
     <TabBar>
 
         <ShellContent
-            Title="Home"
-            Route="MainPage"
-            ContentTemplate="{DataTemplate local:MainPage}" />
+            Title="Home" Route="Home" ContentTemplate="{DataTemplate views:AthleteDashboardPage}" />
 
         <ShellContent
-            Title="Sports"
-            Route="SportListPage"
-            ContentTemplate="{DataTemplate views:SportListPage}" />
+            Title="Training" Route="Training" ContentTemplate="{DataTemplate views:TrainingPage}" />
+        <ShellContent Title="Goals" Route="Goals" ContentTemplate="{DataTemplate views:GoalsPage}" />
+        <ShellContent Title="Trophy" Route="Trophy" ContentTemplate="{DataTemplate views:TrophyRoomPage}" />
+        <ShellContent Title="Profile" Route="Profile" ContentTemplate="{DataTemplate views:ProfilePage}" />
 
     </TabBar>
 </Shell>

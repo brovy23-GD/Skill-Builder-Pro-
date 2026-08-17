@@ -69,6 +69,16 @@ namespace SkillBuilderPro.WinForms.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AdminDashApproved {
+            get {
+                object obj = ResourceManager.GetObject("AdminDashApproved", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
@@ -89,6 +99,14 @@ namespace SkillBuilderPro.WinForms.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+
+        internal static System.Drawing.Bitmap baseball_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("baseball_training", resourceCulture))); } }
+        internal static System.Drawing.Bitmap basketball_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("basketball_training", resourceCulture))); } }
+        internal static System.Drawing.Bitmap football_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("football_training", resourceCulture))); } }
+        internal static System.Drawing.Bitmap hockey_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("hockey_training", resourceCulture))); } }
+        internal static System.Drawing.Bitmap soccer_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("soccer_training", resourceCulture))); } }
+        internal static System.Drawing.Bitmap softball_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("softball_training", resourceCulture))); } }
+        internal static System.Drawing.Bitmap strength_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("strength_training", resourceCulture))); } }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.

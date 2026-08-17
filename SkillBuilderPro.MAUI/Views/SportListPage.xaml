@@ -9,6 +9,7 @@
     <Grid RowDefinitions="Auto,*" Padding="20" RowSpacing="16">
 
         <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <HorizontalStackLayout HorizontalOptions="End" Spacing="8"><Button Text="BACK" Clicked="BackClicked" Style="{StaticResource CompactNavButtonStyle}"/><Button Text="EXIT" Clicked="ExitClicked" Style="{StaticResource CompactNavButtonStyle}"/></HorizontalStackLayout>
             <Label Text="Select Sport"
                    FontSize="28"
                    FontAttributes="Bold"

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkillBuilderPro.API.Contracts.Progress;
 using SkillBuilderPro.API.Security;
 using SkillBuilderPro.Core.Interfaces;
+using SkillBuilderPro.Core.Identity;
 using SkillBuilderPro.Core.Models;
 
 namespace SkillBuilderPro.API.Controllers;
@@ -14,13 +15,16 @@ public class ProgressController : ControllerBase
 {
     private readonly IProgressService _progressService;
     private readonly ICurrentUser _currentUser;
+    private readonly IRelationshipAccessService _relationshipAccessService;
 
     public ProgressController(
         IProgressService progressService,
-        ICurrentUser currentUser)
+        ICurrentUser currentUser,
+        IRelationshipAccessService relationshipAccessService)
     {
         _progressService = progressService;
         _currentUser = currentUser;
+        _relationshipAccessService = relationshipAccessService;
     }
 
     [HttpGet]
@@ -66,6 +70,54 @@ public class ProgressController : ControllerBase
         return average is null ? NotFound() : Ok(average);
     }
 
+    [HttpGet("athlete/{athleteUserId:int}")]
+    [Authorize(Roles = ApplicationRoles.Athlete + "," + ApplicationRoles.Parent + "," + ApplicationRoles.Coach + "," + ApplicationRoles.Administrator)]
+    public async Task<ActionResult<List<ProgressLog>>> GetForAthlete(
+        int athleteUserId,
+        CancellationToken cancellationToken)
+    {
+        if (!await CanReadAthleteAsync(athleteUserId, cancellationToken))
+        {
+            return NotFound();
+        }
+
+        return Ok(await _progressService.GetAllForAthleteAsync(athleteUserId));
+    }
+
+    [HttpGet("athlete/{athleteUserId:int}/{progressId:int}")]
+    [Authorize(Roles = ApplicationRoles.Athlete + "," + ApplicationRoles.Parent + "," + ApplicationRoles.Coach + "," + ApplicationRoles.Administrator)]
+    public async Task<ActionResult<ProgressLog>> GetForAthleteById(
+        int athleteUserId,
+        int progressId,
+        CancellationToken cancellationToken)
+    {
+        if (!await CanReadAthleteAsync(athleteUserId, cancellationToken))
+        {
+            return NotFound();
+        }
+
+        var log = await _progressService.GetByIdForAthleteAsync(athleteUserId, progressId);
+        return log is null ? NotFound() : Ok(log);
+    }
+
+    [HttpGet("athlete/{athleteUserId:int}/average/{drillId:int}")]
+    [Authorize(Roles = ApplicationRoles.Athlete + "," + ApplicationRoles.Parent + "," + ApplicationRoles.Coach + "," + ApplicationRoles.Administrator)]
+    public async Task<ActionResult<double>> GetAverageForAthlete(
+        int athleteUserId,
+        int drillId,
+        CancellationToken cancellationToken)
+    {
+        if (!await CanReadAthleteAsync(athleteUserId, cancellationToken))
+        {
+            return NotFound();
+        }
+
+        var average = await _progressService.GetAverageRatingForAthleteAsync(
+            athleteUserId,
+            drillId);
+        return average is null ? NotFound() : Ok(average);
+    }
+
     [HttpPost]
     public async Task<ActionResult<ProgressLog>> Create(
         ProgressLogRequest request)
@@ -101,5 +153,24 @@ public class ProgressController : ControllerBase
         int? ownerScope = _currentUser.IsAdministrator ? null : userId;
         bool deleted = await _progressService.DeleteAsync(id, ownerScope);
         return deleted ? NoContent() : NotFound();
+    }
+
+    private async Task<bool> CanReadAthleteAsync(
+        int athleteUserId,
+        CancellationToken cancellationToken)
+    {
+        if (_currentUser.UserId is not int actorUserId
+            || !await _relationshipAccessService.IsUserInRoleAsync(
+                athleteUserId,
+                ApplicationRoles.Athlete,
+                cancellationToken))
+        {
+            return false;
+        }
+
+        var scope = await _relationshipAccessService.GetAccessibleAthleteIdsAsync(
+            actorUserId,
+            cancellationToken);
+        return scope.CanAccessAthlete(athleteUserId);
     }
 }

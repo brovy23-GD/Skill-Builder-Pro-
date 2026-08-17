@@ -2,7 +2,6 @@
 using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Theming;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -27,6 +26,10 @@ namespace SkillBuilderPro.WinForms
         private Panel doorPanel;        // team-color metal door covering it
         private System.Windows.Forms.Timer slideTimer;
         private PictureBox profilePictureBox;
+        private Point doorClosedLocation;
+        private bool lockerOpen;
+        private Button backButton = null!;
+        private Button exitButton = null!;
 
         private static readonly Color CardDark = Color.FromArgb(32, 38, 50);
         private static readonly Color Shelf = Color.FromArgb(42, 49, 63);
@@ -42,7 +45,7 @@ namespace SkillBuilderPro.WinForms
 
             InitializeComponent();
             SetupForm();
-            BuildInterior();
+            BuildMauiDossierInterior();
             BuildDoor();
             BuildBackButton();
 
@@ -58,7 +61,19 @@ namespace SkillBuilderPro.WinForms
             this.MinimumSize = new Size(1000, 860);
             this.BackColor = Color.FromArgb(15, 18, 26);
 
-            this.BackgroundImage = ApplyDarkOverlay(Resource1.LockerRoom, 0.35f);
+            string approvedLockerRoomPath = System.IO.Path.Combine(
+                AppContext.BaseDirectory,
+                "Resources",
+                "locker_room_background_approved.png");
+            if (System.IO.File.Exists(approvedLockerRoomPath))
+            {
+                using Image approvedLockerRoom = Image.FromFile(approvedLockerRoomPath);
+                this.BackgroundImage = new Bitmap(approvedLockerRoom);
+            }
+            else
+            {
+                this.BackgroundImage = ApplyDarkOverlay(Resource1.LockerRoom, 0.35f);
+            }
             this.BackgroundImageLayout = ImageLayout.Zoom;
         }
 
@@ -68,11 +83,18 @@ namespace SkillBuilderPro.WinForms
                 Math.Max((this.ClientSize.Width - interiorPanel.Width) / 2, 0),
                 Math.Max((this.ClientSize.Height - interiorPanel.Height) / 2, 10));
 
-            if (doorPanel != null && doorPanel.Visible && !slideTimer.Enabled)
+            if (doorPanel != null && !slideTimer.Enabled)
             {
-                doorPanel.Size = interiorPanel.Size;
-                doorPanel.Location = interiorPanel.Location;
+                doorClosedLocation = new Point(
+                    Math.Max((this.ClientSize.Width - doorPanel.Width) / 2, 0),
+                    Math.Max((this.ClientSize.Height - doorPanel.Height) / 2, 10));
+
+                if (!lockerOpen)
+                    doorPanel.Location = doorClosedLocation;
+
                 doorPanel.BringToFront();
+                backButton?.BringToFront();
+                exitButton?.BringToFront();
             }
         }
 
@@ -80,6 +102,109 @@ namespace SkillBuilderPro.WinForms
         // LOCKER INTERIOR - full player card
         // ------------------------------
 
+        private void BuildMauiDossierInterior()
+        {
+            interiorPanel = new BufferedPanel
+            {
+                Size = new Size(900, 760),
+                BackColor = Color.FromArgb(245, 10, 16, 24),
+                Visible = false
+            };
+
+            Label AddLabel(string text, float size, FontStyle style, Color color, Rectangle bounds,
+                ContentAlignment alignment = ContentAlignment.MiddleLeft)
+            {
+                var label = new Label
+                {
+                    Text = text,
+                    Font = new Font("Segoe UI", size, style),
+                    ForeColor = color,
+                    BackColor = Color.Transparent,
+                    AutoSize = false,
+                    Bounds = bounds,
+                    TextAlign = alignment
+                };
+                interiorPanel.Controls.Add(label);
+                return label;
+            }
+
+            void AddValuePair(string caption, string value, int x, int y, int width)
+            {
+                AddLabel(caption, 8.5F, FontStyle.Regular, SubtleText, new Rectangle(x, y, width, 20));
+                AddLabel(string.IsNullOrWhiteSpace(value) ? "-" : value, 15F, FontStyle.Regular, TextLight,
+                    new Rectangle(x, y + 19, width, 32));
+            }
+
+            interiorPanel.Paint += (s, e) =>
+            {
+                using var border = new Pen(Color.FromArgb(74, 107, 132, 159), 1);
+                e.Graphics.DrawRectangle(border, 0, 0, interiorPanel.Width - 1, interiorPanel.Height - 1);
+            };
+
+            AddLabel("ATHLETE DOSSIER", 9F, FontStyle.Bold, GlowBlue, new Rectangle(24, 18, 300, 22));
+            AddLabel((_user.FullName ?? "ATHLETE").ToUpperInvariant(), 23F, FontStyle.Regular, TextLight,
+                new Rectangle(24, 42, 600, 42));
+            AddLabel(_user.IsActive ? "ACTIVE ATHLETE" : "INACTIVE ATHLETE", 9F, FontStyle.Regular,
+                SubtleText, new Rectangle(24, 84, 300, 20));
+
+            profilePictureBox = new PictureBox
+            {
+                Bounds = new Rectangle(24, 122, 220, 230),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                BackColor = Color.FromArgb(120, 22, 30, 41),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+            if (!string.IsNullOrWhiteSpace(_user.PhotoPath) && System.IO.File.Exists(_user.PhotoPath))
+                profilePictureBox.Image = Image.FromFile(_user.PhotoPath);
+            else
+                profilePictureBox.Image = CreateSportAvatar(_user.Sport, 180);
+            interiorPanel.Controls.Add(profilePictureBox);
+
+            var uploadPhotoButton = CreateButton("CHANGE PHOTO", Color.FromArgb(28, 42, 58), 150, 38);
+            uploadPhotoButton.Location = new Point(59, 364);
+            uploadPhotoButton.Click += UploadPhotoButton_Click;
+            interiorPanel.Controls.Add(uploadPhotoButton);
+
+            AddLabel("PLAYER CARD", 13F, FontStyle.Bold, TextLight, new Rectangle(274, 122, 300, 28));
+            AddValuePair("PRIMARY SPORT", _user.Sport, 274, 158, 250);
+            AddValuePair("LOCKER NUMBER", _user.JerseyNumber > 0 ? _user.JerseyNumber.ToString() : "-", 610, 158, 230);
+            AddValuePair("DEVELOPMENT FOCUS", _user.TargetArea, 274, 226, 250);
+            AddValuePair("SKILL LEVEL", _user.ExperienceLevel, 610, 226, 230);
+            AddValuePair("TEAM", _user.Team, 274, 294, 250);
+            AddValuePair("ROLE", _user.Role, 610, 294, 230);
+
+            void AddMetric(string caption, string value, int x, int width)
+            {
+                var metric = new Panel { Bounds = new Rectangle(x, 430, width, 82), BackColor = Color.FromArgb(170, 18, 27, 38) };
+                metric.Controls.Add(new Label { Text = caption, Dock = DockStyle.Top, Height = 28, ForeColor = SubtleText, Font = new Font("Segoe UI", 8.5F), TextAlign = ContentAlignment.BottomCenter });
+                metric.Controls.Add(new Label { Text = value, Dock = DockStyle.Fill, ForeColor = TextLight, Font = new Font("Segoe UI", 16F), TextAlign = ContentAlignment.MiddleCenter });
+                interiorPanel.Controls.Add(metric);
+            }
+            AddMetric("CURRENT RANK", string.IsNullOrWhiteSpace(_user.ExperienceLevel) ? "-" : _user.ExperienceLevel, 24, 200);
+            AddMetric("STREAK", "-", 242, 150);
+            AddMetric("ACTIVE GOALS", string.IsNullOrWhiteSpace(_user.Goal) ? "0" : "1", 410, 160);
+            AddMetric("NEXT MILESTONE", string.IsNullOrWhiteSpace(_user.Goal) ? "Not set" : _user.Goal, 588, 288);
+
+            var contact = new Panel { Bounds = new Rectangle(24, 532, 400, 112), BackColor = Color.FromArgb(170, 18, 27, 38) };
+            contact.Controls.Add(new Label { Text = "CONTACT", ForeColor = GlowBlue, Font = new Font("Segoe UI", 9F, FontStyle.Bold), Bounds = new Rectangle(18, 12, 160, 22) });
+            contact.Controls.Add(new Label { Text = $"{_user.Email}\r\n{_user.Phone}", ForeColor = TextLight, Font = new Font("Segoe UI", 10.5F), Bounds = new Rectangle(18, 38, 360, 58) });
+            interiorPanel.Controls.Add(contact);
+
+            var bio = new Panel { Bounds = new Rectangle(442, 532, 434, 112), BackColor = Color.FromArgb(170, 18, 27, 38) };
+            bio.Controls.Add(new Label { Text = "ATHLETE BIO", ForeColor = GlowBlue, Font = new Font("Segoe UI", 9F, FontStyle.Bold), Bounds = new Rectangle(18, 12, 180, 22) });
+            bio.Controls.Add(new Label { Text = string.IsNullOrWhiteSpace(_user.Bio) ? "No athlete bio added." : _user.Bio, ForeColor = TextLight, Font = new Font("Segoe UI", 10.5F), Bounds = new Rectangle(18, 38, 398, 60) });
+            interiorPanel.Controls.Add(bio);
+
+            var editProfileButton = CreateButton("EDIT PROFILE", Color.FromArgb(28, 42, 58), 160, 42);
+            editProfileButton.Location = new Point(24, 674);
+            editProfileButton.Click += EditProfileButton_Click;
+            interiorPanel.Controls.Add(editProfileButton);
+
+            this.Controls.Add(interiorPanel);
+        }
+
+        // Retained for compatibility reference; the active locker now uses the
+        // MAUI-standard Athlete Dossier built above.
         private void BuildInterior()
         {
             var theme = TeamThemes.GetThemeForSport(_user.Sport);
@@ -87,7 +212,8 @@ namespace SkillBuilderPro.WinForms
             interiorPanel = new BufferedPanel
             {
                 Size = new Size(520, 790),
-                BackColor = CardDark
+                BackColor = CardDark,
+                Visible = false
             };
 
             // Blue brand glow outline around the open locker card
@@ -187,7 +313,8 @@ namespace SkillBuilderPro.WinForms
                 // Rebuild the interior so every shelf reflects the edits
                 this.Controls.Remove(interiorPanel);
                 interiorPanel.Dispose();
-                BuildInterior();
+                BuildMauiDossierInterior();
+                interiorPanel.Visible = lockerOpen;
                 interiorPanel.BringToFront();
                 AlignPanels();
             }
@@ -289,140 +416,126 @@ namespace SkillBuilderPro.WinForms
 
             doorPanel = new BufferedPanel
             {
-                Size = interiorPanel.Size,
-                Location = interiorPanel.Location,
+                // Match the MAUI closed-door visual object and aspect ratio.
+                Size = new Size(350, 548),
                 BackColor = theme.Panel,
                 Cursor = Cursors.Hand
             };
 
-            // Blue brand glow outline + big jersey number on the door
-            doorPanel.Paint += (s, e) =>
+            string approvedDoorPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Resources", "locker_door_dynamic_approved.png");
+            if (System.IO.File.Exists(approvedDoorPath))
             {
-                Graphics g = e.Graphics;
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-                // Layered outline fading outward - reads as a light glow
-                for (int i = 4; i >= 1; i--)
-                {
-                    using (Pen glow = new Pen(Color.FromArgb(30 * (5 - i), GlowBlue), i * 2))
-                        g.DrawRectangle(glow, i, i, doorPanel.Width - i * 2 - 1, doorPanel.Height - i * 2 - 1);
-                }
-                using (Pen edge = new Pen(GlowBlue, 2))
-                    g.DrawRectangle(edge, 5, 5, doorPanel.Width - 11, doorPanel.Height - 11);
-
-                // Big jersey number, center-door below the vents
-                string num = _user.JerseyNumber.ToString();
-                using (Font numFont = new Font("Segoe UI Black", 84F, FontStyle.Bold))
-                using (SolidBrush shadow = new SolidBrush(Color.FromArgb(120, 0, 0, 0)))
-                using (SolidBrush white = new SolidBrush(Color.White))
-                {
-                    SizeF sz = g.MeasureString(num, numFont);
-                    float x = (doorPanel.Width - sz.Width) / 2;
-                    float y = 230;
-                    g.DrawString(num, numFont, shadow, x + 3, y + 3);
-                    g.DrawString(num, numFont, white, x, y);
-                }
-            };
+                using Image approvedDoor = Image.FromFile(approvedDoorPath);
+                doorPanel.BackgroundImage = new Bitmap(approvedDoor);
+                doorPanel.BackgroundImageLayout = ImageLayout.Stretch;
+            }
 
             Label doorNameplate = new Label
             {
                 Text = (_user.FullName ?? "ATHLETE").ToUpper(),
-                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
-                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(216, 222, 230),
+                BackColor = Color.FromArgb(16, 20, 25),
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Cursor = Cursors.Hand
+            };
+
+            Label? lockerNumber = _user.JerseyNumber > 0 ? new Label
+            {
+                Text = _user.JerseyNumber.ToString(),
+                Font = new Font("Segoe UI Semibold", 62F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(85, 174, 255),
                 BackColor = Color.Transparent,
                 AutoSize = false,
-                Width = doorPanel.Width - 40,
-                Height = 40,
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(20, 24),
                 Cursor = Cursors.Hand
-            };
-            Panel nameplateStrip = new Panel
-            {
-                Size = new Size(doorPanel.Width - 80, 3),
-                Location = new Point(40, 68),
-                BackColor = Color.FromArgb(170, 175, 182),
-                Cursor = Cursors.Hand
-            };
-
-            var ventPanels = new List<Panel>();
-            for (int i = 0; i < 4; i++)
-            {
-                var vent = new Panel
-                {
-                    Size = new Size(110, 7),
-                    Location = new Point((doorPanel.Width - 110) / 2, 112 + i * 22),
-                    BackColor = Color.FromArgb(40, 42, 48),
-                    Cursor = Cursors.Hand
-                };
-                ventPanels.Add(vent);
-                doorPanel.Controls.Add(vent);
-            }
-
-            Panel handle = new Panel
-            {
-                Size = new Size(12, 52),
-                Location = new Point(doorPanel.Width - 30, doorPanel.Height / 2 - 26),
-                BackColor = Color.FromArgb(150, 155, 162),
-                Cursor = Cursors.Hand
-            };
-
-            Label hintLabel = new Label
-            {
-                Text = "CLICK TO OPEN YOUR LOCKER",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(200, 205, 212),
-                AutoSize = false,
-                Width = doorPanel.Width - 40,
-                Height = 26,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(20, doorPanel.Height - 60),
-                Cursor = Cursors.Hand
-            };
+            } : null;
 
             doorPanel.Controls.Add(doorNameplate);
-            doorPanel.Controls.Add(nameplateStrip);
-            doorPanel.Controls.Add(handle);
-            doorPanel.Controls.Add(hintLabel);
+            if (lockerNumber is not null)
+                doorPanel.Controls.Add(lockerNumber);
+
+            void PositionDoorOverlays()
+            {
+                int width = doorPanel.ClientSize.Width;
+                int height = doorPanel.ClientSize.Height;
+                doorNameplate.Bounds = new Rectangle((int)(width * .355), (int)(height * .066), (int)(width * .285), (int)(height * .055));
+                if (lockerNumber is not null)
+                    lockerNumber.Bounds = new Rectangle((int)(width * .36), (int)(height * .48), (int)(width * .28), (int)(height * .22));
+            }
+
+            doorPanel.SizeChanged += (s, e) => PositionDoorOverlays();
+            PositionDoorOverlays();
 
             this.Controls.Add(doorPanel);
             doorPanel.BringToFront();
 
             // Slide-open animation, started by clicking anywhere on the door
             slideTimer = new System.Windows.Forms.Timer { Interval = 15 };
-            int step = Math.Max(interiorPanel.Width / 26, 12);
+            int step = Math.Max(doorPanel.Width / 26, 12);
             slideTimer.Tick += (s, e) =>
             {
-                doorPanel.Width -= step;
-                doorPanel.Invalidate();   // repaint glow + number as door slides
-                if (doorPanel.Width <= 0)
+                doorPanel.Left -= step;
+                if (doorPanel.Left <= doorClosedLocation.X - doorPanel.Width)
                 {
                     slideTimer.Stop();
                     doorPanel.Visible = false;
+                    lockerOpen = true;
+                    interiorPanel.BringToFront();
+                    backButton.BringToFront();
+                    exitButton.BringToFront();
                 }
             };
 
             EventHandler openDoor = (s, e) =>
             {
                 if (doorPanel.Visible && !slideTimer.Enabled)
+                {
+                    // MAUI reveals the dossier behind the moving door, then leaves
+                    // the opaque locker interior as the active view.
+                    interiorPanel.Visible = true;
+                    interiorPanel.BringToFront();
+                    doorPanel.BringToFront();
+                    backButton.BringToFront();
+                    exitButton.BringToFront();
                     slideTimer.Start();
+                }
             };
             doorPanel.Click += openDoor;
             doorNameplate.Click += openDoor;
-            nameplateStrip.Click += openDoor;
-            handle.Click += openDoor;
-            hintLabel.Click += openDoor;
-            foreach (var vent in ventPanels)
-                vent.Click += openDoor;
+            if (lockerNumber is not null)
+                lockerNumber.Click += openDoor;
         }
 
         private void BuildBackButton()
         {
-            Button backButton = CreateButton("← BACK TO DASHBOARD", Color.FromArgb(60, 66, 74), 220, 42);
+            backButton = CreateButton("BACK", Color.FromArgb(60, 66, 74), 100, 42);
             backButton.Location = new Point(24, 24);
-            backButton.Click += (s, e) => this.Close();
+            backButton.Click += (s, e) =>
+            {
+                if (lockerOpen || slideTimer.Enabled)
+                {
+                    slideTimer.Stop();
+                    lockerOpen = false;
+                    interiorPanel.Visible = false;
+                    doorPanel.Location = doorClosedLocation;
+                    doorPanel.Visible = true;
+                    doorPanel.BringToFront();
+                    backButton.BringToFront();
+                    return;
+                }
+
+                this.Close();
+            };
             this.Controls.Add(backButton);
             backButton.BringToFront();
+
+            exitButton = CreateButton("EXIT", Color.FromArgb(60, 66, 74), 100, 42);
+            exitButton.Location = new Point(136, 24);
+            exitButton.Click += (s, e) => this.Close();
+            this.Controls.Add(exitButton);
+            exitButton.BringToFront();
         }
 
         // ------------------------------

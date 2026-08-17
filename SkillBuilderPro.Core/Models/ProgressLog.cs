@@ -16,13 +16,18 @@ public class ProgressLog
     public DateTime LogDate { get; set; } = DateTime.UtcNow;
 
     [Range(1, 5)]
-    public int Rating { get; set; }                          // 1 = Struggled, 5 = Mastered
+    public int? Rating { get; set; }                         // 1 = Struggled, 5 = Mastered
 
     [MaxLength(300)]
     public string Notes { get; set; } = string.Empty;
 
     public int? OwnerUserId { get; set; }
 
+    public long? AssignmentCompletionEventId { get; set; }
+
     [JsonIgnore]
     public ApplicationUser? Owner { get; set; }
+
+    [JsonIgnore]
+    public AssignmentCompletionEvent? AssignmentCompletionEvent { get; set; }
 }

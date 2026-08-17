@@ -72,23 +72,24 @@ namespace SkillBuilderPro.WinForms
 
             card.Controls.Add(new Label
             {
-                Text = "CHOOSE YOUR ROLE",
+                Text = "CHOOSE YOUR EXPERIENCE\nSELECT HOW YOU'LL ENTER SKILL BUILDER PRO",
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Brand.Muted,
                 AutoSize = false,
-                Height = 20,
+                Height = 34,
                 Width = card.Width,
                 Location = new Point(0, 138),
                 TextAlign = ContentAlignment.MiddleCenter
             });
 
-            string[] roles = { "ATHLETE", "COACH", "PARENT", "ADMIN" };
+            string[] roles = { "ATHLETE", "COACH", "PARENT", "ADMINISTRATOR" };
+            string[] roleValues = { "Athlete", "Coach", "Parent", "Admin" };
             string[] blurbs =
             {
-                "Build drills, track goals,\nown your schedule.",
-                "Manage the roster and\nassign training.",
-                "Follow your athlete's\nprogress.",
-                "Full system and\nuser management."
+                "Train. Track. Improve.",
+                "Lead. Assign. Develop.",
+                "Follow. Support. Encourage.",
+                "Operate. Oversee. Optimize."
             };
 
             const int tileW = 195, tileH = 180, gap = 22;
@@ -97,7 +98,7 @@ namespace SkillBuilderPro.WinForms
 
             for (int i = 0; i < roles.Length; i++)
             {
-                string proper = roles[i].Substring(0, 1) + roles[i].Substring(1).ToLower();
+                string proper = roleValues[i];
                 Color roleColor = Brand.RoleColor(proper);
 
                 Panel tile = new Panel

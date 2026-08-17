@@ -7,7 +7,7 @@
              Shell.NavBarIsVisible="False"
              NavigationPage.HasNavigationBar="False">
 
-    <Grid>
+    <Grid x:Name="ResponsiveStage" SizeChanged="OnResponsiveStageSizeChanged">
         <!-- Background Canvas Layer -->
         <Image Source="drill_library.png"
                Aspect="AspectFill"
@@ -20,53 +20,80 @@
            with a restricted width forces the layout to look exactly like a tall,
            clean WinForms dashboard window rather than stretching long.
         -->
-        <ScrollView VerticalOptions="CenterAndExpand" HorizontalOptions="Center" VerticalScrollBarVisibility="Never">
-            <VerticalStackLayout Spacing="16" WidthRequest="700" Padding="20,30" HorizontalOptions="Center">
+        <ScrollView VerticalOptions="Fill" HorizontalOptions="Fill" VerticalScrollBarVisibility="Default">
+            <VerticalStackLayout x:Name="ResponsiveContent" Spacing="16" MaximumWidthRequest="1100" Padding="20,30" HorizontalOptions="Fill">
+
+                <HorizontalStackLayout HorizontalOptions="End" Spacing="8">
+                    <Button Text="BACK" Clicked="OnBackClicked" Style="{StaticResource CompactNavButtonStyle}" />
+                    <Button Text="EXIT" Clicked="OnExitClicked" Style="{StaticResource CompactNavButtonStyle}" />
+                </HorizontalStackLayout>
 
                 <!-- 1. Top Section Tracker: Selected Drills Header Block -->
-                <Border Padding="0"
-                        BackgroundColor="#D9102035"
-                        Stroke="#2384D5"
-                        StrokeThickness="2"
-                        StrokeShape="RoundRectangle 10"
+                <Border Padding="18,10,18,12"
+                        BackgroundColor="#B00C141E"
+                        Stroke="#536E879F"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 4"
                         HorizontalOptions="Center"
-                        WidthRequest="400">
-                    <VerticalStackLayout Spacing="0">
+                        MaximumWidthRequest="760">
+                    <Grid RowDefinitions="Auto,Auto,3" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                         <Label Text="SELECTED DRILLS"
+                               Grid.ColumnSpan="3"
                                FontSize="12"
                                FontAttributes="Bold"
-                               TextColor="White"
+                               CharacterSpacing="1.4"
+                               TextColor="#91A7BC"
                                HorizontalTextAlignment="Center"
-                               Padding="12,6,12,2" />
+                               Padding="0,0,0,4" />
+                        <Button x:Name="PreviousDrillButton" Grid.Row="1" Text="&#x2039;" IsVisible="False"
+                                Clicked="OnPreviousClicked" Style="{StaticResource CompactNavButtonStyle}"
+                                WidthRequest="40" HeightRequest="34" Padding="0" FontSize="20" />
                         <Label x:Name="SelectedDrillLabel"
-                               Text="1. Shooting Form Basics"
-                               FontSize="16"
+                               Grid.Row="1" Grid.Column="1"
+                               Text="Active Training Exercise"
+                               FontSize="18"
                                FontAttributes="Bold"
-                               TextColor="White"
-                               BackgroundColor="#2B83D8"
+                               CharacterSpacing=".3"
+                               TextColor="#EDF3F8"
+                               BackgroundColor="Transparent"
                                HorizontalTextAlignment="Center"
-                               Padding="12,8" />
-                    </VerticalStackLayout>
+                               VerticalTextAlignment="Center"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="1" />
+                        <Button x:Name="NextDrillButton" Grid.Row="1" Grid.Column="2" Text="&#x203A;" IsVisible="False"
+                                Clicked="OnNextClicked" Style="{StaticResource CompactNavButtonStyle}"
+                                WidthRequest="40" HeightRequest="34" Padding="0" FontSize="20" />
+                        <BoxView Grid.Row="2" Grid.ColumnSpan="3" Margin="44,6,44,0" Color="#2384D5" HeightRequest="2" />
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource GlassCardStyle}" MaximumWidthRequest="900" HorizontalOptions="Fill">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="16">
+                        <Label x:Name="DrillMetaLabel" Text="Select a drill to view details." TextColor="{StaticResource PerformanceBlue}" FontAttributes="Bold"/>
+                        <Label x:Name="DrillDurationLabel" Grid.Column="1" TextColor="White"/>
+                        <Label x:Name="DrillDescriptionLabel" Grid.Row="1" Grid.ColumnSpan="2" TextColor="White" LineBreakMode="WordWrap"/>
+                        <Label x:Name="DrillGroupLabel" Grid.Row="2" Grid.ColumnSpan="2" TextColor="{StaticResource MutedText}"/>
+                    </Grid>
                 </Border>
 
-                <!--
-                   2. Center Core Player: The Video Box
-                   ✅ FIXED: Forcing rigid dimensions (600w x 480h) stops the horizontal
-                   stretching bug completely and locks the container into a clean, tall profile.
-                -->
-                <Border HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        HeightRequest="480"
-                        WidthRequest="600"
-                        BackgroundColor="#0E141E"
-                        Stroke="#1F4C78"
-                        StrokeThickness="2"
-                        StrokeShape="RoundRectangle 4">
-                    <WebView x:Name="DrillVideoWebView"
-                             HorizontalOptions="Fill"
-                             VerticalOptions="Fill"
-                             BackgroundColor="Black" />
-                </Border>
+                <!-- Portrait host. Wide layouts move this same live player into
+                     WidePlayerOverlay and align it to the Film Room wall. -->
+                <Grid x:Name="PhonePlayerHost"
+                      HeightRequest="506"
+                      MaximumWidthRequest="900"
+                      HorizontalOptions="Fill">
+                    <Border x:Name="VideoPlayerFrame"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill"
+                            BackgroundColor="#7010141E"
+                            Stroke="#1F4C78"
+                            StrokeThickness="2"
+                            StrokeShape="RoundRectangle 4">
+                        <WebView x:Name="DrillVideoWebView"
+                                 HorizontalOptions="Fill"
+                                 VerticalOptions="Fill"
+                                 BackgroundColor="Black" />
+                    </Border>
+                </Grid>
 
                 <!--
                    3. Middle Action Buttons
@@ -76,7 +103,7 @@
                 <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" HorizontalOptions="Center">
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Padding="4,2">
                         <Button Text="☆ Save"
-                                BackgroundColor="#1E293B"
+                                BackgroundColor="#701E293B"
                                 TextColor="White"
                                 CornerRadius="6"
                                 Padding="15,0"
@@ -84,7 +111,7 @@
                                 Clicked="OnSaveDrillClicked" />
 
                         <Button Text="▶ Start"
-                                BackgroundColor="#087DD5"
+                                BackgroundColor="#B0087DD5"
                                 TextColor="White"
                                 FontAttributes="Bold"
                                 CornerRadius="6"
@@ -94,7 +121,7 @@
 
                         <Button x:Name="OpenYouTubeButton"
                                 Text="Open in YouTube"
-                                BackgroundColor="#1E293B"
+                                BackgroundColor="#701E293B"
                                 TextColor="White"
                                 CornerRadius="6"
                                 Padding="15,0"
@@ -102,7 +129,7 @@
                                 Clicked="OnOpenExternallyClicked" />
 
                         <Button Text="✓ Complete"
-                                BackgroundColor="#1E293B"
+                                BackgroundColor="#701E293B"
                                 TextColor="White"
                                 CornerRadius="6"
                                 Padding="15,0"
@@ -112,10 +139,10 @@
                 </ScrollView>
 
                 <!-- 4. Footer Media Controls -->
-                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15" WidthRequest="600" HorizontalOptions="Center">
+                <Grid x:Name="PlaylistFooter" IsVisible="False" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15" MaximumWidthRequest="900" HorizontalOptions="Fill">
                     <Button Grid.Column="0"
                             Text="‹"
-                            BackgroundColor="#1E293B"
+                            BackgroundColor="#701E293B"
                             TextColor="White"
                             FontSize="22"
                             WidthRequest="56"
@@ -133,7 +160,7 @@
 
                     <Button Grid.Column="2"
                             Text="›"
-                            BackgroundColor="#1E293B"
+                            BackgroundColor="#701E293B"
                             TextColor="White"
                             FontSize="22"
                             WidthRequest="56"
@@ -144,5 +171,21 @@
 
             </VerticalStackLayout>
         </ScrollView>
+        <AbsoluteLayout x:Name="WidePlayerOverlay" ZIndex="3" />
+        <Border x:Name="AlignmentDiagnostics"
+                ZIndex="4"
+                IsVisible="False"
+                InputTransparent="True"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                Margin="8"
+                Padding="8"
+                BackgroundColor="#E0000000"
+                Stroke="#FF9D2E">
+            <Label x:Name="AlignmentDiagnosticsLabel"
+                   FontFamily="Consolas"
+                   FontSize="11"
+                   TextColor="#FFCB8A" />
+        </Border>
     </Grid>
 </ContentPage>

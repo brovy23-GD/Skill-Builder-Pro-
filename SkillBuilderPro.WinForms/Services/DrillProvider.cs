@@ -11,6 +11,8 @@ namespace SkillBuilderPro.WinForms.Services
     public static class DrillProvider
     {
         private static readonly DrillApiClient _api;
+        private static readonly HttpClient _availabilityClient;
+        private static DateTime _lastUnavailableNoticeUtc = DateTime.MinValue;
 
         public static string LastSource { get; private set; } = "—";
 
@@ -18,14 +20,52 @@ namespace SkillBuilderPro.WinForms.Services
         {
             var http = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:5001/")
+                BaseAddress = new Uri("http://localhost:5000/")
             };
 
             _api = new DrillApiClient(http);
+            _availabilityClient = new HttpClient
+            {
+                BaseAddress = new Uri("http://localhost:5000/"),
+                Timeout = TimeSpan.FromSeconds(3)
+            };
         }
 
-        public static async Task<List<SkillBuilderPro.WinForms.Models.Drill>> GetBySportAsync(string sportName)
+        public static async Task<List<SkillBuilderPro.WinForms.Models.Drill>> GetBySportAsync(string sportName, bool demoMode = false)
         {
+            if (demoMode)
+            {
+                LastSource = "Demo";
+                return DrillDatabase.GetDrillsBySport(sportName);
+            }
+
+            bool retry;
+            do
+            {
+                retry = false;
+                try
+                {
+                    using var healthResponse = await _availabilityClient.GetAsync("health");
+                    healthResponse.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+                {
+                    LastSource = "Services unavailable";
+                    if (DateTime.UtcNow - _lastUnavailableNoticeUtc > TimeSpan.FromSeconds(30))
+                    {
+                        _lastUnavailableNoticeUtc = DateTime.UtcNow;
+                        retry = MessageBox.Show(
+                            "Skill Builder Pro services are currently unavailable. Start the API and try again.",
+                            "Services Unavailable",
+                            MessageBoxButtons.RetryCancel,
+                            MessageBoxIcon.Information) == DialogResult.Retry;
+                    }
+
+                    if (!retry)
+                        return new List<SkillBuilderPro.WinForms.Models.Drill>();
+                }
+            } while (retry);
+
             try
             {
                 // Strongly typed Core Drill list
@@ -50,18 +90,10 @@ namespace SkillBuilderPro.WinForms.Services
                 Debug.WriteLine($"Message: {ex.Message}");
                 Debug.WriteLine($"StackTrace:\n{ex.StackTrace}");
 
-                string errorMsg = $"API Error:\n\n{ex.GetType().Name}\n\n{ex.Message}";
-                if (ex.InnerException != null)
-                    errorMsg += $"\n\nInner: {ex.InnerException.Message}";
-
-                MessageBox.Show(errorMsg, "DrillProvider - API Failed",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                LastSource = $"Offline ({ex.GetType().Name}: {ex.Message})";
+                LastSource = "Services unavailable";
             }
 
-            // Offline fallback
-            return DrillDatabase.GetDrillsBySport(sportName);
+            return new List<SkillBuilderPro.WinForms.Models.Drill>();
         }
 
         private static SkillBuilderPro.WinForms.Models.Drill MapToWinForms(

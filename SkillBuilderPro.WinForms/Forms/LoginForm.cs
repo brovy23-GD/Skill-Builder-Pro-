@@ -130,12 +130,34 @@ namespace SkillBuilderPro.WinForms
 
             passwordBox = new TextBox
             {
-                Width = 340,
+                Width = 298,
                 Location = new Point(40, 222),
                 Font = new Font("Segoe UI", 12F),
                 UseSystemPasswordChar = true
             };
             card.Controls.Add(passwordBox);
+            var passwordEye = new Button
+            {
+                Text = "👁",
+                AccessibleName = "Show password",
+                Location = new Point(344, 221),
+                Size = new Size(36, 31),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(24, 36, 50),
+                ForeColor = Color.FromArgb(196, 211, 226),
+                TabStop = true
+            };
+            passwordEye.FlatAppearance.BorderColor = Color.FromArgb(83, 127, 170);
+            passwordEye.Click += (_, _) =>
+            {
+                var selectionStart = passwordBox.SelectionStart;
+                passwordBox.UseSystemPasswordChar = !passwordBox.UseSystemPasswordChar;
+                passwordEye.Text = passwordBox.UseSystemPasswordChar ? "👁" : "⊘";
+                passwordEye.AccessibleName = passwordBox.UseSystemPasswordChar ? "Show password" : "Hide password";
+                passwordBox.Focus();
+                passwordBox.SelectionStart = Math.Min(selectionStart, passwordBox.TextLength);
+            };
+            card.Controls.Add(passwordEye);
 
             loginErrorLabel = new Label
             {
@@ -214,7 +236,7 @@ namespace SkillBuilderPro.WinForms
             {
                 case "Coach": return "ENTER COACH'S OFFICE";
                 case "Parent": return "ENTER PARENT PORTAL";
-                case "Admin": return "ENTER ADMIN CONSOLE";
+                case "Admin": return "ENTER COMMAND CENTER";
                 default: return "ENTER LOCKER ROOM";
             }
         }
@@ -251,9 +273,11 @@ namespace SkillBuilderPro.WinForms
         }
         private void DemoMode_Click(object sender, EventArgs e)
         {
-            User selected = ShowDemoAthletePicker();
-            if (selected == null)
-                return;
+            // Athlete Demo Mode is a single, product-wide evaluation identity.
+            // Keeping this selection here prevents individual screens from
+            // drifting to different sample athletes.
+            User selected = DummyUsers.GetAllDummyUsers()
+                .First(user => user.FullName == "Aubrey Rovy");
 
             selected.IsActive = true;
             selected.Role = SelectedRole;
@@ -306,7 +330,7 @@ namespace SkillBuilderPro.WinForms
                 Label header = new Label
                 {
                     Text = (SelectedRole == "Admin"
-                        ? "ADMIN DEMO MODE"
+                        ? "COMMAND CENTER DEMO MODE"
                         : "WHO ARE YOU TRAINING AS?"),
 
 
@@ -333,7 +357,7 @@ namespace SkillBuilderPro.WinForms
                 rosterList.SelectedIndex = 0;
                 Button okButton = new Button
                 {
-                    Text = SelectedRole == "Admin" ? "ENTER AS ADMIN" : "ENTER AS ATHLETE",
+                    Text = SelectedRole == "Admin" ? "ENTER COMMAND CENTER" : "ENTER AS ATHLETE",
                     Size = new Size(200, 42),
                     Location = new Point(20, 358),
                     BackColor = Color.FromArgb(0, 120, 215),

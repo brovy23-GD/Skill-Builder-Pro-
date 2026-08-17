@@ -92,4 +92,7 @@ public partial class DrillListPage : ContentPage
         _viewModel.SelectedDrills.Clear();
         _viewModel.StatusMessage = "Selection cleared.";
     }
+
+    private async void BackClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("..");
+    private async void ExitClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//Home");
 }

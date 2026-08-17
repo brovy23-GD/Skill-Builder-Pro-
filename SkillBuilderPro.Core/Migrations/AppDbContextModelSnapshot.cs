@@ -223,6 +223,500 @@ namespace SkillBuilderPro.Core.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AchievementDefinition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tier")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("AchievementDefinitions", t =>
+                        {
+                            t.HasCheckConstraint("CK_AchievementDefinitions_SortOrder", "[SortOrder] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AssignmentCompletionEvent", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("AssignmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DrillId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProcessingAttempts")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AthleteUserId");
+
+                    b.HasIndex("DrillId");
+
+                    b.HasIndex("ProcessedAtUtc", "CreatedAtUtc");
+
+                    b.HasIndex("AssignmentId", "AthleteUserId", "EventType")
+                        .IsUnique();
+
+                    b.ToTable("AssignmentCompletionEvents", t =>
+                        {
+                            t.HasCheckConstraint("CK_AssignmentCompletionEvents_EventType", "[EventType] = 'AssignmentRecipientCompleted'");
+
+                            t.HasCheckConstraint("CK_AssignmentCompletionEvents_ProcessingAttempts", "[ProcessingAttempts] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteAchievement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AchievementDefinitionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EarnedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SourceKey")
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
+
+                    b.Property<string>("SourceType")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AchievementDefinitionId");
+
+                    b.HasIndex("AthleteUserId", "AchievementDefinitionId")
+                        .IsUnique();
+
+                    b.HasIndex("AthleteUserId", "EarnedAtUtc");
+
+                    b.ToTable("AthleteAchievements");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteGoal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CancelledAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByRole")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("DueAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GoalType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("Sport")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("SubCategory")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TargetValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("AthleteUserId", "Status", "CreatedAtUtc");
+
+                    b.ToTable("AthleteGoals", t =>
+                        {
+                            t.HasCheckConstraint("CK_AthleteGoals_GoalType", "[GoalType] IN ('QualifyingCompletions','SkillLevel','OverallRank','TrainingStreak')");
+
+                            t.HasCheckConstraint("CK_AthleteGoals_Status", "[Status] IN ('Active','Completed','Cancelled')");
+
+                            t.HasCheckConstraint("CK_AthleteGoals_TargetValue", "[TargetValue] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteProgression", b =>
+                {
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ActiveSkillCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentOverallStreak")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastCompletedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LongestOverallStreak")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OverallRank")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProgressToNextRank")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProgressionScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalQualifyingCompletions")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("AthleteUserId");
+
+                    b.ToTable("AthleteProgressions", t =>
+                        {
+                            t.HasCheckConstraint("CK_AthleteProgressions_NonNegative", "[ProgressionScore] >= 0 AND [TotalQualifyingCompletions] >= 0 AND [ActiveSkillCount] >= 0 AND [CurrentOverallStreak] >= 0 AND [LongestOverallStreak] >= 0");
+
+                            t.HasCheckConstraint("CK_AthleteProgressions_Percent", "[ProgressToNextRank] BETWEEN 0 AND 100");
+
+                            t.HasCheckConstraint("CK_AthleteProgressions_Rank", "[OverallRank] BETWEEN 1 AND 8");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteRankHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActiveSkillCountAtEarned")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CurrentStreakAtEarned")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EarnedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProgressionScoreAtEarned")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RankNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalQualifyingCompletionsAtEarned")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AthleteUserId", "EarnedAtUtc");
+
+                    b.HasIndex("AthleteUserId", "RankNumber")
+                        .IsUnique();
+
+                    b.ToTable("AthleteRankHistories", t =>
+                        {
+                            t.HasCheckConstraint("CK_AthleteRankHistories_Rank", "[RankNumber] BETWEEN 2 AND 8");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteSkillLevelHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("AverageRatingAtEarned")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EarnedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QualifyingCompletionsAtEarned")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sport")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SubCategory")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AthleteUserId", "EarnedAtUtc");
+
+                    b.HasIndex("AthleteUserId", "Sport", "Category", "SubCategory", "Level")
+                        .IsUnique();
+
+                    b.ToTable("AthleteSkillLevelHistories", t =>
+                        {
+                            t.HasCheckConstraint("CK_AthleteSkillLevelHistories_Level", "[Level] BETWEEN 2 AND 5");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteSkillProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("CurrentLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentStreak")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastCompletedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LongestStreak")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProgressToNextLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QualifyingCompletions")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sport")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SubCategory")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AthleteUserId", "Sport", "Category", "SubCategory")
+                        .IsUnique();
+
+                    b.ToTable("AthleteSkillProgress", t =>
+                        {
+                            t.HasCheckConstraint("CK_AthleteSkillProgress_Level", "[CurrentLevel] BETWEEN 1 AND 5");
+
+                            t.HasCheckConstraint("CK_AthleteSkillProgress_NonNegative", "[QualifyingCompletions] >= 0 AND [CurrentStreak] >= 0 AND [LongestStreak] >= 0");
+
+                            t.HasCheckConstraint("CK_AthleteSkillProgress_Percent", "[ProgressToNextLevel] BETWEEN 0 AND 100");
+
+                            t.HasCheckConstraint("CK_AthleteSkillProgress_Rating", "[AverageRating] IS NULL OR ([AverageRating] >= 1 AND [AverageRating] <= 5)");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AuditLog", b =>
+                {
+                    b.Property<long>("AuditLogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AuditLogId"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("AdministratorUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AfterData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BeforeData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ResourceId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ResourceType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("TimestampUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("AuditLogId");
+
+                    b.HasIndex("AdministratorUserId");
+
+                    b.HasIndex("TimestampUtc");
+
+                    b.HasIndex("ResourceType", "ResourceId");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("SkillBuilderPro.Core.Models.Drill", b =>
                 {
                     b.Property<int>("Id")
@@ -280,6 +774,278 @@ namespace SkillBuilderPro.Core.Migrations
                     b.ToTable("Drills");
                 });
 
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.DrillAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssignedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CancelledAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("CountsTowardProgression")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DrillId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DueAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Instructions")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("ScheduledForUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SourceTeamId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DrillId");
+
+                    b.HasIndex("AssignedByUserId", "CreatedAtUtc");
+
+                    b.HasIndex("SourceTeamId", "ScheduledForUtc");
+
+                    b.ToTable("DrillAssignments", t =>
+                        {
+                            t.HasCheckConstraint("CK_DrillAssignments_Status", "[Status] IN ('Scheduled', 'Active', 'Cancelled', 'Closed')");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.DrillAssignmentRecipient", b =>
+                {
+                    b.Property<int>("AssignmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AthleteNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("StartedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("AssignmentId", "AthleteUserId");
+
+                    b.HasIndex("AthleteUserId", "CompletedAtUtc");
+
+                    b.HasIndex("AthleteUserId", "Status", "AssignmentId");
+
+                    b.ToTable("DrillAssignmentRecipients", t =>
+                        {
+                            t.HasCheckConstraint("CK_DrillAssignmentRecipients_Rating", "[Rating] IS NULL OR ([Rating] >= 1 AND [Rating] <= 5)");
+
+                            t.HasCheckConstraint("CK_DrillAssignmentRecipients_Status", "[Status] IN ('Assigned', 'InProgress', 'Completed', 'Missed', 'Excused')");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.Notification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ActionRoute")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int?>("ActorUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("ReadAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RecipientUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RelatedEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RelatedEntityType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SourceKey")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("RecipientUserId", "CreatedAtUtc");
+
+                    b.HasIndex("RecipientUserId", "IsRead", "CreatedAtUtc");
+
+                    b.HasIndex("RecipientUserId", "Type", "SourceKey")
+                        .IsUnique();
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.NotificationEvent", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ActionRoute")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int?>("ActorUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProcessingAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecipientUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RelatedEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RelatedEntityType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SourceKey")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("SubjectUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("RecipientUserId");
+
+                    b.HasIndex("SubjectUserId");
+
+                    b.HasIndex("EventType", "SourceKey", "RecipientUserId")
+                        .IsUnique();
+
+                    b.HasIndex("ProcessedAtUtc", "ProcessingAttempts", "CreatedAtUtc");
+
+                    b.ToTable("NotificationEvents", t =>
+                        {
+                            t.HasCheckConstraint("CK_NotificationEvents_ProcessingAttempts", "[ProcessingAttempts] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.ParentAthlete", b =>
+                {
+                    b.Property<int>("ParentUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ParentUserId", "AthleteUserId");
+
+                    b.HasIndex("AthleteUserId");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("ParentAthletes");
+                });
+
             modelBuilder.Entity("SkillBuilderPro.Core.Models.ProgressLog", b =>
                 {
                     b.Property<int>("Id")
@@ -287,6 +1053,9 @@ namespace SkillBuilderPro.Core.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<long?>("AssignmentCompletionEventId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("DrillId")
                         .HasColumnType("int");
@@ -302,16 +1071,198 @@ namespace SkillBuilderPro.Core.Migrations
                     b.Property<int?>("OwnerUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Rating")
+                    b.Property<int?>("Rating")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignmentCompletionEventId")
+                        .IsUnique()
+                        .HasFilter("[AssignmentCompletionEventId] IS NOT NULL");
 
                     b.HasIndex("DrillId");
 
                     b.HasIndex("OwnerUserId");
 
                     b.ToTable("ProgressLogs");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AgeGroup")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<string>("Organization")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Season")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Sport")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("Sport", "IsActive");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.TeamAthlete", b =>
+                {
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("JoinedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LeftAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TeamId", "AthleteUserId");
+
+                    b.HasIndex("AthleteUserId");
+
+                    b.ToTable("TeamAthletes");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.TeamCoach", b =>
+                {
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CoachUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("JoinedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TeamRole")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("TeamId", "CoachUserId");
+
+                    b.HasIndex("CoachUserId");
+
+                    b.ToTable("TeamCoaches");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.TrainingRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ApprovedAssignmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AthleteUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CancelledAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int?>("RequestedDrillId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RequestedRecipientRole")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("RequestedRecipientUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("RespondedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Sport")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("SubCategory")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApprovedAssignmentId")
+                        .IsUnique()
+                        .HasFilter("[ApprovedAssignmentId] IS NOT NULL");
+
+                    b.HasIndex("RequestedDrillId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("AthleteUserId", "Status", "CreatedAtUtc");
+
+                    b.HasIndex("RequestedRecipientUserId", "Status", "CreatedAtUtc");
+
+                    b.ToTable("TrainingRequests", t =>
+                        {
+                            t.HasCheckConstraint("CK_TrainingRequests_RecipientRole", "[RequestedRecipientRole] IN ('Parent','Coach')");
+
+                            t.HasCheckConstraint("CK_TrainingRequests_Status", "[Status] IN ('Pending','Approved','Declined','Cancelled')");
+                        });
                 });
 
             modelBuilder.Entity("SkillBuilderPro.Core.Models.TrainingSchedule", b =>
@@ -561,8 +1512,248 @@ namespace SkillBuilderPro.Core.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AssignmentCompletionEvent", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Models.DrillAssignment", "Assignment")
+                        .WithMany()
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Models.Drill", "Drill")
+                        .WithMany()
+                        .HasForeignKey("DrillId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+
+                    b.Navigation("AthleteUser");
+
+                    b.Navigation("Drill");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteAchievement", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Models.AchievementDefinition", "AchievementDefinition")
+                        .WithMany()
+                        .HasForeignKey("AchievementDefinitionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AchievementDefinition");
+
+                    b.Navigation("AthleteUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteGoal", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AthleteUser");
+
+                    b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteProgression", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AthleteUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteRankHistory", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AthleteUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteSkillLevelHistory", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AthleteUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AthleteSkillProgress", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AthleteUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.AuditLog", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AdministratorUser")
+                        .WithMany()
+                        .HasForeignKey("AdministratorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AdministratorUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.DrillAssignment", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AssignedByUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Models.Drill", "Drill")
+                        .WithMany()
+                        .HasForeignKey("DrillId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Models.Team", "SourceTeam")
+                        .WithMany()
+                        .HasForeignKey("SourceTeamId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("AssignedByUser");
+
+                    b.Navigation("Drill");
+
+                    b.Navigation("SourceTeam");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.DrillAssignmentRecipient", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Models.DrillAssignment", "Assignment")
+                        .WithMany("Recipients")
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+
+                    b.Navigation("AthleteUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.Notification", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "ActorUser")
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "RecipientUser")
+                        .WithMany()
+                        .HasForeignKey("RecipientUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ActorUser");
+
+                    b.Navigation("RecipientUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.NotificationEvent", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "ActorUser")
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "RecipientUser")
+                        .WithMany()
+                        .HasForeignKey("RecipientUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "SubjectUser")
+                        .WithMany()
+                        .HasForeignKey("SubjectUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ActorUser");
+
+                    b.Navigation("RecipientUser");
+
+                    b.Navigation("SubjectUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.ParentAthlete", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "ParentUser")
+                        .WithMany()
+                        .HasForeignKey("ParentUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AthleteUser");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("ParentUser");
+                });
+
             modelBuilder.Entity("SkillBuilderPro.Core.Models.ProgressLog", b =>
                 {
+                    b.HasOne("SkillBuilderPro.Core.Models.AssignmentCompletionEvent", "AssignmentCompletionEvent")
+                        .WithMany()
+                        .HasForeignKey("AssignmentCompletionEventId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("SkillBuilderPro.Core.Models.Drill", "Drill")
                         .WithMany("ProgressLogs")
                         .HasForeignKey("DrillId")
@@ -574,9 +1765,100 @@ namespace SkillBuilderPro.Core.Migrations
                         .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.Navigation("AssignmentCompletionEvent");
+
                     b.Navigation("Drill");
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.Team", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.TeamAthlete", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Models.Team", "Team")
+                        .WithMany("Athletes")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AthleteUser");
+
+                    b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.TeamCoach", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "CoachUser")
+                        .WithMany()
+                        .HasForeignKey("CoachUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Models.Team", "Team")
+                        .WithMany("Coaches")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CoachUser");
+
+                    b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.TrainingRequest", b =>
+                {
+                    b.HasOne("SkillBuilderPro.Core.Models.DrillAssignment", "ApprovedAssignment")
+                        .WithMany()
+                        .HasForeignKey("ApprovedAssignmentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "AthleteUser")
+                        .WithMany()
+                        .HasForeignKey("AthleteUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Models.Drill", "RequestedDrill")
+                        .WithMany()
+                        .HasForeignKey("RequestedDrillId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("SkillBuilderPro.Core.Identity.ApplicationUser", "RequestedRecipientUser")
+                        .WithMany()
+                        .HasForeignKey("RequestedRecipientUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilderPro.Core.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ApprovedAssignment");
+
+                    b.Navigation("AthleteUser");
+
+                    b.Navigation("RequestedDrill");
+
+                    b.Navigation("RequestedRecipientUser");
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("SkillBuilderPro.Core.Models.TrainingSchedule", b =>
@@ -616,6 +1898,18 @@ namespace SkillBuilderPro.Core.Migrations
                     b.Navigation("ProgressLogs");
 
                     b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.DrillAssignment", b =>
+                {
+                    b.Navigation("Recipients");
+                });
+
+            modelBuilder.Entity("SkillBuilderPro.Core.Models.Team", b =>
+                {
+                    b.Navigation("Athletes");
+
+                    b.Navigation("Coaches");
                 });
 #pragma warning restore 612, 618
         }

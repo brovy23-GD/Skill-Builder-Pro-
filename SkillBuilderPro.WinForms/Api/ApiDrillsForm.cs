@@ -17,7 +17,7 @@ public partial class ApiDrillsForm : Form
 
         var httpClient = new HttpClient
         {
-            BaseAddress = new Uri("http://localhost:62978/")
+            BaseAddress = new Uri("http://localhost:5000/")
         };
 
         _apiClient = new ApiClient(httpClient);
@@ -85,7 +85,7 @@ public partial class ApiDrillsForm : Form
             lblStatus.ForeColor = Color.Orange;
             lblStatus.Text = "Cannot reach API.";
             MessageBox.Show(
-                $"Could not reach the Web API at http://localhost:62978.\n\n" +
+                $"Could not reach the Web API at http://localhost:5000.\n\n" +
                 $"Start SkillBuilderPro.API first, then try again.\n\nDetail: {ex.Message}",
                 "API Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }

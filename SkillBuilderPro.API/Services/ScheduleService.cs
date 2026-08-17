@@ -137,4 +137,27 @@ public class ScheduleService : IScheduleService
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<List<TrainingSchedule>> GetAllForAthleteAsync(
+        int athleteUserId,
+        bool? completed)
+    {
+        var query = _context.Schedules.AsNoTracking()
+            .Where(schedule => schedule.OwnerUserId == athleteUserId);
+
+        if (completed.HasValue)
+        {
+            string status = completed.Value ? "Completed" : "Pending";
+            query = query.Where(schedule => schedule.Status == status);
+        }
+
+        return await query.OrderBy(schedule => schedule.Id).ToListAsync();
+    }
+
+    public Task<TrainingSchedule?> GetByIdForAthleteAsync(
+        int athleteUserId,
+        int id) =>
+        _context.Schedules.AsNoTracking().FirstOrDefaultAsync(
+            schedule => schedule.Id == id
+                && schedule.OwnerUserId == athleteUserId);
 }

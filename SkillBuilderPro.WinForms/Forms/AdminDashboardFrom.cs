@@ -25,6 +25,10 @@ namespace SkillBuilderPro.WinForms.AdminScreens
         private Panel pageAthletes;
         private Panel pageDrills;
         private Panel pageReports;
+        private Panel commandCenter;
+        private Label commandCenterTitle;
+        private Label commandCenterSubtitle;
+        private readonly List<Button> commandCenterButtons = new();
 
         private Panel drillLibraryBackground;
         private Panel reportsBackground;
@@ -55,12 +59,13 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             WindowState = FormWindowState.Maximized;
             MinimumSize = new Size(1280, 800);
 
-            BackgroundImage = Brand.Hero(Resource1.NewestAdminDash);
+            BackgroundImage = Brand.Hero(Resource1.AdminDashApproved);
             BackgroundImageLayout = ImageLayout.None;
 
+            BuildPages();
+            BuildCommandCenter();
             BuildTopBar();
             BuildProfileDropdown();
-            BuildPages();
 
             var http = new HttpClient
             {
@@ -138,7 +143,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
         {
             profileDropdownMenu = new Panel
             {
-                Size = new Size(180, 200),
+                Size = new Size(180, 240),
                 BackColor = Color.FromArgb(30, 30, 30),
                 Visible = false,
                 Location = new Point(Width - 200, 70)
@@ -146,11 +151,12 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             Controls.Add(profileDropdownMenu);
             profileDropdownMenu.BringToFront();
 
-            AddDropdownItem("ATHLETES", 0);
-            AddDropdownItem("DRILL LIBRARY", 40);
-            AddDropdownItem("PROFILE", 80);
-            AddDropdownItem("SETTINGS", 120);
-            AddDropdownItem("LOGOUT", 160);
+            AddDropdownItem("COMMAND CENTER", 0);
+            AddDropdownItem("ATHLETES", 40);
+            AddDropdownItem("DRILL LIBRARY", 80);
+            AddDropdownItem("PROFILE", 120);
+            AddDropdownItem("SETTINGS", 160);
+            AddDropdownItem("LOGOUT", 200);
         }
 
         private void AddDropdownItem(string text, int y)
@@ -188,7 +194,18 @@ namespace SkillBuilderPro.WinForms.AdminScreens
         {
             switch (text)
             {
+                case "COMMAND CENTER":
+                    pageAthletes.Visible = false;
+                    pageDrills.Visible = false;
+                    pageReports.Visible = false;
+                    drillLibraryBackground.Visible = false;
+                    reportsBackground.Visible = false;
+                    commandCenter.Visible = true;
+                    commandCenter.BringToFront();
+                    break;
+
                 case "ATHLETES":
+                    commandCenter.Visible = false;
                     pageAthletes.Visible = true;
                     pageDrills.Visible = false;
                     pageReports.Visible = false;
@@ -196,6 +213,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
                     break;
 
                 case "DRILL LIBRARY":
+                    commandCenter.Visible = false;
                     pageAthletes.Visible = false;
                     pageReports.Visible = false;
                     drillLibraryBackground.Visible = true;
@@ -258,6 +276,122 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             Controls.Add(pageReports);
 
             BuildReportsPage();
+        }
+
+        private void BuildCommandCenter()
+        {
+            commandCenter = new Panel
+            {
+                Location = new Point(0, 70),
+                Size = new Size(Width, Height - 70),
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+            };
+            Controls.Add(commandCenter);
+
+            commandCenterTitle = new Label
+            {
+                Text = "ADMIN COMMAND CENTER",
+                ForeColor = Brand.TextStrong,
+                Font = new Font("Segoe UI", 28F, FontStyle.Bold),
+                AutoSize = true,
+                BackColor = Color.Transparent
+            };
+            commandCenter.Controls.Add(commandCenterTitle);
+            commandCenterSubtitle = new Label
+            {
+                Text = "PLATFORM OPERATIONS  •  PERFORMANCE  •  OVERSIGHT",
+                ForeColor = Brand.Muted,
+                Font = new Font("Segoe UI Semibold", 11F),
+                AutoSize = true,
+                BackColor = Color.Transparent
+            };
+            commandCenter.Controls.Add(commandCenterSubtitle);
+
+            string[] modules =
+            {
+                "USER MANAGEMENT", "DRILL MANAGEMENT", "GOALS & PROGRESSION", "TRAINING WORKFLOWS",
+                "ANALYTICS & REPORTS", "SYSTEM HEALTH", "AUDIT LOGS", "SETTINGS"
+            };
+            for (int index = 0; index < modules.Length; index++)
+            {
+                string module = modules[index];
+                var button = new Button
+                {
+                    Text = module,
+                    Size = new Size(250, 56),
+                    BackColor = Color.FromArgb(150, 35, 42, 54),
+                    ForeColor = Brand.TextCell,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = Brand.Btn,
+                    Cursor = Cursors.Hand
+                };
+                button.FlatAppearance.BorderColor = Brand.Steel;
+                button.FlatAppearance.BorderSize = 1;
+                button.FlatAppearance.MouseOverBackColor = Color.FromArgb(210, 38, 64, 92);
+                button.Click += (s, e) => OpenAdminModule(module);
+                commandCenter.Controls.Add(button);
+                commandCenterButtons.Add(button);
+            }
+
+            commandCenter.Resize += (s, e) => LayoutCommandCenter();
+            LayoutCommandCenter();
+        }
+
+        private void LayoutCommandCenter()
+        {
+            const int buttonWidth = 250;
+            const int buttonHeight = 56;
+            const int columnGap = 24;
+            const int rowGap = 16;
+            int gridWidth = buttonWidth * 2 + columnGap;
+            int gridLeft = Math.Max((commandCenter.ClientSize.Width - gridWidth) / 2, 24);
+
+            commandCenterTitle.Location = new Point(
+                Math.Max((commandCenter.ClientSize.Width - commandCenterTitle.PreferredWidth) / 2, 24), 34);
+            commandCenterSubtitle.Location = new Point(
+                Math.Max((commandCenter.ClientSize.Width - commandCenterSubtitle.PreferredWidth) / 2, 24), 88);
+
+            for (int index = 0; index < commandCenterButtons.Count; index++)
+            {
+                commandCenterButtons[index].Bounds = new Rectangle(
+                    gridLeft + (index % 2) * (buttonWidth + columnGap),
+                    150 + (index / 2) * (buttonHeight + rowGap),
+                    buttonWidth,
+                    buttonHeight);
+            }
+        }
+
+        private void OpenAdminModule(string module)
+        {
+            commandCenter.Visible = false;
+            switch (module)
+            {
+                case "USER MANAGEMENT":
+                    pageAthletes.Visible = true;
+                    pageAthletes.BringToFront();
+                    break;
+                case "DRILL MANAGEMENT":
+                    drillLibraryBackground.Visible = true;
+                    pageDrills.Visible = true;
+                    drillLibraryBackground.SendToBack();
+                    pageDrills.BringToFront();
+                    break;
+                case "ANALYTICS & REPORTS":
+                    reportsBackground.Visible = true;
+                    pageReports.Visible = true;
+                    reportsBackground.SendToBack();
+                    pageReports.BringToFront();
+                    break;
+                default:
+                    commandCenter.Visible = true;
+                    MessageBox.Show(
+                        "This dedicated administrator workspace is not implemented yet.",
+                        module,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    break;
+            }
         }
 
         private void BuildDrillLibraryPage()

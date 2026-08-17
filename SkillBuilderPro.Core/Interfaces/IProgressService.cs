@@ -9,4 +9,7 @@ public interface IProgressService
     Task<ProgressLog?> CreateAsync(ProgressLog log);
     Task<bool> DeleteAsync(int id, int? ownerUserId);
     Task<double?> GetAverageRatingAsync(int drillId, int? ownerUserId);
+    Task<List<ProgressLog>> GetAllForAthleteAsync(int athleteUserId);
+    Task<ProgressLog?> GetByIdForAthleteAsync(int athleteUserId, int id);
+    Task<double?> GetAverageRatingForAthleteAsync(int athleteUserId, int drillId);
 }

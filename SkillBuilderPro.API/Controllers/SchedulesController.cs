@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkillBuilderPro.API.Contracts.Schedules;
 using SkillBuilderPro.API.Security;
 using SkillBuilderPro.Core.Interfaces;
+using SkillBuilderPro.Core.Identity;
 using SkillBuilderPro.Core.Models;
 
 namespace SkillBuilderPro.API.Controllers;
@@ -14,13 +15,16 @@ public class SchedulesController : ControllerBase
 {
     private readonly IScheduleService _scheduleService;
     private readonly ICurrentUser _currentUser;
+    private readonly IRelationshipAccessService _relationshipAccessService;
 
     public SchedulesController(
         IScheduleService scheduleService,
-        ICurrentUser currentUser)
+        ICurrentUser currentUser,
+        IRelationshipAccessService relationshipAccessService)
     {
         _scheduleService = scheduleService;
         _currentUser = currentUser;
+        _relationshipAccessService = relationshipAccessService;
     }
 
     [HttpGet]
@@ -49,6 +53,39 @@ public class SchedulesController : ControllerBase
 
         int? ownerScope = _currentUser.IsAdministrator ? null : userId;
         var schedule = await _scheduleService.GetByIdAsync(id, ownerScope);
+        return schedule is null ? NotFound() : Ok(schedule);
+    }
+
+    [HttpGet("athlete/{athleteUserId:int}")]
+    [Authorize(Roles = ApplicationRoles.Athlete + "," + ApplicationRoles.Parent + "," + ApplicationRoles.Coach + "," + ApplicationRoles.Administrator)]
+    public async Task<ActionResult<List<TrainingSchedule>>> GetForAthlete(
+        int athleteUserId,
+        [FromQuery] bool? completed,
+        CancellationToken cancellationToken)
+    {
+        if (!await CanReadAthleteAsync(athleteUserId, cancellationToken))
+        {
+            return NotFound();
+        }
+
+        return Ok(await _scheduleService.GetAllForAthleteAsync(athleteUserId, completed));
+    }
+
+    [HttpGet("athlete/{athleteUserId:int}/{scheduleId:int}")]
+    [Authorize(Roles = ApplicationRoles.Athlete + "," + ApplicationRoles.Parent + "," + ApplicationRoles.Coach + "," + ApplicationRoles.Administrator)]
+    public async Task<ActionResult<TrainingSchedule>> GetForAthleteById(
+        int athleteUserId,
+        int scheduleId,
+        CancellationToken cancellationToken)
+    {
+        if (!await CanReadAthleteAsync(athleteUserId, cancellationToken))
+        {
+            return NotFound();
+        }
+
+        var schedule = await _scheduleService.GetByIdForAthleteAsync(
+            athleteUserId,
+            scheduleId);
         return schedule is null ? NotFound() : Ok(schedule);
     }
 
@@ -127,5 +164,24 @@ public class SchedulesController : ControllerBase
             Status = request.Status,
             OwnerUserId = ownerUserId
         };
+    }
+
+    private async Task<bool> CanReadAthleteAsync(
+        int athleteUserId,
+        CancellationToken cancellationToken)
+    {
+        if (_currentUser.UserId is not int actorUserId
+            || !await _relationshipAccessService.IsUserInRoleAsync(
+                athleteUserId,
+                ApplicationRoles.Athlete,
+                cancellationToken))
+        {
+            return false;
+        }
+
+        var scope = await _relationshipAccessService.GetAccessibleAthleteIdsAsync(
+            actorUserId,
+            cancellationToken);
+        return scope.CanAccessAthlete(athleteUserId);
     }
 }

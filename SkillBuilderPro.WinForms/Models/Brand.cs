@@ -54,7 +54,7 @@ namespace SkillBuilderPro.WinForms.Models
             {
                 case "Coach": return "ENTER COACH OFFICE";
                 case "Parent": return "ENTER PARENT PORTAL";
-                case "Admin": return "ENTER ADMIN CONSOLE";
+                case "Admin": return "ENTER COMMAND CENTER";
                 default: return "ENTER LOCKER ROOM";
             }
         }

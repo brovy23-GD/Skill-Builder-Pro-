@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SkillBuilderPro.MAUI.Views.RegisterPage"
+             Shell.NavBarIsVisible="False" BackgroundColor="#05080D">
+    <Grid x:Name="Stage" SizeChanged="StageSizeChanged">
+        <Image Source="create_profile.png" Aspect="AspectFill"
+               HorizontalOptions="Fill" VerticalOptions="Fill"
+               SemanticProperties.Description="Skill Builder Pro stadium tunnel" />
+        <BoxView Color="#5C05090E" />
+        <ScrollView>
+            <VerticalStackLayout x:Name="ContentStack" Padding="24,22,24,30" Spacing="18"
+                                 MaximumWidthRequest="1180" HorizontalOptions="Center">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="ATHLETE ONBOARDING" Style="{StaticResource PageEyebrowStyle}" />
+                        <Label Text="CREATE ATHLETE PROFILE" Style="{StaticResource PageTitleStyle}" />
+                        <Label Text="BUILD YOUR IDENTITY. START YOUR DEVELOPMENT." Style="{StaticResource PageSubtitleStyle}" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1" Text="BACK" Clicked="SignInClicked" Style="{StaticResource CompactNavButtonStyle}" />
+                </Grid>
+
+                <Grid x:Name="FormGrid" ColumnDefinitions=".82*,1.25*,1.25*,1.05*"
+                      RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="16" RowSpacing="14">
+                    <VerticalStackLayout x:Name="PhotoGroup" Grid.RowSpan="3" Spacing="9">
+                        <Label Text="PROFILE PHOTO" Style="{StaticResource PageEyebrowStyle}" />
+                        <Border x:Name="PhotoFrame" HeightRequest="210" BackgroundColor="#78151D27"
+                                Stroke="#6787A4C1" StrokeShape="RoundRectangle 12">
+                            <Grid>
+                                <Label x:Name="PhotoPlaceholder" Text="ATHLETE" TextColor="#8291A2"
+                                       FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Image x:Name="PhotoPreview" IsVisible="False" Aspect="AspectFill" />
+                            </Grid>
+                        </Border>
+                        <Button Text="UPLOAD PHOTO" Clicked="UploadPhotoClicked" Style="{StaticResource CreateProfileSecondaryButtonStyle}" />
+                        <Label Text="JPG, PNG • LOCAL PREVIEW" Style="{StaticResource CreateProfileHintStyle}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout x:Name="NameGroup" Grid.Column="1" Spacing="5">
+                        <Label Text="ATHLETE NAME" Style="{StaticResource PageEyebrowStyle}" />
+                        <Entry x:Name="NameEntry" Placeholder="Full name" Style="{StaticResource CreateProfileEntryStyle}" SemanticProperties.Description="Athlete name" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="SportGroup" Grid.Column="2" Spacing="5">
+                        <Label Text="PRIMARY SPORT" Style="{StaticResource PageEyebrowStyle}" />
+                        <Picker x:Name="SportPicker" Title="Select sport" Style="{StaticResource CreateProfilePickerStyle}" SelectedIndexChanged="SportChanged" SemanticProperties.Description="Primary sport" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="JerseyGroup" Grid.Column="3" Spacing="5">
+                        <Label Text="JERSEY NUMBER" Style="{StaticResource PageEyebrowStyle}" />
+                        <Entry x:Name="JerseyEntry" Placeholder="Number" Keyboard="Numeric" MaxLength="3" Style="{StaticResource CreateProfileEntryStyle}" SemanticProperties.Description="Jersey number" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout x:Name="TeamGroup" Grid.Row="1" Grid.Column="1" Spacing="5">
+                        <Label Text="TEAM" Style="{StaticResource PageEyebrowStyle}" />
+                        <Entry x:Name="TeamEntry" Placeholder="Team name" Style="{StaticResource CreateProfileEntryStyle}" SemanticProperties.Description="Team" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="PositionGroup" Grid.Row="1" Grid.Column="2" Spacing="5">
+                        <Label Text="POSITION" Style="{StaticResource PageEyebrowStyle}" />
+                        <Picker x:Name="PositionPicker" Title="Select position" Style="{StaticResource CreateProfilePickerStyle}" SemanticProperties.Description="Position" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="AgeGroup" Grid.Row="1" Grid.Column="3" Spacing="5">
+                        <Label Text="AGE" Style="{StaticResource PageEyebrowStyle}" />
+                        <Entry x:Name="AgeEntry" Placeholder="Age" Keyboard="Numeric" MaxLength="3" Style="{StaticResource CreateProfileEntryStyle}" SemanticProperties.Description="Age" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout x:Name="HeightGroup" Grid.Row="2" Grid.Column="1" Spacing="5">
+                        <Label Text="HEIGHT" Style="{StaticResource PageEyebrowStyle}" />
+                        <Grid ColumnDefinitions="*,74,*" ColumnSpacing="7">
+                            <Entry x:Name="HeightFeetEntry" Placeholder="Feet" Keyboard="Numeric" Style="{StaticResource CreateProfileEntryStyle}" SemanticProperties.Description="Height feet" />
+                            <Picker x:Name="FeetUnitPicker" Grid.Column="1" ItemsSource="{Binding FeetUnits}" SelectedIndex="0" Style="{StaticResource CreateProfilePickerStyle}" />
+                            <Entry x:Name="HeightInchesEntry" Grid.Column="2" Placeholder="Inches" Keyboard="Numeric" Style="{StaticResource CreateProfileEntryStyle}" SemanticProperties.Description="Height inches" />
+                        </Grid>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="WeightGroup" Grid.Row="2" Grid.Column="2" Spacing="5">
+                        <Label Text="WEIGHT" Style="{StaticResource PageEyebrowStyle}" />
+                        <Entry x:Name="WeightEntry" Placeholder="Pounds" Keyboard="Numeric" Style="{StaticResource CreateProfileEntryStyle}" SemanticProperties.Description="Weight in pounds" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="DominantGroup" Grid.Row="2" Grid.Column="3" Spacing="5">
+                        <Label Text="DOMINANT HAND / SIDE" Style="{StaticResource PageEyebrowStyle}" />
+                        <Picker x:Name="DominantPicker" Title="Select side" Style="{StaticResource CreateProfilePickerStyle}" SemanticProperties.Description="Dominant hand or side" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout x:Name="BioGroup" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Spacing="5">
+                        <Grid ColumnDefinitions="*,Auto"><Label Text="ABOUT YOU" Style="{StaticResource PageEyebrowStyle}" /><Label x:Name="BioCounter" Grid.Column="1" Text="0 / 250" Style="{StaticResource CreateProfileHintStyle}" /></Grid>
+                        <Editor x:Name="BioEditor" HeightRequest="105" MaxLength="250" Placeholder="Tell us about your development goals" Style="{StaticResource CreateProfileEditorStyle}" TextChanged="BioTextChanged" SemanticProperties.Description="About you" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Label x:Name="ValidationLabel" TextColor="#FFB3A7" BackgroundColor="#A0080D13" Padding="12" FontSize="12" IsVisible="False" />
+                <Grid x:Name="ActionGrid" ColumnDefinitions="*,1.35*,*" ColumnSpacing="12">
+                    <Button Text="CLEAR ALL" Clicked="ClearClicked" Style="{StaticResource CreateProfileSecondaryButtonStyle}" />
+                    <Button Grid.Column="1" Text="CONTINUE  ›" Clicked="ContinueClicked" Style="{StaticResource CreateProfilePrimaryButtonStyle}" />
+                    <Button Grid.Column="2" Text="ALREADY HAVE AN ACCOUNT?  SIGN IN" Clicked="SignInClicked" Style="{StaticResource CreateProfileLinkButtonStyle}" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

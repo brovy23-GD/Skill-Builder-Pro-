@@ -124,26 +124,26 @@
   <data name="BasketballCourt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\basketball_court.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="calendar_baseball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendar_baseball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="baseball_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\baseball_Training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="calendar_basketball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendar_basketball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="basketball_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\basketball_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="calendar_football" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendar_football.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="football_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\football_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="calendar_gym" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendar_gym.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="hockey_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hockey_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="calendar_hockey" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendar_hockey.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="soccer_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\soccer_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="calendar_soccer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendar_soccer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="softball_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\softball_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="calendar_softball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendar_softball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="strength_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\strength_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Chicago_Soccer" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Chicago Soccer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -185,6 +185,9 @@
   </data>
   <data name="AdminDash" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AdminDash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AdminDashApproved" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AdminDashApproved.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CoachOffice" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CoachOffice.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

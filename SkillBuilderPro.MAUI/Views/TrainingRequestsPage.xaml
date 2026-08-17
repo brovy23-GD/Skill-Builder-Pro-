@@ -1,0 +1,10 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SkillBuilderPro.MAUI.Views.TrainingRequestsPage"
+             BackgroundColor="{StaticResource PageBackground}" Title="Requests">
+ <ScrollView><VerticalStackLayout Padding="24" Spacing="18">
+  <Grid ColumnDefinitions="*,Auto"><Label Text="TRAINING REQUESTS" FontSize="30" FontAttributes="Bold" TextColor="White"/><HorizontalStackLayout Grid.Column="1" Spacing="8"><Button Text="BACK" Clicked="BackClicked" Style="{StaticResource CompactNavButtonStyle}"/><Button Text="EXIT" Clicked="ExitClicked" Style="{StaticResource CompactNavButtonStyle}"/></HorizontalStackLayout></Grid>
+  <Label Text="Request creation is unavailable until an Athlete recipient-discovery API is provided." TextColor="{StaticResource MutedText}"/>
+  <CollectionView ItemsSource="{Binding Items}" EmptyView="No training requests yet."><CollectionView.ItemTemplate><DataTemplate><Border Margin="0,5" Padding="16" BackgroundColor="{StaticResource CardSurface}" StrokeShape="RoundRectangle 14"><VerticalStackLayout><Label Text="{Binding Recipient.DisplayName}" TextColor="White" FontAttributes="Bold"/><Label Text="{Binding RecipientRole}" TextColor="{StaticResource MutedText}"/><Label Text="{Binding Status}" TextColor="{StaticResource PerformanceBlue}"/></VerticalStackLayout></Border></DataTemplate></CollectionView.ItemTemplate></CollectionView>
+ </VerticalStackLayout></ScrollView>
+</ContentPage>

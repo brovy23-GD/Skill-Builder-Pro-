@@ -149,6 +149,26 @@ public class Program
         builder.Services.AddScoped<ITokenService, JwtTokenService>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<ICurrentUser, HttpCurrentUser>();
+        builder.Services.AddScoped<IRelationshipAccessService, RelationshipAccessService>();
+        builder.Services.AddScoped<IAdminRelationshipService, AdminRelationshipService>();
+        builder.Services.AddScoped<IRelationshipDiscoveryService, RelationshipDiscoveryService>();
+        builder.Services.AddScoped<IAssignmentService, AssignmentService>();
+        builder.Services.AddOptions<AssignmentCompletionProcessingOptions>()
+            .Bind(builder.Configuration.GetSection(AssignmentCompletionProcessingOptions.SectionName))
+            .Validate(options => options.PollingSeconds > 0, "PollingSeconds must be positive.")
+            .Validate(options => options.BatchSize is > 0 and <= 100, "BatchSize must be between 1 and 100.")
+            .Validate(options => options.MaxAttempts is > 0 and <= 20, "MaxAttempts must be between 1 and 20.")
+            .ValidateOnStart();
+        builder.Services.AddScoped<IAssignmentCompletionEventProcessor, AssignmentCompletionEventProcessor>();
+        builder.Services.AddScoped<IProgressionService, ProgressionService>();
+        builder.Services.AddScoped<IProgressionMilestoneService, ProgressionMilestoneService>();
+        builder.Services.AddScoped<IGoalService, GoalService>();
+        builder.Services.AddScoped<ITrainingRequestService, TrainingRequestService>();
+        builder.Services.AddScoped<INotificationService, NotificationService>();
+        builder.Services.AddScoped<INotificationEventProcessor, NotificationEventProcessor>();
+        builder.Services.AddOptions<NotificationProcessingOptions>().Bind(builder.Configuration.GetSection(NotificationProcessingOptions.SectionName)).Validate(x=>x.PollIntervalSeconds>0&&x.BatchSize is >0 and <=100&&x.MaxAttempts is >0 and <=20,"Invalid notification processing options.").ValidateOnStart();
+        builder.Services.AddHostedService<NotificationEventBackgroundService>();
+        builder.Services.AddHostedService<AssignmentCompletionEventBackgroundService>();
 
         // ==========================================
         // 3. CORE DEPENDENCY INJECTION REGISTRATION
@@ -342,6 +362,11 @@ public class Program
                 logger.LogInformation(
                     "Verifying SkillBuilderPro database infrastructure...");
 
+                // Existing test-account recovery is independent of the pending
+                // Administrator audit migration and never creates accounts.
+                await DevelopmentExistingAccountResetInitializer.InitializeAsync(
+                    scope.ServiceProvider);
+
                 var pendingMigrations =
                     (await dbContext.Database.GetPendingMigrationsAsync())
                     .ToArray();
@@ -358,6 +383,18 @@ public class Program
 
                 await IdentityRoleInitializer.InitializeAsync(
                     scope.ServiceProvider);
+
+                await AchievementDefinitionInitializer.InitializeAsync(
+                    scope.ServiceProvider);
+
+                if (app.Environment.IsDevelopment())
+                {
+                    await DevelopmentAdminInitializer.InitializeAsync(
+                        scope.ServiceProvider);
+
+                    await DevelopmentCoachInitializer.InitializeAsync(
+                        scope.ServiceProvider);
+                }
 
                 // ==================================================
                 // AUTOMATIC DRILL SEEDING IS DISABLED

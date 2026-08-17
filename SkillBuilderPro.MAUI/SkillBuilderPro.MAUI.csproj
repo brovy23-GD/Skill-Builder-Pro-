@@ -27,20 +27,17 @@
 
 	<ItemGroup>
 		<!-- Standard Asset Directory Processing Paths -->
-		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Include="Resources\Images\**\*" />
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Resources\Images\drill_library.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4129.50" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4129.50"
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
 	</ItemGroup>
 
 	<ItemGroup>

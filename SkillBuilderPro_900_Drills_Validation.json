@@ -1,0 +1,61 @@
+{
+  "generatedAtUtc": "2026-08-14T00:00:00Z",
+  "overall": "FAIL",
+  "reason": "The approved package was found, but 21 records contain explicit unsupported-sport contamination. Import is blocked.",
+  "sourceDirectory": "C:\\Users\\brovy\\OneDrive\\Desktop\\Skill Builder Pro",
+  "inputsFound": {
+    "drillsSeed": true,
+    "audit": true,
+    "hierarchy": true,
+    "builderV3": true,
+    "searchCache": true,
+    "checkpoint": false
+  },
+  "expectedSports": ["BASEBALL", "SOFTBALL", "BASKETBALL", "SOCCER", "FOOTBALL", "HOCKEY"],
+  "expectedTotal": 900,
+  "expectedPerSport": 150,
+  "total": 900,
+  "countPerSport": {
+    "BASEBALL": 150,
+    "SOFTBALL": 150,
+    "BASKETBALL": 150,
+    "SOCCER": 150,
+    "FOOTBALL": 150,
+    "HOCKEY": 150
+  },
+  "subCategoryCount": 180,
+  "recordsPerSubCategory": 5,
+  "missingRequiredFieldCount": 0,
+  "hierarchyViolationCount": 0,
+  "invalidUrlCount": 0,
+  "invalidDifficultyCount": 0,
+  "duplicateVideoIdCount": 0,
+  "duplicateUrlCount": 0,
+  "uniqueVideoIdCount": 900,
+  "auditRecordCount": 900,
+  "auditUniqueVideoUrlCount": 900,
+  "contaminationCount": 21,
+  "contaminationRecordIds": [12, 44, 47, 49, 50, 101, 126, 178, 181, 191, 266, 273, 295, 362, 364, 375, 422, 592, 682, 692, 693],
+  "contaminationTerms": ["Cricket", "Golf", "Tennis", "Volleyball", "Rugby"],
+  "youtubeValidationSources": {
+    "auditMetadata": 900,
+    "structureOnly": 900,
+    "liveRecheck": 0
+  },
+  "youtubeMetadataLimitations": [
+    "The audit contains ranking/source metrics but no explicit public-status or embeddable-status fields.",
+    "No live YouTube API recheck was performed because the content gate already failed."
+  ],
+  "builderAssessment": {
+    "status": "FAIL",
+    "issues": [
+      "Final seed and audit writes are not atomic.",
+      "Final-output validation does not reject unsupported-sport contamination.",
+      "The builder asserts total count and duplicate URLs, but not the exact six-sport allowlist or 150 records per sport.",
+      "Checkpoint writes are not atomic and checkpoint contents are not fully validated before resume."
+    ]
+  },
+  "productionSeedWritten": false,
+  "databaseImportAttempted": false,
+  "databaseImportBlocked": true
+}

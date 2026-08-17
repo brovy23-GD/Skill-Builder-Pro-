@@ -12,4 +12,7 @@ public partial class CategoryListPage : ContentPage
         _viewModel = viewModel;
         BindingContext = _viewModel;
     }
+
+    private async void BackClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("..");
+    private async void ExitClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//Home");
 }

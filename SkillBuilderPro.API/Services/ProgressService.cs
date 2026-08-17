@@ -94,4 +94,24 @@ public class ProgressService : IProgressService
 
         return await query.AverageAsync(log => (double?)log.Rating);
     }
+
+    public async Task<List<ProgressLog>> GetAllForAthleteAsync(int athleteUserId)
+    {
+        return await _context.ProgressLogs.AsNoTracking()
+            .Where(log => log.OwnerUserId == athleteUserId)
+            .OrderBy(log => log.Id)
+            .ToListAsync();
+    }
+
+    public Task<ProgressLog?> GetByIdForAthleteAsync(int athleteUserId, int id) =>
+        _context.ProgressLogs.AsNoTracking().FirstOrDefaultAsync(
+            log => log.Id == id && log.OwnerUserId == athleteUserId);
+
+    public Task<double?> GetAverageRatingForAthleteAsync(
+        int athleteUserId,
+        int drillId) =>
+        _context.ProgressLogs.AsNoTracking()
+            .Where(log => log.OwnerUserId == athleteUserId
+                && log.DrillId == drillId)
+            .AverageAsync(log => (double?)log.Rating);
 }

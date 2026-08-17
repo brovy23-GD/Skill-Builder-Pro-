@@ -37,10 +37,8 @@
                 HorizontalOptions="Center"
                 VerticalOptions="Center" />
 
-            <BoxView
-                Grid.Column="2"
-                WidthRequest="70"
-                Opacity="0" />
+            <Button Grid.Column="2" Text="EXIT" Clicked="OnExitClicked"
+                    Style="{StaticResource CompactNavButtonStyle}" VerticalOptions="Center" />
         </Grid>
 
         <!-- Main content -->

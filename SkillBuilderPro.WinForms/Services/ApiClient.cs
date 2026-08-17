@@ -1,6 +1,7 @@
 // Location: SkillBuilderPro.WinForms/Services/DrillApiClient.cs
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -36,6 +37,14 @@ public class DrillApiClient
             // Leverages the base address routed from your central Program.cs container configuration
             var drills = await _http.GetFromJsonAsync<List<Drill>>("api/drills");
             return drills ?? new List<Drill>();
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            // WinForms still uses its legacy local user session, which does not
+            // issue the JWT required by the protected API. An unauthorized API
+            // drill request therefore falls through to DrillProvider's existing
+            // local database instead of being reported as a network outage.
+            return new List<Drill>();
         }
         catch (Exception ex)
         {

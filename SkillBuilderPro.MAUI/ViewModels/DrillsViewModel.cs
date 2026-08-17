@@ -175,7 +175,7 @@ public partial class DrillsViewModel : ObservableObject
         }
 
         // Builds URL string encoding parameters matching your secure cross-platform route targets
-        string route = $"{nameof(DrillLibraryPage)}?videoUrl={HttpUtility.UrlEncode(chosenDrill.VideoUrl)}&drillName={HttpUtility.UrlEncode(chosenDrill.Name)}";
+        string route = $"{nameof(DrillLibraryPage)}?drillId={chosenDrill.Id}";
         await Shell.Current.GoToAsync(route);
     }
 

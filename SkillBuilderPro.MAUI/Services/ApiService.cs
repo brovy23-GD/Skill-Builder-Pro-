@@ -6,16 +6,12 @@ namespace SkillBuilderPro.MAUI.Services;
 public class ApiService
 {
     private readonly HttpClient _httpClient;
-
-#if DEBUG
-    private readonly string _baseUrl = "http://10.0.2.2:5000/api";
-#else
-    private readonly string _baseUrl = "https://your-prod-url/api";
-#endif
+    private readonly string _baseUrl;
 
     public ApiService()
     {
-        _httpClient = new HttpClient();
+        _httpClient = new HttpClient { BaseAddress = ApiEndpointResolver.Resolve() };
+        _baseUrl = new Uri(_httpClient.BaseAddress, "api").AbsoluteUri.TrimEnd('/');
     }
 
     public async Task<List<Drill>> GetDrillsAsync()

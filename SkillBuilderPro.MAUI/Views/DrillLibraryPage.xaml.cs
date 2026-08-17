@@ -4,9 +4,11 @@ using System.Linq;
 using System.Web;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Layouts;
 using SkillBuilderPro.Core.Models;
 using SkillBuilderPro.MAUI.ViewModels;
 using System.Threading.Tasks;
+using SkillBuilderPro.MAUI.Services;
 #if WINDOWS
 using Microsoft.Maui.Handlers;
 using Microsoft.Web.WebView2.Core;
@@ -14,15 +16,28 @@ using Microsoft.Web.WebView2.Core;
 
 namespace SkillBuilderPro.MAUI.Views;
 
-[QueryProperty(nameof(VideoUrl), "videoUrl")]
-[QueryProperty(nameof(DrillName), "drillName")]
+[QueryProperty(nameof(DrillId), "drillId")]
+[QueryProperty(nameof(FromTraining), "fromTraining")]
 public partial class DrillLibraryPage : ContentPage
 {
+    private static readonly Size FilmRoomSourceSize = new(1672, 941);
+    private static readonly Rect FilmRoomVideoBounds = new(516, 220, 640, 360);
+#if DEBUG
+    private static readonly bool ShowFilmRoomAlignmentDiagnostics = false;
+#else
+    private static readonly bool ShowFilmRoomAlignmentDiagnostics = false;
+#endif
     private readonly DrillsViewModel _viewModel;
+    private readonly IAthleteApiService _api;
     private int _currentPlaylistIndex = 0;
+    private List<Drill> _activePlaylist = [];
     private string _videoUrl = string.Empty;
     private string _drillName = string.Empty;
     private const string VideoVirtualHost = "skillbuilderpro.local";
+    private int _drillId;
+    private bool _fromTraining;
+    public int DrillId { get=>_drillId; set { _drillId=value; _=ResolveDrillAsync(); } }
+    public bool FromTraining { get=>_fromTraining; set => _fromTraining=value; }
 
 #if WINDOWS
     private string _videoWebRoot = string.Empty;
@@ -52,7 +67,7 @@ public partial class DrillLibraryPage : ContentPage
         }
     }
 
-    public DrillLibraryPage(DrillsViewModel viewModel)
+    public DrillLibraryPage(DrillsViewModel viewModel,IAthleteApiService api)
     {
         InitializeComponent();
 
@@ -61,7 +76,27 @@ public partial class DrillLibraryPage : ContentPage
 #endif
 
         _viewModel = viewModel;
+        _api=api;
         BindingContext = _viewModel;
+    }
+
+    private async Task ResolveDrillAsync()
+    {
+        if (_drillId<=0)return;
+        IEnumerable<Drill> source = _api.IsDemoMode
+            ? DemoDataService.Drills
+            : await _api.GetAsync<List<Drill>>("api/drills") ?? [];
+        var drill=source.FirstOrDefault(x=>x.Id==_drillId);
+        if(drill is null){SelectedDrillLabel.Text=_api.IsDemoMode?"Demo drill unavailable":_api.IsServiceAvailable?"Drill unavailable from the API":_api.ServiceStatusMessage;LoadVideoInPlayer(string.Empty);return;}
+        if(!YouTubeUrl.IsValid(drill.VideoUrl)){SelectedDrillLabel.Text="Training video unavailable";LoadVideoInPlayer(string.Empty);return;}
+        var selectedDrills = _viewModel.SelectedDrills?.ToList() ?? [];
+        var selected = selectedDrills.FirstOrDefault(x => x.Id == drill.Id);
+        _activePlaylist = selected is null ? [drill] : selectedDrills;
+        if (selected is not null)
+            _currentPlaylistIndex = _activePlaylist.IndexOf(selected);
+        else
+            _currentPlaylistIndex = 0;
+        LoadDrillFromQueue(selected ?? drill);
     }
 
     protected override void OnAppearing()
@@ -78,12 +113,12 @@ public partial class DrillLibraryPage : ContentPage
 
     private void DeterminePlaylistPosition()
     {
-        if (_viewModel?.SelectedDrills == null || _viewModel.SelectedDrills.Count == 0) return;
+        if (_activePlaylist.Count == 0) return;
 
-        var currentDrill = _viewModel.SelectedDrills.FirstOrDefault(d => d.Name.Equals(_drillName, StringComparison.OrdinalIgnoreCase));
+        var currentDrill = _activePlaylist.FirstOrDefault(d => d.Id == _drillId || d.Name.Equals(_drillName, StringComparison.OrdinalIgnoreCase));
         if (currentDrill != null)
         {
-            _currentPlaylistIndex = _viewModel.SelectedDrills.IndexOf(currentDrill);
+            _currentPlaylistIndex = _activePlaylist.IndexOf(currentDrill);
         }
     }
 
@@ -99,8 +134,20 @@ public partial class DrillLibraryPage : ContentPage
         _videoUrl = drill.VideoUrl ?? string.Empty;
         _drillName = drill.Name;
 
-        SelectedDrillLabel.Text =
-            $"{_currentPlaylistIndex + 1}. {_drillName}";
+        int selectedCount = _activePlaylist.Count;
+        bool multiple = selectedCount > 1;
+        PreviousDrillButton.IsVisible = multiple;
+        NextDrillButton.IsVisible = multiple;
+        PlaylistFooter.IsVisible = multiple;
+        PreviousDrillButton.IsEnabled = multiple && _currentPlaylistIndex > 0;
+        NextDrillButton.IsEnabled = multiple && _currentPlaylistIndex < selectedCount - 1;
+        SelectedDrillLabel.Text = multiple
+            ? $"{_currentPlaylistIndex + 1} / {selectedCount}   {_drillName}"
+            : _drillName;
+        DrillMetaLabel.Text=string.Join(" • ",new[]{drill.Sport,drill.Category,drill.SubCategory}.Where(x=>!string.IsNullOrWhiteSpace(x)));
+        DrillDurationLabel.Text=string.IsNullOrWhiteSpace(drill.Duration)?string.Empty:$"Duration: {drill.Duration}";
+        DrillDescriptionLabel.Text=drill.Description??"No drill instructions are available.";
+        DrillGroupLabel.Text=string.IsNullOrWhiteSpace(drill.DrillGroup)?string.Empty:$"Group: {drill.DrillGroup}";
 
         LoadVideoInPlayer(_videoUrl);
     }
@@ -586,8 +633,7 @@ public partial class DrillLibraryPage : ContentPage
     // ✅ LIVE CONTROL BUTTON CLICK LOGIC CONNECTORS
     public void OnPreviousClicked(object sender, EventArgs e)
     {
-        if (_viewModel?.SelectedDrills == null ||
-            _viewModel.SelectedDrills.Count <= 1)
+        if (_activePlaylist.Count <= 1)
         {
             return;
         }
@@ -597,7 +643,7 @@ public partial class DrillLibraryPage : ContentPage
             _currentPlaylistIndex--;
 
             var drill =
-                _viewModel.SelectedDrills[_currentPlaylistIndex];
+                _activePlaylist[_currentPlaylistIndex];
 
             LoadDrillFromQueue(drill);
         }
@@ -605,31 +651,22 @@ public partial class DrillLibraryPage : ContentPage
 
     public async void OnNextClicked(object sender, EventArgs e)
     {
-        if (_viewModel?.SelectedDrills == null ||
-            _viewModel.SelectedDrills.Count <= 1)
+        if (_activePlaylist.Count <= 1)
         {
             return;
         }
 
         if (_currentPlaylistIndex <
-            _viewModel.SelectedDrills.Count - 1)
+            _activePlaylist.Count - 1)
         {
             _currentPlaylistIndex++;
 
             var drill =
-                _viewModel.SelectedDrills[_currentPlaylistIndex];
+                _activePlaylist[_currentPlaylistIndex];
 
             LoadDrillFromQueue(drill);
         }
-        else
-        {
-            StopCurrentVideo();
-
-            await DisplayAlert(
-                "Training Sequence",
-                "You have finished your selected playlist sequence!",
-                "OK");
-        }
+        else return;
     }
 
     public async void OnOpenExternallyClicked(object sender, EventArgs e)
@@ -662,5 +699,80 @@ public partial class DrillLibraryPage : ContentPage
     {
         StopCurrentVideo();
         await Shell.Current.GoToAsync("..");
+    }
+
+    private async void OnExitClicked(object sender, EventArgs e)
+    {
+        StopCurrentVideo();
+        await Shell.Current.GoToAsync("//Home");
+    }
+
+    private void OnResponsiveStageSizeChanged(object? sender, EventArgs e)
+    {
+        var viewportWidth = ResponsiveStage.Width;
+        var viewportHeight = ResponsiveStage.Height;
+        if (viewportWidth <= 0 || viewportHeight <= 0) return;
+
+        var portraitPhone = viewportWidth < 900 || viewportHeight >= viewportWidth * .84;
+        ResponsiveContent.Padding = portraitPhone
+            ? new Thickness(16, 18, 16, 28)
+            : new Thickness(20, 24);
+        ResponsiveContent.Spacing = portraitPhone ? 12 : 16;
+
+        if (portraitPhone)
+        {
+            MovePlayerTo(PhonePlayerHost);
+            var availableWidth = Math.Max(0, Math.Min(900, viewportWidth - 32));
+            var playerHeight = Math.Max(180, availableWidth * 9d / 16d);
+            PhonePlayerHost.HeightRequest = playerHeight;
+            VideoPlayerFrame.WidthRequest = -1;
+            VideoPlayerFrame.HeightRequest = playerHeight;
+            VideoPlayerFrame.HorizontalOptions = LayoutOptions.Fill;
+            VideoPlayerFrame.VerticalOptions = LayoutOptions.Fill;
+            VideoPlayerFrame.TranslationX = 0;
+            VideoPlayerFrame.TranslationY = 0;
+            AlignmentDiagnostics.IsVisible = false;
+            return;
+        }
+
+        var scale = Math.Max(
+            viewportWidth / FilmRoomSourceSize.Width,
+            viewportHeight / FilmRoomSourceSize.Height);
+        var renderedWidth = FilmRoomSourceSize.Width * scale;
+        var renderedHeight = FilmRoomSourceSize.Height * scale;
+        var offsetX = (viewportWidth - renderedWidth) / 2d;
+        var offsetY = (viewportHeight - renderedHeight) / 2d;
+        var renderedVideo = new Rect(
+            offsetX + FilmRoomVideoBounds.X * scale,
+            offsetY + FilmRoomVideoBounds.Y * scale,
+            FilmRoomVideoBounds.Width * scale,
+            FilmRoomVideoBounds.Height * scale);
+
+        MovePlayerTo(WidePlayerOverlay);
+        AbsoluteLayout.SetLayoutFlags(VideoPlayerFrame, AbsoluteLayoutFlags.None);
+        AbsoluteLayout.SetLayoutBounds(VideoPlayerFrame, renderedVideo);
+        VideoPlayerFrame.WidthRequest = renderedVideo.Width;
+        VideoPlayerFrame.HeightRequest = renderedVideo.Height;
+        VideoPlayerFrame.HorizontalOptions = LayoutOptions.Start;
+        VideoPlayerFrame.VerticalOptions = LayoutOptions.Start;
+        VideoPlayerFrame.TranslationX = 0;
+        VideoPlayerFrame.TranslationY = 0;
+        PhonePlayerHost.HeightRequest = renderedVideo.Height;
+
+        AlignmentDiagnostics.IsVisible = ShowFilmRoomAlignmentDiagnostics;
+        if (ShowFilmRoomAlignmentDiagnostics)
+        {
+            AlignmentDiagnosticsLabel.Text =
+                $"source 1672×941\nscale {scale:F4}\noffset {offsetX:F1}, {offsetY:F1}\n" +
+                $"video {renderedVideo.X:F1}, {renderedVideo.Y:F1}, {renderedVideo.Width:F1}, {renderedVideo.Height:F1}";
+        }
+    }
+
+    private void MovePlayerTo(Layout target)
+    {
+        if (ReferenceEquals(VideoPlayerFrame.Parent, target)) return;
+        if (VideoPlayerFrame.Parent is Layout current)
+            current.Children.Remove(VideoPlayerFrame);
+        target.Children.Add(VideoPlayerFrame);
     }
 }

@@ -35,7 +35,7 @@
             // ================================
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1280, 800);
-            this.Text = "Admin Dashboard";
+            this.Text = "Skill Builder Pro - Admin Command Center";
 
             // IMPORTANT:
             // No sidebar

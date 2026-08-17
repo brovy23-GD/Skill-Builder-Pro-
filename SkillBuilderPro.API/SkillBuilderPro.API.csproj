@@ -38,6 +38,9 @@
 
 	<ItemGroup>
 	  <Folder Include="Resources\" />
+	  <Content Include="Resources\SkillBuilderPro_240_YouTube_Drill_Links.xlsx">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 </Project>

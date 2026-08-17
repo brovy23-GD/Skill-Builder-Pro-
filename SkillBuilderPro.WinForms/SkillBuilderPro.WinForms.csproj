@@ -17,6 +17,19 @@
     <None Remove="Music\Soundtrack.mp3" />
     <None Remove="Music\Theme.mp3" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\home_training_facility_winforms.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\home_background_approved.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Resources\goals_background_approved.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Resources\trophy_room_background_approved.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Resources\locker_room_background_approved.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Resources\locker_door_dynamic_approved.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Resources\create_profile.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Music\Soundtrack 2.mp3">

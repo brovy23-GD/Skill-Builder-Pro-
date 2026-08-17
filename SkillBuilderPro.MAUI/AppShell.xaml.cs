@@ -23,5 +23,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(
             nameof(DrillLibraryPage),
             typeof(DrillLibraryPage));
+        Routing.RegisterRoute(nameof(NotificationsPage),typeof(NotificationsPage));
+        Routing.RegisterRoute(nameof(TrainingRequestsPage),typeof(TrainingRequestsPage));
     }
 }
