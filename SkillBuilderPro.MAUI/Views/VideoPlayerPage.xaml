@@ -6,10 +6,11 @@
     BackgroundColor="#080B14"
     Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid x:Name="VideoStage" RowDefinitions="Auto,*" SizeChanged="OnResponsiveSizeChanged">
 
         <!-- Header -->
         <Grid
+            x:Name="VideoHeader"
             Grid.Row="0"
             HeightRequest="76"
             Padding="24,0"
@@ -48,6 +49,7 @@
             VerticalScrollBarVisibility="Never">
 
             <Grid
+                x:Name="VideoContentGrid"
                 MaximumWidthRequest="1040"
                 HorizontalOptions="Center"
                 Padding="24,24,24,40"
@@ -77,6 +79,7 @@
 
                 <!-- Video player -->
                 <Border
+                    x:Name="VideoFrame"
                     Grid.Row="1"
                     HeightRequest="540"
                     HorizontalOptions="Fill"
@@ -97,6 +100,7 @@
 
                 <!-- Controls -->
                 <Grid
+                    x:Name="VideoControls"
                     Grid.Row="2"
                     ColumnDefinitions="Auto,Auto,Auto"
                     ColumnSpacing="16"

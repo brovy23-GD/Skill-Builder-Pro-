@@ -42,6 +42,8 @@
                             x:Name="BuilderTitle"
                             Text="TRAINING BUILDER"
                             Style="{StaticResource PageTitleStyle}"
+                            LineBreakMode="NoWrap"
+                            MaxLines="1"
                             SemanticProperties.HeadingLevel="Level1" />
 
                         <Label

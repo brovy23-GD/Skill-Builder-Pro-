@@ -9,6 +9,7 @@ obj/
 # Build outputs
 [Dd]ebug/
 [Rr]elease/
+artifacts/
 
 # Local backup and generated scratch files
 *.BACKUP

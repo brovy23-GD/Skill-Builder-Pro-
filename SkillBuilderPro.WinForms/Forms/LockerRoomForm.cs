@@ -1,5 +1,4 @@
 ﻿using SkillBuilderPro.WinForms.Models;
-using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Theming;
 using System;
 using System.Drawing;
@@ -64,16 +63,9 @@ namespace SkillBuilderPro.WinForms
             string approvedLockerRoomPath = System.IO.Path.Combine(
                 AppContext.BaseDirectory,
                 "Resources",
-                "locker_room_background_approved.png");
-            if (System.IO.File.Exists(approvedLockerRoomPath))
-            {
-                using Image approvedLockerRoom = Image.FromFile(approvedLockerRoomPath);
-                this.BackgroundImage = new Bitmap(approvedLockerRoom);
-            }
-            else
-            {
-                this.BackgroundImage = ApplyDarkOverlay(Resource1.LockerRoom, 0.35f);
-            }
+                "profile_desktop.png");
+            using Image approvedLockerRoom = Image.FromFile(approvedLockerRoomPath);
+            this.BackgroundImage = new Bitmap(approvedLockerRoom);
             this.BackgroundImageLayout = ImageLayout.Zoom;
         }
 
@@ -422,7 +414,7 @@ namespace SkillBuilderPro.WinForms
                 Cursor = Cursors.Hand
             };
 
-            string approvedDoorPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Resources", "locker_door_dynamic_approved.png");
+            string approvedDoorPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Resources", "profile_locker_door.png");
             if (System.IO.File.Exists(approvedDoorPath))
             {
                 using Image approvedDoor = Image.FromFile(approvedDoorPath);

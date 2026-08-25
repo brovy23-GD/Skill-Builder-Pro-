@@ -24,7 +24,7 @@ namespace SkillBuilderPro.WinForms.Forms
         private static readonly Size FilmRoomSourceSize = new(1672, 941);
         private static readonly RectangleF FilmRoomVideoBounds = new(516, 220, 640, 360);
         private const bool ShowFilmRoomAlignmentDiagnostics = false;
-        private readonly Image _filmRoomBackground = Properties.Resource1.drill_library;
+        private readonly Image _filmRoomBackground = DesktopVisualResolver.Current.GetDrillLibraryBackground();
         private readonly User _user;
         private readonly bool _isDemoMode;
         private readonly List<string> _selectedDrillNames;

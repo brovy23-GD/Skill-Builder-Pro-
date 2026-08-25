@@ -1167,29 +1167,7 @@ namespace SkillBuilderPro.WinForms
         /// </summary>
         private Image GetCalendarBackground(string sport)
         {
-            switch ((sport ?? "").Trim().ToLower())
-            {
-                case "basketball":
-                    return Resource1.calendar_basketball;
-
-                case "football":
-                    return Resource1.calendar_football;
-
-                case "baseball":
-                    return Resource1.calendar_baseball;
-
-                case "softball":
-                    return Resource1.calendar_softball;
-
-                case "soccer":
-                    return Resource1.calendar_soccer;
-
-                case "hockey":
-                    return Resource1.calendar_hockey;
-
-                default:
-                    return Resource1.calendar_gym;
-            }
+            return DesktopVisualResolver.Current.GetTrainingPageBackground(sport);
         }
 
         /// <summary>

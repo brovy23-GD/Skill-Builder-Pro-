@@ -1,8 +1,8 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="SkillBuilderPro.MAUI.Views.ProfilePage" Title="Profile">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="SkillBuilderPro.MAUI.Views.ProfilePage" Title="Profile" Shell.NavBarIsVisible="False">
  <Grid BackgroundColor="#080C12">
   <Image Source="locker_room_background_approved.png" Aspect="AspectFill" HorizontalOptions="Fill" VerticalOptions="Fill" InputTransparent="True" SemanticProperties.Description="Skill Builder Pro personal locker room"/>
   <BoxView BackgroundColor="#2004090E" InputTransparent="True"/>
-  <Grid BackgroundColor="Transparent" Padding="20" MaximumWidthRequest="1080" HorizontalOptions="Center">
+  <Grid x:Name="ProfileContent" BackgroundColor="Transparent" Padding="20" MaximumWidthRequest="1080" HorizontalOptions="Center">
    <Button Text="{Binding ExitLabel}" Command="{Binding LogoutCommand}" Style="{StaticResource CompactNavButtonStyle}" HorizontalOptions="End" VerticalOptions="Start" ZIndex="3" AutomationId="ProfileSignOutButton"/>
    <Border x:Name="ProfilePanel" IsVisible="False" Opacity="0" BackgroundColor="#0D141D" Stroke="#4A6B849F" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="20" MaximumWidthRequest="900">
     <ScrollView><VerticalStackLayout Spacing="16">

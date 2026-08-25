@@ -302,6 +302,21 @@ public partial class VideoPlayerPage : ContentPage
         await Shell.Current.GoToAsync("..");
     }
 
+    private void OnResponsiveSizeChanged(object? sender, EventArgs e)
+    {
+        if (VideoStage.Width <= 0) return;
+        var phone = VideoStage.Width < 700;
+        VideoHeader.HeightRequest = phone ? 60 : 76;
+        VideoHeader.Padding = phone ? new Thickness(16, 0) : new Thickness(24, 0);
+        VideoContentGrid.Padding = phone
+            ? new Thickness(16, 12, 16, 104)
+            : new Thickness(24, 24, 24, 40);
+        var availableWidth = Math.Max(0, Math.Min(1040, VideoStage.Width - (phone ? 32 : 48)));
+        VideoFrame.HeightRequest = phone
+            ? Math.Clamp(availableWidth * 9d / 16d, 190, 300)
+            : 540;
+    }
+
     private async void OnExitClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("//Home");

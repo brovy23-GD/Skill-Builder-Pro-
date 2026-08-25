@@ -715,7 +715,7 @@ public partial class DrillLibraryPage : ContentPage
 
         var portraitPhone = viewportWidth < 900 || viewportHeight >= viewportWidth * .84;
         ResponsiveContent.Padding = portraitPhone
-            ? new Thickness(16, 18, 16, 28)
+            ? new Thickness(16, 12, 16, 104)
             : new Thickness(20, 24);
         ResponsiveContent.Spacing = portraitPhone ? 12 : 16;
 

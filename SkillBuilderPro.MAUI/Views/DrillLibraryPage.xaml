@@ -100,8 +100,7 @@
                    ✅ FIXED: Explicitly set BackgroundColor properties to standard blues and charcoals
                    to bypass your system styles and wipe out all purple accent tones entirely.
                 -->
-                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" HorizontalOptions="Center">
-                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Padding="4,2">
+                <FlexLayout Wrap="Wrap" JustifyContent="Center" AlignItems="Center" HorizontalOptions="Fill">
                         <Button Text="☆ Save"
                                 BackgroundColor="#701E293B"
                                 TextColor="White"
@@ -135,8 +134,7 @@
                                 Padding="15,0"
                                 HeightRequest="42"
                                 Clicked="OnCompleteDrillClicked" />
-                    </HorizontalStackLayout>
-                </ScrollView>
+                </FlexLayout>
 
                 <!-- 4. Footer Media Controls -->
                 <Grid x:Name="PlaylistFooter" IsVisible="False" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15" MaximumWidthRequest="900" HorizontalOptions="Fill">

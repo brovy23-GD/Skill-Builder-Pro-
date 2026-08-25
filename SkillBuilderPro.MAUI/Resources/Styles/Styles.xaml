@@ -402,20 +402,20 @@
 
     <!-- Skill Builder Pro environmental glass system. Keep surfaces compact so approved art remains dominant. -->
     <Style x:Key="GlassPanelStyle" TargetType="Border">
-        <Setter Property="BackgroundColor" Value="#78121A26"/>
-        <Setter Property="Stroke" Value="Transparent"/>
-        <Setter Property="StrokeThickness" Value="0"/>
+        <Setter Property="BackgroundColor" Value="#70121A26"/>
+        <Setter Property="Stroke" Value="#426B849F"/>
+        <Setter Property="StrokeThickness" Value="1"/>
         <Setter Property="StrokeShape" Value="RoundRectangle 20"/>
         <Setter Property="Padding" Value="20"/>
     </Style>
     <Style x:Key="GlassCardStyle" TargetType="Border" BasedOn="{StaticResource GlassPanelStyle}">
-        <Setter Property="BackgroundColor" Value="#68131D2A"/>
+        <Setter Property="BackgroundColor" Value="#5C131D2A"/>
         <Setter Property="StrokeShape" Value="RoundRectangle 14"/>
         <Setter Property="Padding" Value="15"/>
     </Style>
     <Style x:Key="GlassHeaderStyle" TargetType="Border" BasedOn="{StaticResource GlassPanelStyle}">
-        <Setter Property="BackgroundColor" Value="#70101823"/>
-        <Setter Property="Padding" Value="18,12"/>
+        <Setter Property="BackgroundColor" Value="#60101823"/>
+        <Setter Property="Padding" Value="14,10"/>
     </Style>
     <Style x:Key="GlassMetricStyle" TargetType="Border" BasedOn="{StaticResource GlassCardStyle}">
         <Setter Property="MinimumWidthRequest" Value="150"/>
@@ -429,18 +429,20 @@
         <Setter Property="Padding" Value="24,18"/>
     </Style>
     <Style x:Key="GlassActionButtonStyle" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="#A8168CFF"/>
+        <Setter Property="BackgroundColor" Value="#88195EA8"/>
+        <Setter Property="BorderColor" Value="#89B8EA"/>
+        <Setter Property="BorderWidth" Value="1"/>
         <Setter Property="TextColor" Value="White"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
     <Style x:Key="GlassSecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource GlassActionButtonStyle}">
-        <Setter Property="BackgroundColor" Value="#681A2736"/>
+        <Setter Property="BackgroundColor" Value="#501A2736"/>
         <Setter Property="BorderColor" Value="#667FB5E3"/>
         <Setter Property="BorderWidth" Value="1"/>
     </Style>
     <Style x:Key="GlassInputStyle" TargetType="Entry">
-        <Setter Property="BackgroundColor" Value="#6815202D"/>
+        <Setter Property="BackgroundColor" Value="#5815202D"/>
         <Setter Property="TextColor" Value="White"/>
         <Setter Property="PlaceholderColor" Value="#B8CADB"/>
         <Setter Property="MinimumHeightRequest" Value="48"/>
@@ -491,7 +493,7 @@
         <Setter Property="FontSize" Value="13"/>
     </Style>
     <Style x:Key="EliteSurfaceStyle" TargetType="Border">
-        <Setter Property="BackgroundColor" Value="#78121821"/>
+        <Setter Property="BackgroundColor" Value="#66121821"/>
         <Setter Property="Stroke" Value="#506B849F"/>
         <Setter Property="StrokeThickness" Value="1"/>
         <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
@@ -502,7 +504,7 @@
         <Setter Property="Padding" Value="14,10"/>
     </Style>
     <Style x:Key="EliteButtonStyle" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="#70161D27"/>
+        <Setter Property="BackgroundColor" Value="#50161D27"/>
         <Setter Property="BorderColor" Value="#6B88A4C0"/>
         <Setter Property="BorderWidth" Value="1"/>
         <Setter Property="CornerRadius" Value="5"/>
@@ -513,7 +515,7 @@
         <Setter Property="Padding" Value="16,10"/>
     </Style>
     <Style x:Key="ElitePrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource EliteButtonStyle}">
-        <Setter Property="BackgroundColor" Value="#B0195EA8"/>
+        <Setter Property="BackgroundColor" Value="#88195EA8"/>
         <Setter Property="BorderColor" Value="#89B8EA"/>
     </Style>
     <Style x:Key="CompactNavButtonStyle" TargetType="Button" BasedOn="{StaticResource EliteButtonStyle}">
@@ -522,7 +524,7 @@
         <Setter Property="MinimumHeightRequest" Value="34"/>
     </Style>
     <Style x:Key="ElitePickerStyle" TargetType="Picker">
-        <Setter Property="BackgroundColor" Value="#70131A24"/>
+        <Setter Property="BackgroundColor" Value="#58131A24"/>
         <Setter Property="TextColor" Value="#F2F5F8"/>
         <Setter Property="TitleColor" Value="#91A1B4"/>
         <Setter Property="FontSize" Value="13"/>
@@ -573,10 +575,10 @@
         <Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
         <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray200}}" />
         <Setter Property="Shell.NavBarHasShadow" Value="False" />
-        <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}" />
-        <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
-        <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
-        <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
+        <Setter Property="Shell.TabBarBackgroundColor" Value="#E60A1119" />
+        <Setter Property="Shell.TabBarForegroundColor" Value="#F4F7FA" />
+        <Setter Property="Shell.TabBarTitleColor" Value="#F4F7FA" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="#91A1B4" />
     </Style>
 
     <Style TargetType="NavigationPage">

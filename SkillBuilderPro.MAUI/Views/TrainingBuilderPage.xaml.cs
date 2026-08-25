@@ -199,6 +199,16 @@ public partial class TrainingBuilderPage : ContentPage, IQueryAttributable
      */
     private void ResetLayout()
     {
+        HeaderGrid.ColumnDefinitions.Clear();
+        HeaderGrid.RowDefinitions.Clear();
+        HeaderGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        HeaderGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+        HeaderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        HeaderGrid.SetColumn(HeaderActions, 1);
+        HeaderGrid.SetRow(HeaderActions, 0);
+        HeaderActions.HorizontalOptions = LayoutOptions.End;
+        BuilderTitle.FontSize = 28;
+
         OverlayLayout.RowDefinitions.Clear();
         OverlayLayout.ColumnDefinitions.Clear();
 
@@ -252,7 +262,7 @@ public partial class TrainingBuilderPage : ContentPage, IQueryAttributable
                 side,
                 vertical,
                 side,
-                Math.Max(vertical, 12));
+                currentLayoutState == TrainingBuilderLayoutState.PhonePortrait ? 84 : Math.Max(vertical, 12));
     }
 
     /*
@@ -271,6 +281,16 @@ public partial class TrainingBuilderPage : ContentPage, IQueryAttributable
     private void ConfigurePhonePortrait(
         TrainingBuilderViewModel viewModel)
     {
+        HeaderGrid.ColumnDefinitions.Clear();
+        HeaderGrid.RowDefinitions.Clear();
+        HeaderGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        HeaderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        HeaderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        HeaderGrid.SetColumn(HeaderActions, 0);
+        HeaderGrid.SetRow(HeaderActions, 1);
+        HeaderActions.HorizontalOptions = LayoutOptions.Start;
+        BuilderTitle.FontSize = 23;
+
         AddOverlayRows(
             GridLength.Auto,
             GridLength.Star,
@@ -334,15 +354,15 @@ public partial class TrainingBuilderPage : ContentPage, IQueryAttributable
 
         DrillResults.HeightRequest =
             Math.Clamp(
-                Height * .31,
-                240,
-                390);
+                Height * .25,
+                210,
+                300);
 
         SessionItemsList.HeightRequest =
             Math.Clamp(
-                Height * .30,
-                250,
-                420);
+                Height * .25,
+                220,
+                320);
     }
 
     /*
@@ -859,14 +879,14 @@ public partial class TrainingBuilderPage : ContentPage, IQueryAttributable
         string? sport,
         TrainingBuilderLayoutState state)
     {
-        var alpha = 190;
+        var alpha = 150;
 
         if (string.Equals(
                 sport,
                 "Hockey",
                 StringComparison.OrdinalIgnoreCase))
         {
-            alpha = 220;
+            alpha = 185;
         }
         else if (
             string.Equals(
@@ -876,7 +896,7 @@ public partial class TrainingBuilderPage : ContentPage, IQueryAttributable
             state ==
             TrainingBuilderLayoutState.PhonePortrait)
         {
-            alpha = 210;
+            alpha = 170;
         }
 
         var surface =

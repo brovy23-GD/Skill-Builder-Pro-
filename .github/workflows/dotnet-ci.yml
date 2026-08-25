@@ -1,0 +1,65 @@
+name: .NET CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore testable projects
+        run: dotnet restore SkillBuilderPro.Tests/SkillBuilderPro.Tests.csproj
+
+      - name: Build testable projects
+        run: dotnet build SkillBuilderPro.Tests/SkillBuilderPro.Tests.csproj --configuration Release --no-restore
+
+      - name: Run tests with coverage
+        run: >-
+          dotnet test SkillBuilderPro.Tests/SkillBuilderPro.Tests.csproj
+          --configuration Release
+          --no-build
+          --collect:"XPlat Code Coverage"
+          --settings SkillBuilderPro.Tests/coverage.runsettings
+          --results-directory artifacts/test-results
+          --logger "trx;LogFileName=tests.trx"
+
+      - name: Enforce coverage gate
+        shell: python
+        run: |
+          import glob
+          import sys
+          import xml.etree.ElementTree as ET
+
+          files = glob.glob("artifacts/test-results/**/coverage.cobertura.xml", recursive=True)
+          if not files:
+              print("Coverage report was not produced.", file=sys.stderr)
+              sys.exit(1)
+          root = ET.parse(files[0]).getroot()
+          line_coverage = float(root.attrib['line-rate']) * 100
+          print(f"Line coverage: {line_coverage:.2f}%")
+          print(f"Branch coverage: {float(root.attrib['branch-rate']) * 100:.2f}%")
+          if line_coverage < 25:
+              print("Line coverage is below the required 25.00%.", file=sys.stderr)
+              sys.exit(1)
+
+      - name: Upload test and coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-and-coverage
+          path: artifacts/test-results
+          if-no-files-found: warn

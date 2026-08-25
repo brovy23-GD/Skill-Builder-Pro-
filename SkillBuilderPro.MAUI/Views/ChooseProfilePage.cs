@@ -61,7 +61,7 @@ public sealed class ChooseProfilePage : ContentPage
         var headerStack = new VerticalStackLayout { Spacing = 3, Children = { title, subtitle } };
         headerSurface = new Border
         {
-            BackgroundColor = Color.FromArgb("#B8141A22"),
+            BackgroundColor = Color.FromArgb("#70141A22"),
             Stroke = Color.FromArgb("#886B849F"),
             StrokeThickness = 1,
             Padding = new Thickness(18, 12),
@@ -118,7 +118,7 @@ public sealed class ChooseProfilePage : ContentPage
         demoGrid.Add(demoDescription, 2);
         demoSurface = new Border
         {
-            BackgroundColor = Color.FromArgb("#B5121821"),
+            BackgroundColor = Color.FromArgb("#70121821"),
             Stroke = Color.FromArgb("#9A168CFF"),
             StrokeThickness = 1,
             Padding = new Thickness(10, 2),
@@ -204,7 +204,7 @@ public sealed class ChooseProfilePage : ContentPage
         };
         return new Border
         {
-            BackgroundColor = Color.FromArgb("#C0121821"),
+            BackgroundColor = Color.FromArgb("#78121821"),
             Stroke = Color.FromArgb("#706B849F"),
             StrokeThickness = 1,
             Padding = new Thickness(10, 9),

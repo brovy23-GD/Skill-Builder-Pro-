@@ -90,7 +90,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
 
             PictureBox sbProIcon = new PictureBox
             {
-                Image = Resource1.sb_pro_logo,
+                Image = DesktopVisualResolver.Current.GetBrandLogo(),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Location = new Point(20, 7),
                 Size = new Size(56, 56),
@@ -400,7 +400,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             {
                 Size = pageDrills.Size,
                 Location = pageDrills.Location,
-                BackgroundImage = Resource1.drill_library,
+                BackgroundImage = DesktopVisualResolver.Current.GetDrillLibraryBackground(),
                 BackgroundImageLayout = ImageLayout.Zoom,
                 Visible = false
             };
@@ -460,7 +460,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             {
                 Size = pageReports.Size,
                 Location = pageReports.Location,
-                BackgroundImage = Resource1.weight_room,
+                BackgroundImage = DesktopVisualResolver.Current.GetLoginBackground(),
                 BackgroundImageLayout = ImageLayout.Zoom,
                 Visible = false
             };

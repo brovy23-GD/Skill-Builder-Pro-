@@ -1,5 +1,4 @@
 using SkillBuilderPro.WinForms.Models;
-using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Services;
 using SkillBuilderPro.WinForms.Utils;
 
@@ -31,16 +30,9 @@ public partial class CreateProfileForm : Form
     {
         InitializeComponent();
         Text = "Create Athlete Profile - Skill Builder Pro"; WindowState = FormWindowState.Maximized; MinimumSize = new Size(1000, 650);
-        var createProfilePath = Path.Combine(AppContext.BaseDirectory, "Resources", "create_profile.png");
-        if (File.Exists(createProfilePath))
-        {
-            using var approvedBackground = Image.FromFile(createProfilePath);
-            BackgroundImage = new Bitmap(approvedBackground);
-        }
-        else
-        {
-            BackgroundImage = Resource1.create_profile;
-        }
+        var createProfilePath = Path.Combine(AppContext.BaseDirectory, "Resources", "create_profile_desktop.png");
+        using var approvedBackground = Image.FromFile(createProfilePath);
+        BackgroundImage = new Bitmap(approvedBackground);
         BackgroundImageLayout = ImageLayout.Zoom; BackColor = Color.Black; DoubleBuffered = true;
         Controls.Add(formHost);
         foreach (var control in new Control[] { photoLabel, photo, upload, photoHelp, nameLabel, name, teamLabel, team, heightLabel, feet, inches, bioLabel, bio, sportLabel, sport, positionLabel, position, weightLabel, weight, jerseyLabel, jersey, ageLabel, age, dominantLabel, dominant, clear, continueButton, signIn, validation }) formHost.Controls.Add(control);
