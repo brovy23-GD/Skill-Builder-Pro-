@@ -1,5 +1,6 @@
 using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Utils;
+using SkillBuilderPro.WinForms.Services;
 namespace SkillBuilderPro.WinForms.Controls;
 public sealed class HomePageControl : UserControl
 {
@@ -7,7 +8,7 @@ public sealed class HomePageControl : UserControl
  public HomePageControl(User user,bool isDemoMode)
  {
   Dock=DockStyle.Fill;DoubleBuffered=true;BackColor=Color.FromArgb(10,14,20);
-  var path=Path.Combine(AppContext.BaseDirectory,"Resources","home_background_approved.png");if(File.Exists(path)){using var source=Image.FromFile(path);approvedBackground=new Bitmap(source);}
+  approvedBackground=DesktopVisualResolver.Current.GetAthleteHomeBackground();
   var panel=new Panel{BackColor=Color.FromArgb(82,10,18,28),Size=new Size(470,250),Anchor=AnchorStyles.Top|AnchorStyles.Left};
   panel.Controls.Add(new Label{Text="SKILL BUILDER PRO",ForeColor=Color.White,Font=new Font("Segoe UI",24,FontStyle.Bold),AutoSize=true,Location=new Point(24,22)});
   panel.Controls.Add(new Label{Text="WHERE BETTER IS BUILT.",ForeColor=Color.FromArgb(22,140,255),Font=new Font("Segoe UI",15,FontStyle.Bold),AutoSize=true,Location=new Point(26,65)});

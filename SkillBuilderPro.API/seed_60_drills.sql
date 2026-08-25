@@ -71,3 +71,5 @@ INSERT INTO Drills (Sport, Category, SubCategory, Name, Description, Difficulty,
 ('Hockey', 'Shooting', 'Release', 'Shot Release & Follow-Through', 'Develop quick release and follow-through', 1, 6, 'https://www.youtube.com/embed/pJb16NO_svg', '2026-07-20');
 
 SELECT COUNT(*) FROM Drills WHERE VideoUrl IS NOT NULL;
+-- LEGACY / DO NOT RUN. This historical script is not part of startup or the
+-- canonical 900-drill import. Use the validated `import-drills` command instead.

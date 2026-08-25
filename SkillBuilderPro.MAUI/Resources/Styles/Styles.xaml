@@ -19,7 +19,7 @@
     </Style>
 
     <Style TargetType="BoxView">
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
     </Style>
 
     <Style TargetType="Button">
@@ -402,19 +402,19 @@
 
     <!-- Skill Builder Pro environmental glass system. Keep surfaces compact so approved art remains dominant. -->
     <Style x:Key="GlassPanelStyle" TargetType="Border">
-        <Setter Property="BackgroundColor" Value="#54121A26"/>
+        <Setter Property="BackgroundColor" Value="#78121A26"/>
         <Setter Property="Stroke" Value="Transparent"/>
         <Setter Property="StrokeThickness" Value="0"/>
         <Setter Property="StrokeShape" Value="RoundRectangle 20"/>
         <Setter Property="Padding" Value="20"/>
     </Style>
     <Style x:Key="GlassCardStyle" TargetType="Border" BasedOn="{StaticResource GlassPanelStyle}">
-        <Setter Property="BackgroundColor" Value="#48131D2A"/>
+        <Setter Property="BackgroundColor" Value="#68131D2A"/>
         <Setter Property="StrokeShape" Value="RoundRectangle 14"/>
         <Setter Property="Padding" Value="15"/>
     </Style>
     <Style x:Key="GlassHeaderStyle" TargetType="Border" BasedOn="{StaticResource GlassPanelStyle}">
-        <Setter Property="BackgroundColor" Value="#42101823"/>
+        <Setter Property="BackgroundColor" Value="#70101823"/>
         <Setter Property="Padding" Value="18,12"/>
     </Style>
     <Style x:Key="GlassMetricStyle" TargetType="Border" BasedOn="{StaticResource GlassCardStyle}">
@@ -464,7 +464,7 @@
         <Setter Property="HorizontalTextAlignment" Value="Center"/>
     </Style>
     <Style x:Key="PageEyebrowStyle" TargetType="Label">
-        <Setter Property="TextColor" Value="#75AEEA"/>
+        <Setter Property="TextColor" Value="#91C4F4"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="CharacterSpacing" Value="2.2"/>
@@ -476,7 +476,7 @@
         <Setter Property="CharacterSpacing" Value="0.4"/>
     </Style>
     <Style x:Key="PageSubtitleStyle" TargetType="Label">
-        <Setter Property="TextColor" Value="#A6B4C5"/>
+        <Setter Property="TextColor" Value="#D2DCE6"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="CharacterSpacing" Value="1.4"/>
     </Style>
@@ -487,11 +487,11 @@
         <Setter Property="CharacterSpacing" Value="1.2"/>
     </Style>
     <Style x:Key="SecondaryTextStyle" TargetType="Label">
-        <Setter Property="TextColor" Value="#A6B4C5"/>
+        <Setter Property="TextColor" Value="#CED8E2"/>
         <Setter Property="FontSize" Value="13"/>
     </Style>
     <Style x:Key="EliteSurfaceStyle" TargetType="Border">
-        <Setter Property="BackgroundColor" Value="#58121821"/>
+        <Setter Property="BackgroundColor" Value="#78121821"/>
         <Setter Property="Stroke" Value="#506B849F"/>
         <Setter Property="StrokeThickness" Value="1"/>
         <Setter Property="StrokeShape" Value="RoundRectangle 10"/>

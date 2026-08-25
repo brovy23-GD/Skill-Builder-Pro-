@@ -1,0 +1,543 @@
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SkillBuilderPro.MAUI.Views.TrainingBuilderPage"
+    Title="Training Builder"
+    Shell.NavBarIsVisible="False">
+
+    <Grid BackgroundColor="#080C12">
+
+        <!-- STATIC RESPONSIVE BACKGROUND -->
+        <Image
+            x:Name="BuilderBackground"
+            Source="{Binding Background}"
+            Aspect="AspectFill"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            InputTransparent="True"
+            SemanticProperties.Description="Selected sport Training Builder environment" />
+
+        <!-- CONTROLLED FULL-SCREEN OVERLAY -->
+        <BoxView
+            BackgroundColor="#42040910"
+            InputTransparent="True" />
+
+        <!-- LIVE UI -->
+        <Grid x:Name="OverlayLayout">
+
+            <!-- HEADER -->
+            <Border
+                x:Name="HeaderCard"
+                Style="{StaticResource GlassHeaderStyle}"
+                Padding="14,10">
+
+                <Grid
+                    x:Name="HeaderGrid"
+                    ColumnDefinitions="*,Auto"
+                    RowSpacing="8">
+
+                    <VerticalStackLayout Spacing="1">
+
+                        <Label
+                            x:Name="BuilderTitle"
+                            Text="TRAINING BUILDER"
+                            Style="{StaticResource PageTitleStyle}"
+                            SemanticProperties.HeadingLevel="Level1" />
+
+                        <Label
+                            Text="{Binding SelectedSport, StringFormat='CURRENT SPORT  •  {0}'}"
+                            Style="{StaticResource PageSubtitleStyle}"
+                            SemanticProperties.Description="Current selected sport" />
+
+                    </VerticalStackLayout>
+
+                    <HorizontalStackLayout
+                        x:Name="HeaderActions"
+                        Grid.Column="1"
+                        Spacing="8"
+                        VerticalOptions="Center">
+
+                        <Button
+                            Text="BACK"
+                            Clicked="BackClicked"
+                            Style="{StaticResource CompactNavButtonStyle}"
+                            MinimumHeightRequest="44"
+                            SemanticProperties.Description="Return to Training" />
+
+                        <Button
+                            Text="EXIT DEMO"
+                            IsVisible="{Binding IsDemoMode}"
+                            Command="{Binding ExitDemoCommand}"
+                            Style="{StaticResource CompactNavButtonStyle}"
+                            MinimumHeightRequest="44" />
+
+                    </HorizontalStackLayout>
+
+                </Grid>
+
+            </Border>
+
+            <!--
+                IMPORTANT:
+                Every Training Builder card has ONE permanent parent.
+
+                Responsive behavior changes only Grid position,
+                row span, column span, visibility and sizing.
+
+                Cards are NEVER removed and re-parented.
+            -->
+            <ScrollView
+                x:Name="BuilderContentScroll"
+                BackgroundColor="Transparent"
+                VerticalScrollBarVisibility="Default">
+
+                <Grid
+                    x:Name="CardsGrid"
+                    RowSpacing="12"
+                    ColumnSpacing="12">
+
+                    <!-- ERROR -->
+                    <Border
+                        x:Name="ErrorCard"
+                        IsVisible="{Binding HasError}"
+                        Style="{StaticResource EliteSurfaceStyle}"
+                        Padding="12">
+
+                        <Grid
+                            ColumnDefinitions="*,Auto"
+                            ColumnSpacing="8">
+
+                            <Label
+                                Text="{Binding ErrorMessage}"
+                                Style="{StaticResource SecondaryTextStyle}"
+                                MaxLines="3" />
+
+                            <Button
+                                Grid.Column="1"
+                                Text="RETRY"
+                                Command="{Binding LoadCommand}"
+                                Style="{StaticResource CompactNavButtonStyle}"
+                                MinimumHeightRequest="44" />
+
+                        </Grid>
+
+                    </Border>
+
+                    <!-- WORKOUT -->
+                    <Border
+                        x:Name="WorkoutCard"
+                        Style="{StaticResource EliteSurfaceStyle}"
+                        Padding="14">
+
+                        <VerticalStackLayout Spacing="8">
+
+                            <Label
+                                Text="SESSION"
+                                Style="{StaticResource SectionTitleStyle}"
+                                SemanticProperties.HeadingLevel="Level2" />
+
+                            <Label
+                                Text="WORKOUT NAME"
+                                Style="{StaticResource PageEyebrowStyle}" />
+
+                            <Entry
+                                Placeholder="Workout name"
+                                Text="{Binding WorkoutName}"
+                                Style="{StaticResource GlassInputStyle}"
+                                MinimumHeightRequest="44"
+                                ReturnType="Done"
+                                SemanticProperties.Description="Workout name" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                    <!-- FIND DRILLS -->
+                    <Border
+                        x:Name="FindDrillsCard"
+                        Style="{StaticResource EliteSurfaceStyle}"
+                        Padding="14">
+
+                        <VerticalStackLayout Spacing="10">
+
+                            <Label
+                                Text="FIND DRILLS"
+                                Style="{StaticResource SectionTitleStyle}"
+                                SemanticProperties.HeadingLevel="Level2" />
+
+                            <!--
+                                These Pickers stay permanently inside this card.
+                                They are never detached/re-parented.
+                            -->
+                            <Grid
+                                x:Name="FilterGrid"
+                                ColumnDefinitions="*,*,*"
+                                ColumnSpacing="10"
+                                RowSpacing="8">
+
+                                <VerticalStackLayout x:Name="SportFilter">
+
+                                    <Label
+                                        Text="SPORT"
+                                        Style="{StaticResource PageEyebrowStyle}" />
+
+                                    <Picker
+                                        Title="Select sport"
+                                        ItemsSource="{Binding Sports}"
+                                        SelectedItem="{Binding SelectedSport}"
+                                        Style="{StaticResource ElitePickerStyle}"
+                                        MinimumHeightRequest="44"
+                                        SemanticProperties.Description="Select sport" />
+
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout
+                                    x:Name="CategoryFilter"
+                                    Grid.Column="1">
+
+                                    <Label
+                                        Text="CATEGORY"
+                                        Style="{StaticResource PageEyebrowStyle}" />
+
+                                    <Picker
+                                        Title="Select category"
+                                        ItemsSource="{Binding Categories}"
+                                        SelectedItem="{Binding SelectedCategory}"
+                                        Style="{StaticResource ElitePickerStyle}"
+                                        MinimumHeightRequest="44"
+                                        SemanticProperties.Description="Select training category" />
+
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout
+                                    x:Name="SkillFilter"
+                                    Grid.Column="2">
+
+                                    <Label
+                                        Text="SUBCATEGORY / SKILL"
+                                        Style="{StaticResource PageEyebrowStyle}" />
+
+                                    <Picker
+                                        Title="Select subcategory"
+                                        ItemsSource="{Binding SubCategories}"
+                                        SelectedItem="{Binding SelectedSubCategory}"
+                                        Style="{StaticResource ElitePickerStyle}"
+                                        MinimumHeightRequest="44"
+                                        SemanticProperties.Description="Select skill or subcategory" />
+
+                                </VerticalStackLayout>
+
+                            </Grid>
+
+                            <!-- AVAILABLE DRILLS -->
+                            <CollectionView
+                                x:Name="DrillResults"
+                                ItemsSource="{Binding AvailableDrills}"
+                                SelectedItem="{Binding SelectedAvailableDrill}"
+                                SelectionMode="Single"
+                                HeightRequest="300"
+                                SemanticProperties.Description="Available drills">
+
+                                <CollectionView.EmptyView>
+
+                                    <Label
+                                        Text="{Binding DrillEmptyState}"
+                                        TextColor="#F3F6F9"
+                                        BackgroundColor="#A8121821"
+                                        Padding="14"
+                                        HorizontalTextAlignment="Center"
+                                        MaxLines="3" />
+
+                                </CollectionView.EmptyView>
+
+                                <CollectionView.ItemTemplate>
+
+                                    <DataTemplate>
+
+                                        <Border
+                                            Style="{StaticResource EliteSurfaceStyle}"
+                                            Padding="10"
+                                            Margin="0,0,0,7">
+
+                                            <Grid
+                                                RowDefinitions="Auto,Auto,Auto"
+                                                ColumnDefinitions="*,Auto"
+                                                ColumnSpacing="8">
+
+                                                <Label
+                                                    Text="{Binding Name}"
+                                                    TextColor="White"
+                                                    FontAttributes="Bold"
+                                                    MaxLines="2"
+                                                    LineBreakMode="TailTruncation" />
+
+                                                <Label
+                                                    Grid.Row="1"
+                                                    Text="{Binding SubCategory}"
+                                                    Style="{StaticResource SecondaryTextStyle}"
+                                                    MaxLines="1"
+                                                    LineBreakMode="TailTruncation" />
+
+                                                <Label
+                                                    Grid.Row="2"
+                                                    Text="{Binding Duration, StringFormat='ESTIMATED {0}'}"
+                                                    Style="{StaticResource PageSubtitleStyle}" />
+
+                                                <HorizontalStackLayout
+                                                    Grid.Column="1"
+                                                    Grid.RowSpan="3"
+                                                    Spacing="6"
+                                                    VerticalOptions="Center">
+
+                                                    <Button
+                                                        Text="WATCH"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PreviewAvailableDrillCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Style="{StaticResource CompactNavButtonStyle}"
+                                                        MinimumHeightRequest="44" />
+
+                                                    <Button
+                                                        Text="ADD"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AddSelectedDrillCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Style="{StaticResource ElitePrimaryButtonStyle}"
+                                                        MinimumHeightRequest="44" />
+
+                                                </HorizontalStackLayout>
+
+                                            </Grid>
+
+                                        </Border>
+
+                                    </DataTemplate>
+
+                                </CollectionView.ItemTemplate>
+
+                            </CollectionView>
+
+                            <FlexLayout Wrap="Wrap">
+
+                                <Button
+                                    Text="WATCH SELECTED DRILL"
+                                    Command="{Binding PreviewAvailableDrillCommand}"
+                                    IsEnabled="{Binding CanPreviewAvailableDrill}"
+                                    Style="{StaticResource EliteButtonStyle}"
+                                    Margin="0,0,8,6"
+                                    MinimumHeightRequest="44" />
+
+                                <Button
+                                    Text="ADD SELECTED DRILL"
+                                    Command="{Binding AddSelectedDrillCommand}"
+                                    IsEnabled="{Binding CanAddSelectedDrill}"
+                                    Style="{StaticResource ElitePrimaryButtonStyle}"
+                                    Margin="0,0,0,6"
+                                    MinimumHeightRequest="44" />
+
+                            </FlexLayout>
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                    <!-- CURRENT SESSION -->
+                    <Border
+                        x:Name="SessionCard"
+                        Style="{StaticResource EliteSurfaceStyle}"
+                        Padding="14">
+
+                        <VerticalStackLayout Spacing="8">
+
+                            <Label
+                                Text="YOUR SESSION"
+                                Style="{StaticResource SectionTitleStyle}"
+                                SemanticProperties.HeadingLevel="Level2" />
+
+                            <CollectionView
+                                x:Name="SessionItemsList"
+                                ItemsSource="{Binding SessionItems}"
+                                HeightRequest="390"
+                                EmptyView="ADD DRILLS TO BUILD THIS SESSION"
+                                SemanticProperties.Description="Current training session drills">
+
+                                <CollectionView.ItemTemplate>
+
+                                    <DataTemplate>
+
+                                        <Border
+                                            Style="{StaticResource EliteSurfaceStyle}"
+                                            Padding="10"
+                                            Margin="0,0,0,8">
+
+                                            <VerticalStackLayout Spacing="7">
+
+                                                <Grid ColumnDefinitions="Auto,*">
+
+                                                    <Label
+                                                        Text="{Binding Order, StringFormat='#{0}'}"
+                                                        Style="{StaticResource GlassBadgeStyle}" />
+
+                                                    <Label
+                                                        Grid.Column="1"
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        FontAttributes="Bold"
+                                                        Margin="8,0,0,0"
+                                                        MaxLines="2"
+                                                        LineBreakMode="TailTruncation" />
+
+                                                </Grid>
+
+                                                <Grid
+                                                    ColumnDefinitions="*,*"
+                                                    ColumnSpacing="8">
+
+                                                    <VerticalStackLayout>
+
+                                                        <Label
+                                                            Text="REPS"
+                                                            Style="{StaticResource PageEyebrowStyle}" />
+
+                                                        <Entry
+                                                            Keyboard="Numeric"
+                                                            Text="{Binding Reps}"
+                                                            Style="{StaticResource GlassInputStyle}"
+                                                            MinimumHeightRequest="44"
+                                                            SemanticProperties.Description="Repetitions" />
+
+                                                    </VerticalStackLayout>
+
+                                                    <VerticalStackLayout Grid.Column="1">
+
+                                                        <Label
+                                                            Text="TIME (MIN)"
+                                                            Style="{StaticResource PageEyebrowStyle}" />
+
+                                                        <Entry
+                                                            Keyboard="Numeric"
+                                                            Text="{Binding DurationMinutes}"
+                                                            Style="{StaticResource GlassInputStyle}"
+                                                            MinimumHeightRequest="44"
+                                                            SemanticProperties.Description="Duration in minutes" />
+
+                                                    </VerticalStackLayout>
+
+                                                </Grid>
+
+                                                <FlexLayout Wrap="Wrap">
+
+                                                    <Button
+                                                        Text="UP"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MoveDrillUpCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Style="{StaticResource CompactNavButtonStyle}"
+                                                        Margin="0,0,6,6"
+                                                        MinimumHeightRequest="44" />
+
+                                                    <Button
+                                                        Text="DOWN"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MoveDrillDownCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Style="{StaticResource CompactNavButtonStyle}"
+                                                        Margin="0,0,6,6"
+                                                        MinimumHeightRequest="44" />
+
+                                                    <Button
+                                                        Text="WATCH"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PreviewDrillCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Style="{StaticResource CompactNavButtonStyle}"
+                                                        Margin="0,0,6,6"
+                                                        MinimumHeightRequest="44" />
+
+                                                    <Button
+                                                        Text="REMOVE"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveDrillCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Style="{StaticResource CompactNavButtonStyle}"
+                                                        Margin="0,0,0,6"
+                                                        MinimumHeightRequest="44" />
+
+                                                </FlexLayout>
+
+                                            </VerticalStackLayout>
+
+                                        </Border>
+
+                                    </DataTemplate>
+
+                                </CollectionView.ItemTemplate>
+
+                            </CollectionView>
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                    <!-- SUMMARY -->
+                    <Border
+                        x:Name="SummaryCard"
+                        Style="{StaticResource EliteSurfaceStyle}"
+                        Padding="14">
+
+                        <VerticalStackLayout Spacing="8">
+
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <Label
+                                    Text="SUMMARY"
+                                    Style="{StaticResource SectionTitleStyle}"
+                                    SemanticProperties.HeadingLevel="Level2" />
+
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding TotalDurationLabel}"
+                                    Style="{StaticResource GlassBadgeStyle}" />
+
+                            </Grid>
+
+                            <Label
+                                Text="TOTAL SESSION DURATION"
+                                Style="{StaticResource PageEyebrowStyle}" />
+
+                            <Button
+                                Text="SAVE SESSION — PERSISTENCE NOT AVAILABLE"
+                                IsEnabled="False"
+                                Style="{StaticResource EliteButtonStyle}"
+                                MinimumHeightRequest="44" />
+
+                            <Button
+                                Text="START TRAINING — PHASE 1 DRAFT ONLY"
+                                IsEnabled="False"
+                                Style="{StaticResource ElitePrimaryButtonStyle}"
+                                MinimumHeightRequest="44" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </Grid>
+
+            </ScrollView>
+
+            <!-- PHONE STICKY ACTION -->
+            <Border
+                x:Name="StickyActionBar"
+                IsVisible="False"
+                Padding="8"
+                StrokeThickness="1">
+
+                <Button
+                    Text="ADD SELECTED DRILL"
+                    Command="{Binding AddSelectedDrillCommand}"
+                    IsEnabled="{Binding CanAddSelectedDrill}"
+                    Style="{StaticResource ElitePrimaryButtonStyle}"
+                    MinimumHeightRequest="48"
+                    SemanticProperties.Description="Add selected drill to session" />
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

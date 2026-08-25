@@ -42,6 +42,13 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>
         modelBuilder.Entity<User>()
             .ToTable("Users");
 
+        modelBuilder.Entity<Drill>(entity =>
+        {
+            entity.HasIndex(drill => drill.ExternalSourceKey)
+                .IsUnique()
+                .HasFilter("[ExternalSourceKey] IS NOT NULL");
+        });
+
         modelBuilder.Entity<ApplicationUser>()
             .HasOne(user => user.Profile)
             .WithOne(profile => profile.User)

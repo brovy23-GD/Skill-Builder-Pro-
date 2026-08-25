@@ -124,45 +124,45 @@
   <data name="BasketballCourt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\basketball_court.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="baseball_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\baseball_Training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="training_builder_baseball_desktop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\training_builder_baseball_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="basketball_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\basketball_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="training_builder_basketball_desktop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\training_builder_basketball_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="football_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\football_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="training_builder_football_desktop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\training_builder_football_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="hockey_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hockey_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="training_builder_hockey_desktop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\training_builder_hockey_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="soccer_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\soccer_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="training_builder_soccer_desktop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\training_builder_soccer_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="softball_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\softball_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="training_builder_softball_desktop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\training_builder_softball_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="strength_training" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\strength_training.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Chicago_Soccer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Chicago Soccer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\training_soccer_chicago_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Chicago Themed Soccer Field </comment>
   </data>
   <data name="Chicago_Baseball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Chicago_Baseball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\training_baseball_chicago_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Chicago Themed Baseball</comment>
   </data>
   <data name="Chicago_Basketball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Chicago_Basketball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\training_basketball_chicago_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Chicago themed Basketball</comment>
   </data>
   <data name="Chicago_Football" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Chicago_Football.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\training_football_chicago_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Chicago Themed Football</comment>
   </data>
   <data name="Chicago_Hockey" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Chicago_Hockey.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\training_hockey_chicago_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Chicago Themed Hockey</comment>
   </data>
   <data name="hockey_rink" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -215,5 +215,8 @@
   </data>
   <data name="drill_library" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\drill_library.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="choose_role_desktop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\choose_role_desktop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

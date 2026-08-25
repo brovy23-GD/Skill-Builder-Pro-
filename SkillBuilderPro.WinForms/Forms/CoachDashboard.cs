@@ -6,6 +6,7 @@ using SkillBuilderPro.WinForms.Forms;
 using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Utils;
+using SkillBuilderPro.WinForms.Services;
 
 namespace SkillBuilderPro.WinForms
 {
@@ -31,8 +32,8 @@ namespace SkillBuilderPro.WinForms
             this.WindowState = FormWindowState.Maximized;
             this.MinimumSize = new Size(1200, 800);
             this.BackColor = Brand.Base;
-            this.BackgroundImage = Brand.Hero(Resource1.CoachOffice);
-            this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.BackgroundImage = Brand.Hero(DesktopVisualResolver.Current.GetCoachBackground());
+            this.BackgroundImageLayout = ImageLayout.Zoom;
             this.Padding = new Padding(40, 0, 40, 40);
             this.DoubleBuffered = true;
 

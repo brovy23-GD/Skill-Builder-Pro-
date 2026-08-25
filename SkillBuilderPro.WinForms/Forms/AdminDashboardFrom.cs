@@ -59,8 +59,8 @@ namespace SkillBuilderPro.WinForms.AdminScreens
             WindowState = FormWindowState.Maximized;
             MinimumSize = new Size(1280, 800);
 
-            BackgroundImage = Brand.Hero(Resource1.AdminDashApproved);
-            BackgroundImageLayout = ImageLayout.None;
+            BackgroundImage = Brand.Hero(DesktopVisualResolver.Current.GetAdministratorBackground());
+            BackgroundImageLayout = ImageLayout.Zoom;
 
             BuildPages();
             BuildCommandCenter();
@@ -401,7 +401,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
                 Size = pageDrills.Size,
                 Location = pageDrills.Location,
                 BackgroundImage = Resource1.drill_library,
-                BackgroundImageLayout = ImageLayout.Stretch,
+                BackgroundImageLayout = ImageLayout.Zoom,
                 Visible = false
             };
             Controls.Add(drillLibraryBackground);
@@ -461,7 +461,7 @@ namespace SkillBuilderPro.WinForms.AdminScreens
                 Size = pageReports.Size,
                 Location = pageReports.Location,
                 BackgroundImage = Resource1.weight_room,
-                BackgroundImageLayout = ImageLayout.Stretch,
+                BackgroundImageLayout = ImageLayout.Zoom,
                 Visible = false
             };
             Controls.Add(reportsBackground);

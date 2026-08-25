@@ -22,14 +22,28 @@ namespace SkillBuilderPro.WinForms
                 if (roleSelect.ShowDialog() != DialogResult.OK)
                     break;
 
-                // 2. Login
-                var login = new LoginForm(roleSelect.SelectedRole);
-                if (login.ShowDialog() != DialogResult.OK)
-                    continue;   // back to role screen
+                SkillBuilderPro.WinForms.Models.User current;
+                bool demo;
+                if (roleSelect.IsDemoMode)
+                {
+                    // Preserve the existing product-wide Athlete demonstration
+                    // identity without invoking authenticated login.
+                    current = DummyUsers.GetAllDummyUsers()
+                        .First(user => user.FullName == "Aubrey Rovy");
+                    current.IsActive = true;
+                    current.Role = "Athlete";
+                    demo = true;
+                }
+                else
+                {
+                    // 2. Authenticated role login
+                    var login = new LoginForm(roleSelect.SelectedRole);
+                    if (login.ShowDialog() != DialogResult.OK)
+                        continue;   // back to role screen
 
-                SkillBuilderPro.WinForms.Models.User current = login.LoggedInUser;
-
-                bool demo = login.IsDemoMode;
+                    current = login.LoggedInUser;
+                    demo = login.IsDemoMode;
+                }
 
                 // 3. Dashboard loop — stays here while athletes switch users
                 while (current != null)

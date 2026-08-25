@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SkillBuilderPro.Core.Models;
@@ -8,6 +9,10 @@ public class Drill
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }
+
+    [MaxLength(100)]
+    [JsonPropertyName("externalSourceKey")]
+    public string? ExternalSourceKey { get; set; }
 
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;

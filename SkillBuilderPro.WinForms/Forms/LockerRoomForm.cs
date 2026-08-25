@@ -427,7 +427,7 @@ namespace SkillBuilderPro.WinForms
             {
                 using Image approvedDoor = Image.FromFile(approvedDoorPath);
                 doorPanel.BackgroundImage = new Bitmap(approvedDoor);
-                doorPanel.BackgroundImageLayout = ImageLayout.Stretch;
+                doorPanel.BackgroundImageLayout = ImageLayout.Zoom;
             }
 
             Label doorNameplate = new Label

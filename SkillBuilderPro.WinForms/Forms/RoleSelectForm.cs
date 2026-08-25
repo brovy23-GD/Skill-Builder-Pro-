@@ -1,180 +1,239 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
-using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Models;
+using SkillBuilderPro.WinForms.Properties;
+using SkillBuilderPro.WinForms.Services;
 
-namespace SkillBuilderPro.WinForms
+namespace SkillBuilderPro.WinForms;
+
+public partial class RoleSelectForm : Form
 {
-    public partial class RoleSelectForm : Form
+    public string SelectedRole { get; private set; } = string.Empty;
+    public bool IsDemoMode { get; private set; }
+
+    public RoleSelectForm()
     {
-        public string SelectedRole { get; private set; }
+        InitializeComponent();
+        Text = "SkillBuilderPro";
+        StartPosition = FormStartPosition.CenterScreen;
+        WindowState = FormWindowState.Maximized;
+        MinimumSize = new Size(1000, 720);
+        BackgroundImage = DesktopVisualResolver.Current.GetChooseExperienceBackground();
+        BackgroundImageLayout = ImageLayout.Zoom;
+        DoubleBuffered = true;
+        BuildRoleSelector();
+    }
 
-        public RoleSelectForm()
+    private void BuildRoleSelector()
+    {
+        var surface = new Panel { BackColor = Color.Transparent };
+        Controls.Add(surface);
+
+        var title = new Label
         {
-            InitializeComponent();
-
-            this.Text = "SkillBuilderPro";
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.WindowState = FormWindowState.Maximized;
-            this.MinimumSize = new Size(1000, 800);
-            this.BackgroundImage = Brand.Hero(Resource1.weight_room, 0.18f, 1.5f);
-            this.BackgroundImageLayout = ImageLayout.Stretch;
-            this.DoubleBuffered = true;
-
-            BuildCard();
-        }
-
-        private void BuildCard()
+            Text = "CHOOSE YOUR EXPERIENCE",
+            Font = new Font("Segoe UI Semibold", 19F, FontStyle.Bold),
+            ForeColor = Color.White,
+            AutoSize = false,
+            TextAlign = ContentAlignment.MiddleCenter,
+            BackColor = Color.FromArgb(205, 18, 24, 33)
+        };
+        var subtitle = new Label
         {
-            Panel card = new Panel
+            Text = "SELECT HOW YOU'LL ENTER SKILL BUILDER PRO",
+            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+            ForeColor = Brand.Muted,
+            AutoSize = false,
+            TextAlign = ContentAlignment.MiddleCenter,
+            BackColor = Color.FromArgb(205, 18, 24, 33)
+        };
+        surface.Controls.Add(title);
+        surface.Controls.Add(subtitle);
+
+        string[] labels = ["ATHLETE", "COACH", "PARENT", "ADMINISTRATOR"];
+        string[] values = ["Athlete", "Coach", "Parent", "Admin"];
+        string[] descriptions =
+        [
+            "Train. Compete. Elevate.",
+            "Lead. Develop. Win.",
+            "Support. Guide. Empower.",
+            "Manage. Oversee. Optimize."
+        ];
+        string[] monograms = ["A", "C", "P", "AD"];
+        var tiles = new Panel[4];
+
+        for (var i = 0; i < labels.Length; i++)
+        {
+            var tile = new Panel { BackColor = Color.FromArgb(226, 15, 21, 29), Cursor = Cursors.Hand, TabStop = false };
+            var accent = new Panel { BackColor = Brand.Blue, Height = 3, Dock = DockStyle.Top };
+            var icon = new Label
             {
-                Size = new Size(900, 400),
-                BackColor = Brand.Panel
+                Text = monograms[i],
+                Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold),
+                ForeColor = Brand.Blue,
+                AutoSize = false,
+                Size = new Size(34, 28),
+                TextAlign = ContentAlignment.MiddleCenter,
+                Location = new Point(8, 13)
             };
-
-            void CenterCard() => card.Location = new Point(
-                (this.ClientSize.Width - card.Width) / 2,
-                Math.Max((int)(this.ClientSize.Height * 0.13), 20));
-            CenterCard();
-            this.Resize += (s, e) => CenterCard();
-
-            card.Controls.Add(new Label
+            var name = new Label
             {
-                Text = "SKILL BUILDER PRO",
-                Font = new Font("Segoe UI Black", 30F),
+                Text = labels[i],
+                Font = new Font("Segoe UI Semibold", 11.5F, FontStyle.Bold),
                 ForeColor = Color.White,
                 AutoSize = false,
-                Height = 58,
-                Width = card.Width,
-                Location = new Point(0, 30),
-                TextAlign = ContentAlignment.MiddleCenter
-            });
-
-            card.Controls.Add(new Label
-            {
-                Text = "BUILT FOR ATHLETES.  POWERED BY PRECISION.",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Brand.Muted,
-                AutoSize = false,
-                Height = 22,
-                Width = card.Width,
-                Location = new Point(0, 90),
-                TextAlign = ContentAlignment.MiddleCenter
-            });
-
-            card.Controls.Add(new Panel
-            {
-                Size = new Size(90, 3),
-                Location = new Point((card.Width - 90) / 2, 122),
-                BackColor = Brand.Blue
-            });
-
-            card.Controls.Add(new Label
-            {
-                Text = "CHOOSE YOUR EXPERIENCE\nSELECT HOW YOU'LL ENTER SKILL BUILDER PRO",
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                ForeColor = Brand.Muted,
-                AutoSize = false,
-                Height = 34,
-                Width = card.Width,
-                Location = new Point(0, 138),
-                TextAlign = ContentAlignment.MiddleCenter
-            });
-
-            string[] roles = { "ATHLETE", "COACH", "PARENT", "ADMINISTRATOR" };
-            string[] roleValues = { "Athlete", "Coach", "Parent", "Admin" };
-            string[] blurbs =
-            {
-                "Train. Track. Improve.",
-                "Lead. Assign. Develop.",
-                "Follow. Support. Encourage.",
-                "Operate. Oversee. Optimize."
+                Height = 28,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Location = new Point(44, 13)
             };
-
-            const int tileW = 195, tileH = 180, gap = 22;
-            int totalW = tileW * 4 + gap * 3;
-            int startX = (card.Width - totalW) / 2;
-
-            for (int i = 0; i < roles.Length; i++)
+            var description = new Label
             {
-                string proper = roleValues[i];
-                Color roleColor = Brand.RoleColor(proper);
+                Text = descriptions[i],
+                Font = Brand.Meta,
+                ForeColor = Brand.Muted,
+                AutoSize = false,
+                Height = 28,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Location = new Point(8, 46)
+            };
+            var select = new Button
+            {
+                Text = "SELECT",
+                BackColor = Color.FromArgb(36, 48, 62),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = Brand.Btn,
+                Cursor = Cursors.Hand,
+                TabIndex = i,
+                AccessibleName = $"Continue as {labels[i]}",
+                AccessibleDescription = descriptions[i]
+            };
+            select.FlatAppearance.BorderColor = Brand.Blue;
+            select.FlatAppearance.BorderSize = 1;
 
-                Panel tile = new Panel
-                {
-                    Size = new Size(tileW, tileH),
-                    Location = new Point(startX + i * (tileW + gap), 172),
-                    BackColor = Brand.Card,
-                    Cursor = Cursors.Hand
-                };
-
-                tile.Controls.Add(new Panel
-                {
-                    Size = new Size(tileW, 4),
-                    Location = new Point(0, 0),
-                    BackColor = roleColor
-                });
-
-                Label name = new Label
-                {
-                    Text = roles[i],
-                    Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                    ForeColor = Color.White,
-                    AutoSize = false,
-                    Size = new Size(tileW, 30),
-                    Location = new Point(0, 22),
-                    TextAlign = ContentAlignment.MiddleCenter
-                };
-
-                Label blurb = new Label
-                {
-                    Text = blurbs[i],
-                    Font = Brand.Meta,
-                    ForeColor = Brand.Muted,
-                    AutoSize = false,
-                    Size = new Size(tileW - 24, 46),
-                    Location = new Point(12, 58),
-                    TextAlign = ContentAlignment.TopCenter
-                };
-
-                Button select = new Button
-                {
-                    Text = "SELECT",
-                    Size = new Size(tileW - 48, 36),
-                    Location = new Point(24, tileH - 54),
-                    BackColor = roleColor,
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat,
-                    Font = Brand.Btn,
-                    Cursor = Cursors.Hand
-                };
-                select.FlatAppearance.BorderSize = 0;
-
-                string captured = proper;
-                void Choose()
-                {
-                    SelectedRole = captured;
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
-                }
-                void Hover(bool on) => tile.BackColor = on ? Brand.Raised : Brand.Card;
-
-                foreach (Control c in new Control[] { tile, name, blurb, select })
-                {
-                    c.Click += (s, e) => Choose();
-                    c.MouseEnter += (s, e) => Hover(true);
-                    c.MouseLeave += (s, e) => Hover(false);
-                }
-
-                tile.Controls.Add(name);
-                tile.Controls.Add(blurb);
-                tile.Controls.Add(select);
-                card.Controls.Add(tile);
+            var selectedValue = values[i];
+            void Choose()
+            {
+                IsDemoMode = false;
+                SelectedRole = selectedValue;
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            void Hover(bool active)
+            {
+                tile.BackColor = active ? Color.FromArgb(240, 22, 32, 43) : Color.FromArgb(226, 15, 21, 29);
+                select.FlatAppearance.BorderSize = active ? 2 : 1;
             }
 
-            this.Controls.Add(card);
-            card.BringToFront();
+            select.Click += (_, _) => Choose();
+            foreach (Control control in new Control[] { tile, icon, name, description })
+            {
+                control.Click += (_, _) => Choose();
+                control.MouseEnter += (_, _) => Hover(true);
+                control.MouseLeave += (_, _) => Hover(false);
+            }
+            select.MouseEnter += (_, _) => Hover(true);
+            select.MouseLeave += (_, _) => Hover(false);
+            tile.Controls.Add(accent);
+            tile.Controls.Add(icon);
+            tile.Controls.Add(name);
+            tile.Controls.Add(description);
+            tile.Controls.Add(select);
+            surface.Controls.Add(tile);
+            tiles[i] = tile;
         }
+
+        var demoPanel = new Panel
+        {
+            BackColor = Color.FromArgb(215, 15, 21, 29),
+            Cursor = Cursors.Hand
+        };
+        var demoIcon = new Label
+        {
+            Text = "D",
+            Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold),
+            ForeColor = Brand.Blue,
+            AutoSize = false,
+            Size = new Size(34, 34),
+            Location = new Point(8, 7),
+            TextAlign = ContentAlignment.MiddleCenter
+        };
+        var demoButton = new Button
+        {
+            Text = "DEMO MODE",
+            Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold),
+            ForeColor = Color.White,
+            BackColor = Color.FromArgb(30, 39, 51),
+            FlatStyle = FlatStyle.Flat,
+            Size = new Size(112, 34),
+            Location = new Point(46, 7),
+            Cursor = Cursors.Hand,
+            TabIndex = 4,
+            AccessibleName = "Demo Mode",
+            AccessibleDescription = "Explore Skill Builder Pro. No sign-in required."
+        };
+        demoButton.FlatAppearance.BorderColor = Brand.Blue;
+        demoButton.FlatAppearance.BorderSize = 1;
+        var demoDescription = new Label
+        {
+            Text = "Explore Skill Builder Pro",
+            Font = Brand.Meta,
+            ForeColor = Brand.Muted,
+            AutoSize = false,
+            Size = new Size(185, 34),
+            Location = new Point(167, 7),
+            TextAlign = ContentAlignment.MiddleLeft
+        };
+        void EnterDemo()
+        {
+            IsDemoMode = true;
+            SelectedRole = "Athlete";
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+        void HoverDemo(bool active)
+        {
+            demoPanel.BackColor = active ? Color.FromArgb(235, 20, 29, 40) : Color.FromArgb(215, 15, 21, 29);
+            demoButton.FlatAppearance.BorderSize = active ? 2 : 1;
+        }
+        demoButton.Click += (_, _) => EnterDemo();
+        foreach (Control control in new Control[] { demoPanel, demoIcon, demoDescription })
+        {
+            control.Click += (_, _) => EnterDemo();
+            control.MouseEnter += (_, _) => HoverDemo(true);
+            control.MouseLeave += (_, _) => HoverDemo(false);
+        }
+        demoButton.MouseEnter += (_, _) => HoverDemo(true);
+        demoButton.MouseLeave += (_, _) => HoverDemo(false);
+        demoPanel.Controls.Add(demoIcon);
+        demoPanel.Controls.Add(demoButton);
+        demoPanel.Controls.Add(demoDescription);
+        surface.Controls.Add(demoPanel);
+
+        void LayoutSelector()
+        {
+            const int gap = 14;
+            var width = Math.Min(1100, Math.Max(900, ClientSize.Width - 80));
+            var tileWidth = (width - gap * 3) / 4;
+            var tileHeight = 128;
+            var surfaceHeight = 280;
+            surface.SetBounds((ClientSize.Width - width) / 2, Math.Max(20, ClientSize.Height - surfaceHeight - 20), width, surfaceHeight);
+            title.SetBounds(0, 0, width, 43);
+            subtitle.SetBounds(0, 43, width, 27);
+            for (var i = 0; i < tiles.Length; i++)
+            {
+                var tile = tiles[i];
+                tile.SetBounds(i * (tileWidth + gap), 80, tileWidth, tileHeight);
+                tile.Controls[2].Width = tileWidth - 52;
+                tile.Controls[3].Width = tileWidth - 16;
+                tile.Controls[4].SetBounds(22, 82, tileWidth - 44, 34);
+            }
+            demoPanel.SetBounds((width - 360) / 2, 220, 360, 48);
+        }
+
+        LayoutSelector();
+        Resize += (_, _) => LayoutSelector();
+        surface.BringToFront();
     }
 }

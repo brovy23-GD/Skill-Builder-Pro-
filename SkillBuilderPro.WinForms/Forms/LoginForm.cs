@@ -1,5 +1,6 @@
 ﻿using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Properties;
+using SkillBuilderPro.WinForms.Services;
 using System.ComponentModel;
 using SkillBuilderPro.WinForms.Utils;
 namespace SkillBuilderPro.WinForms
@@ -45,8 +46,8 @@ namespace SkillBuilderPro.WinForms
             this.WindowState = FormWindowState.Maximized;
             this.MinimumSize = new Size(1000, 800);
 
-            this.BackgroundImage = ApplyDarkOverlayLogin(Resource1.weight_room, 0.20f);
-            this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.BackgroundImage = ApplyDarkOverlayLogin(DesktopVisualResolver.Current.GetLoginBackground(), 0.20f);
+            this.BackgroundImageLayout = ImageLayout.Zoom;
         }
 
         private void BuildLoginCard()
@@ -235,8 +236,8 @@ namespace SkillBuilderPro.WinForms
             switch (role)
             {
                 case "Coach": return "ENTER COACH'S OFFICE";
-                case "Parent": return "ENTER PARENT PORTAL";
-                case "Admin": return "ENTER COMMAND CENTER";
+                case "Parent": return "ENTER PARENT HUB";
+                case "Admin": return "ENTER ADMIN CENTER";
                 default: return "ENTER LOCKER ROOM";
             }
         }

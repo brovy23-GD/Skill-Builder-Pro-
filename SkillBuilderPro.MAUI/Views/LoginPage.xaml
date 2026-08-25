@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="SkillBuilderPro.MAUI.Views.LoginPage" BackgroundImageSource="weight_room.png" Title="Sign In">
- <Grid Padding="24"><Border MaximumWidthRequest="500" Style="{StaticResource GlassPanelStyle}" HorizontalOptions="Center" VerticalOptions="Center"><VerticalStackLayout Spacing="16"><Label Text="SKILL BUILDER PRO" FontSize="28" FontAttributes="Bold" TextColor="White"/><Label Text="BUILT FOR ATHLETES. POWERED BY PRECISION." TextColor="{StaticResource PerformanceBlue}"/><Label x:Name="RoleLabel" FontSize="20" FontAttributes="Bold" TextColor="White"/><Entry x:Name="EmailEntry" Placeholder="Email" Keyboard="Email" Style="{StaticResource GlassInputStyle}" SemanticProperties.Description="Email address"/><Grid ColumnDefinitions="*,52"><Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" Style="{StaticResource GlassInputStyle}" SemanticProperties.Description="Password"/><ImageButton x:Name="PasswordVisibilityButton" Grid.Column="1" Source="eye.svg" Clicked="PasswordVisibilityClicked" BackgroundColor="#6815202D" Padding="13" SemanticProperties.Description="Show password"/></Grid><Label x:Name="ErrorLabel" IsVisible="False" TextColor="#FF8A8A"/><Button x:Name="SignInButton" Text="SIGN IN" Clicked="SignInClicked" Style="{StaticResource GlassActionButtonStyle}"/><Button x:Name="CreateButton" Text="CREATE PROFILE" Clicked="CreateClicked" Style="{StaticResource GlassSecondaryButtonStyle}"/><Button x:Name="DemoButton" Text="DEMO AS ATHLETE" Clicked="DemoClicked" Style="{StaticResource GlassSecondaryButtonStyle}"/></VerticalStackLayout></Border></Grid>
+ <Grid>
+  <ScrollView>
+   <VerticalStackLayout Padding="24,28,24,40" MinimumHeightRequest="620" VerticalOptions="Center">
+    <Border MaximumWidthRequest="500" Style="{StaticResource GlassPanelStyle}" HorizontalOptions="Center" VerticalOptions="Center">
+     <VerticalStackLayout Spacing="16">
+      <Label Text="SKILL BUILDER PRO" FontSize="28" FontAttributes="Bold" TextColor="White"/>
+      <Label Text="BUILT FOR ATHLETES. POWERED BY PRECISION." TextColor="{StaticResource PerformanceBlue}"/>
+      <Label x:Name="RoleLabel" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+      <Label Text="EMAIL" Style="{StaticResource PageEyebrowStyle}"/>
+      <Grid ColumnDefinitions="*,58" ColumnSpacing="6">
+       <Entry x:Name="EmailEntry" Placeholder="Email" Keyboard="Email" IsTextPredictionEnabled="False" ClearButtonVisibility="WhileEditing" Style="{StaticResource GlassInputStyle}" SemanticProperties.Description="Email address"/>
+       <Button Grid.Column="1" Text="PASTE" Clicked="PasteEmailClicked" Style="{StaticResource CompactNavButtonStyle}" FontSize="9" Padding="3,0" SemanticProperties.Description="Paste email from clipboard"/>
+      </Grid>
+      <Label Text="PASSWORD" Style="{StaticResource PageEyebrowStyle}"/>
+      <Grid ColumnDefinitions="*,58,44" ColumnSpacing="6">
+       <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" IsTextPredictionEnabled="False" Style="{StaticResource GlassInputStyle}" SemanticProperties.Description="Password"/>
+       <Button Grid.Column="1" Text="PASTE" Clicked="PastePasswordClicked" Style="{StaticResource CompactNavButtonStyle}" FontSize="9" Padding="3,0" SemanticProperties.Description="Paste password from clipboard"/>
+       <ImageButton x:Name="PasswordVisibilityButton" Grid.Column="2" Source="eye.svg" Clicked="PasswordVisibilityClicked" BackgroundColor="#6815202D" Padding="10" SemanticProperties.Description="Show password"/>
+      </Grid>
+      <Label x:Name="ErrorLabel" IsVisible="False" TextColor="#FFB3A7" BackgroundColor="#B0080D13" Padding="10"/>
+      <Button x:Name="SignInButton" Text="SIGN IN" Clicked="SignInClicked" Style="{StaticResource GlassActionButtonStyle}"/>
+      <Button x:Name="CreateButton" Text="CREATE PROFILE" Clicked="CreateClicked" Style="{StaticResource GlassSecondaryButtonStyle}"/>
+      <Button x:Name="DemoButton" Text="DEMO AS ATHLETE" Clicked="DemoClicked" Style="{StaticResource GlassSecondaryButtonStyle}"/>
+     </VerticalStackLayout>
+    </Border>
+   </VerticalStackLayout>
+  </ScrollView>
+ </Grid>
 </ContentPage>

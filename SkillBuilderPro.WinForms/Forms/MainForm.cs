@@ -332,7 +332,7 @@ namespace SkillBuilderPro.WinForms
         private void SetupProfileLandingTab(TabPage tab)
         {
             
-            SetTabBackground(tab);
+            SetPageBackground(tab, DesktopVisualResolver.Current.GetLockerRoomBackground());
 
             tab.Padding = new Padding(0, 30, 0, 0);
 
@@ -359,7 +359,7 @@ namespace SkillBuilderPro.WinForms
         private async void SetupTrainingTab(TabPage tab)
         {
             
-            SetTabBackground(tab);
+            SetTrainingBuilderBackground(tab);
             tab.AutoScroll = true;
 
             const int leftWidth = 400;
@@ -384,13 +384,21 @@ namespace SkillBuilderPro.WinForms
 
             void PositionCards()
             {
-                const int edgeMargin = 40;
+                int viewportWidth = Math.Max(tab.ClientSize.Width, 900);
+                int viewportHeight = Math.Max(tab.ClientSize.Height, 640);
+                int edgeMargin = Math.Max(24, (int)Math.Round(viewportWidth * 0.03));
+                int proportionalLeftWidth = Math.Clamp((int)Math.Round(viewportWidth * 0.25), 380, 460);
+                int proportionalRightWidth = Math.Clamp((int)Math.Round(viewportWidth * 0.23), 380, 440);
+                int proportionalLeftHeight = Math.Clamp((int)Math.Round(viewportHeight * 0.90), leftHeight, 720);
+                int proportionalRightHeight = Math.Clamp((int)Math.Round(viewportHeight * 0.86), rightHeight, 700);
+                leftCard.Size = new Size(proportionalLeftWidth, proportionalLeftHeight);
+                rightCard.Size = new Size(proportionalRightWidth, proportionalRightHeight);
                 leftCard.Location = new Point(
                     edgeMargin + tab.AutoScrollPosition.X,
-                    topMargin + tab.AutoScrollPosition.Y);
+                    Math.Max(topMargin, (int)Math.Round(viewportHeight * 0.05)) + tab.AutoScrollPosition.Y);
                 rightCard.Location = new Point(
-                    Math.Max(tab.ClientSize.Width - rightWidth - edgeMargin, leftWidth + edgeMargin + gap) + tab.AutoScrollPosition.X,
-                    topMargin + tab.AutoScrollPosition.Y);
+                    Math.Max((int)Math.Round(viewportWidth * 0.74), proportionalLeftWidth + edgeMargin + gap) + tab.AutoScrollPosition.X,
+                    Math.Max(topMargin, (int)Math.Round(viewportHeight * 0.08)) + tab.AutoScrollPosition.Y);
             }
             PositionCards();
             tab.Resize += (s, e) => PositionCards();
@@ -637,34 +645,14 @@ namespace SkillBuilderPro.WinForms
 
         private void SetupEliteGoalsTab(TabPage tab)
         {
-            string approvedGoalsPath = Path.Combine(AppContext.BaseDirectory, "Resources", "goals_background_approved.png");
-            if (File.Exists(approvedGoalsPath))
-            {
-                using Image source = Image.FromFile(approvedGoalsPath);
-                tab.BackgroundImage = new Bitmap(source);
-                tab.BackgroundImageLayout = ImageLayout.Zoom;
-            }
-            else
-            {
-                SetTabBackground(tab);
-            }
+            SetPageBackground(tab, DesktopVisualResolver.Current.GetGoalsBackground());
 
             tab.Controls.Add(new Controls.GoalsPageControl(_user, _isDemoMode));
         }
 
         private void SetupGoalsTab(TabPage tab)
         {
-            string approvedGoalsPath = Path.Combine(AppContext.BaseDirectory, "Resources", "goals_background_approved.png");
-            if (File.Exists(approvedGoalsPath))
-            {
-                using Image source = Image.FromFile(approvedGoalsPath);
-                tab.BackgroundImage = new Bitmap(source);
-                tab.BackgroundImageLayout = ImageLayout.Zoom;
-            }
-            else
-            {
-                SetTabBackground(tab);
-            }
+            SetPageBackground(tab, DesktopVisualResolver.Current.GetGoalsBackground());
             tab.AutoScroll = true;              // scroll if window is short
 
             var theme = TeamThemes.GetThemeForSport(_user.Sport);
@@ -834,7 +822,7 @@ namespace SkillBuilderPro.WinForms
             if (calBg != null)
             {
                 tab.BackgroundImage = Brand.Hero(calBg);
-                tab.BackgroundImageLayout = ImageLayout.Stretch;
+                tab.BackgroundImageLayout = ImageLayout.Zoom;
             }
 
             var theme = TeamThemes.GetThemeForSport(_user.Sport);
@@ -1156,45 +1144,20 @@ namespace SkillBuilderPro.WinForms
         }
 
         // ------------------------------
-        // BACKGROUNDS (your sport mapping, kept verbatim)
+        // CANONICAL DESKTOP BACKGROUNDS
         // ------------------------------
 
-        private void SetTabBackground(TabPage tab)
+        private static void SetPageBackground(TabPage tab, Image background)
         {
             tab.Padding = new Padding(0, 20, 0, 0);
-
-            Image bg = GetFieldBackground(_user.Sport);
-            if (bg != null)
-            {
-                tab.BackgroundImage = Brand.Hero(bg);
-                tab.BackgroundImageLayout = ImageLayout.Stretch;
-            }
+            tab.BackgroundImage = Brand.Hero(background);
+            tab.BackgroundImageLayout = ImageLayout.Zoom;
         }
-        private Image GetFieldBackground(string? sport)
+
+        private void SetTrainingBuilderBackground(TabPage tab)
         {
-            switch ((sport ?? "").Trim().ToLowerInvariant())
-            {
-                case "basketball":
-                    return Resource1.basketball_training;
-
-                case "football":
-                    return Resource1.football_training;
-
-                case "baseball":
-                    return Resource1.baseball_training;
-
-                case "softball":
-                    return Resource1.softball_training;
-
-                case "soccer":
-                    return Resource1.soccer_training;
-
-                case "hockey":
-                    return Resource1.hockey_training;
-
-                default:
-                    return Resource1.strength_training;
-            }
+            tab.Padding = new Padding(0, 20, 0, 0);
+            SetPageBackground(tab, DesktopVisualResolver.Current.GetTrainingBuilderBackground(_user.Sport));
         }
 
 
@@ -1207,25 +1170,25 @@ namespace SkillBuilderPro.WinForms
             switch ((sport ?? "").Trim().ToLower())
             {
                 case "basketball":
-                    return Resource1.basketball_training;
+                    return Resource1.calendar_basketball;
 
                 case "football":
-                    return Resource1.football_training;
+                    return Resource1.calendar_football;
 
                 case "baseball":
-                    return Resource1.baseball_training;
+                    return Resource1.calendar_baseball;
 
                 case "softball":
-                    return Resource1.softball_training;
+                    return Resource1.calendar_softball;
 
                 case "soccer":
-                    return Resource1.soccer_training;
+                    return Resource1.calendar_soccer;
 
                 case "hockey":
-                    return Resource1.hockey_training;
+                    return Resource1.calendar_hockey;
 
                 default:
-                    return Resource1.strength_training;
+                    return Resource1.calendar_gym;
             }
         }
 

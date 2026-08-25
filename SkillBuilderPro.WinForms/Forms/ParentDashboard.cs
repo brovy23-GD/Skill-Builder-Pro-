@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using SkillBuilderPro.WinForms.Models;
 using SkillBuilderPro.WinForms.Properties;
 using SkillBuilderPro.WinForms.Utils;
+using SkillBuilderPro.WinForms.Services;
 
 namespace SkillBuilderPro.WinForms
 {
@@ -26,8 +27,8 @@ namespace SkillBuilderPro.WinForms
             this.WindowState = FormWindowState.Maximized;
             this.MinimumSize = new Size(1200, 800);
             this.BackColor = Brand.Base;
-            this.BackgroundImage = Brand.Darken(Resource1.parentsbackground, 0.30f);
-            this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.BackgroundImage = Brand.Darken(DesktopVisualResolver.Current.GetParentBackground(), 0.30f);
+            this.BackgroundImageLayout = ImageLayout.Zoom;
             this.Padding = new Padding(40, 0, 40, 40);
             this.DoubleBuffered = true;
 

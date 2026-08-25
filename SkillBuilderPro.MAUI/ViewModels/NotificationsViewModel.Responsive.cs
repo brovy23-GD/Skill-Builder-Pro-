@@ -1,9 +1,7 @@
-using SkillBuilderPro.MAUI.Services;
-
 namespace SkillBuilderPro.MAUI.ViewModels;
 
 public partial class NotificationsViewModel
 {
-    public string Background => visuals.GetTrainingBackground(
-        api.IsDemoMode ? DemoDataService.Sport : api.User?.Sport);
+    // Dedicated Notifications portrait/landscape artwork is still required.
+    // The page currently owns a neutral approved SBP background directly.
 }

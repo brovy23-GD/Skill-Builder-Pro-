@@ -12,6 +12,9 @@ using SkillBuilderPro.Core.Models;
 
 namespace SkillBuilderPro.API.Data;
 
+// LEGACY / DO NOT RUN: this historical seeder merges multiple sources and is not
+// idempotent under the current import contract. It has no startup caller. Use the
+// explicit `import-drills` command and DrillImportService instead.
 public class DrillExcelSeeder
 {
     private readonly AppDbContext _dbContext;

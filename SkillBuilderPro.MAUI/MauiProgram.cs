@@ -66,8 +66,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<DrillsViewModel>();
         builder.Services.AddTransient<DrillLibraryPage>();
         builder.Services.AddTransient<LoginPage>();
-        builder.Services.AddTransient<AthleteDashboardPage>(); builder.Services.AddTransient<GoalsPage>(); builder.Services.AddTransient<TrophyRoomPage>(); builder.Services.AddTransient<TrainingPage>(); builder.Services.AddTransient<TrainingRequestsPage>(); builder.Services.AddTransient<NotificationsPage>(); builder.Services.AddTransient<ProfilePage>();
-        builder.Services.AddTransient<DashboardViewModel>(); builder.Services.AddTransient<GoalsViewModel>(); builder.Services.AddTransient<TrophyViewModel>(); builder.Services.AddTransient<TrainingViewModel>(); builder.Services.AddTransient<RequestsViewModel>(); builder.Services.AddTransient<NotificationsViewModel>(); builder.Services.AddTransient<ProfileViewModel>();
+        builder.Services.AddTransient<AthleteDashboardPage>(); builder.Services.AddTransient<GoalsPage>(); builder.Services.AddTransient<TrophyRoomPage>(); builder.Services.AddTransient<TrainingPage>(); builder.Services.AddTransient<TrainingBuilderPage>(); builder.Services.AddTransient<TrainingRequestsPage>(); builder.Services.AddTransient<NotificationsPage>(); builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<DashboardViewModel>(); builder.Services.AddTransient<GoalsViewModel>(); builder.Services.AddTransient<TrophyViewModel>(); builder.Services.AddTransient<TrainingViewModel>(); builder.Services.AddTransient<TrainingBuilderViewModel>(); builder.Services.AddTransient<RequestsViewModel>(); builder.Services.AddTransient<NotificationsViewModel>(); builder.Services.AddTransient<ProfileViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

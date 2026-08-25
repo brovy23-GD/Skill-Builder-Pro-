@@ -100,13 +100,14 @@ namespace SkillBuilderPro.WinForms.Properties {
             }
         }
 
-        internal static System.Drawing.Bitmap baseball_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("baseball_training", resourceCulture))); } }
-        internal static System.Drawing.Bitmap basketball_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("basketball_training", resourceCulture))); } }
-        internal static System.Drawing.Bitmap football_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("football_training", resourceCulture))); } }
-        internal static System.Drawing.Bitmap hockey_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("hockey_training", resourceCulture))); } }
-        internal static System.Drawing.Bitmap soccer_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("soccer_training", resourceCulture))); } }
-        internal static System.Drawing.Bitmap softball_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("softball_training", resourceCulture))); } }
+        internal static System.Drawing.Bitmap training_builder_baseball_desktop { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("training_builder_baseball_desktop", resourceCulture))); } }
+        internal static System.Drawing.Bitmap training_builder_basketball_desktop { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("training_builder_basketball_desktop", resourceCulture))); } }
+        internal static System.Drawing.Bitmap training_builder_football_desktop { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("training_builder_football_desktop", resourceCulture))); } }
+        internal static System.Drawing.Bitmap training_builder_hockey_desktop { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("training_builder_hockey_desktop", resourceCulture))); } }
+        internal static System.Drawing.Bitmap training_builder_soccer_desktop { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("training_builder_soccer_desktop", resourceCulture))); } }
+        internal static System.Drawing.Bitmap training_builder_softball_desktop { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("training_builder_softball_desktop", resourceCulture))); } }
         internal static System.Drawing.Bitmap strength_training { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("strength_training", resourceCulture))); } }
+        internal static System.Drawing.Bitmap choose_role_desktop { get { return ((System.Drawing.Bitmap)(ResourceManager.GetObject("choose_role_desktop", resourceCulture))); } }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.

@@ -1,29 +1,29 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="SkillBuilderPro.MAUI.Views.AthleteDashboardPage" Title="Home">
- <Grid BackgroundColor="#080C12">
-  <Image Source="home_background_approved.png" Aspect="AspectFill" Opacity="1" ZIndex="-2" HorizontalOptions="Fill" VerticalOptions="Fill" SemanticProperties.Description="Skill Builder Pro performance facility"/>
-  <BoxView Color="#16050A10" ZIndex="-1"/>
-  <ScrollView><VerticalStackLayout Padding="28,24,28,36" Spacing="18" MaximumWidthRequest="1100" HorizontalOptions="Center">
-   <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+ <Grid x:Name="DashboardStage" BackgroundColor="#080C12" SizeChanged="DashboardStageSizeChanged">
+  <Image Source="{Binding Background}" Aspect="AspectFill" Opacity="1" HorizontalOptions="Fill" VerticalOptions="Fill" InputTransparent="True" SemanticProperties.Description="Skill Builder Pro performance facility"/>
+  <BoxView BackgroundColor="#16050A10" InputTransparent="True"/>
+  <ScrollView BackgroundColor="Transparent"><VerticalStackLayout BackgroundColor="Transparent" Padding="18,20,18,42" Spacing="22" MaximumWidthRequest="1100" HorizontalOptions="Center">
+   <Border BackgroundColor="#A80C121A" Stroke="Transparent" StrokeShape="RoundRectangle 16" Padding="16"><Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
     <VerticalStackLayout Spacing="2">
      <Label Text="WELCOME BACK" Style="{StaticResource PageEyebrowStyle}"/>
      <Label Text="{Binding DisplayName}" Style="{StaticResource PageTitleStyle}" TextTransform="Uppercase"/>
      <Label Text="{Binding AthleteDescriptor}" Style="{StaticResource PageSubtitleStyle}"/>
     </VerticalStackLayout>
-    <Grid Grid.Column="1" VerticalOptions="Center"><Button Text="NOTIFICATIONS" Clicked="BellClicked" Style="{StaticResource EliteButtonStyle}" SemanticProperties.Description="Open notifications"/><Label Text="{Binding UnreadCount}" IsVisible="{Binding HasUnreadNotifications}" Style="{StaticResource GlassBadgeStyle}" FontSize="9" HorizontalOptions="End" VerticalOptions="Start"/></Grid>
+    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="6"><Grid><Button Text="NOTIFICATIONS" Clicked="BellClicked" Style="{StaticResource EliteButtonStyle}" SemanticProperties.Description="Open notifications"/><Label Text="{Binding UnreadCount}" IsVisible="{Binding HasUnreadNotifications}" Style="{StaticResource GlassBadgeStyle}" FontSize="9" HorizontalOptions="End" VerticalOptions="Start"/></Grid><Button Text="EXIT DEMO" IsVisible="{Binding IsDemoMode}" Command="{Binding ExitDemoCommand}" Style="{StaticResource CompactNavButtonStyle}"/></VerticalStackLayout>
+   </Grid></Border>
+   <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+    <Border Style="{StaticResource EliteMetricStyle}"><VerticalStackLayout><Label Text="CURRENT RANK" Style="{StaticResource HomeMetricLabelStyle}" HorizontalTextAlignment="Start"/><Label Text="{Binding Progression.OverallRank}" Style="{StaticResource HomeMetricValueStyle}" HorizontalTextAlignment="Start"/></VerticalStackLayout></Border>
+    <Border Grid.Column="1" Style="{StaticResource EliteMetricStyle}"><VerticalStackLayout><Label Text="STREAK" Style="{StaticResource HomeMetricLabelStyle}" HorizontalTextAlignment="Start"/><Label Text="{Binding Progression.CurrentStreak, StringFormat='{0} DAYS'}" Style="{StaticResource HomeMetricValueStyle}" HorizontalTextAlignment="Start"/></VerticalStackLayout></Border>
+    <Border Grid.Row="1" Style="{StaticResource EliteMetricStyle}"><VerticalStackLayout><Label Text="ACTIVE GOALS" Style="{StaticResource HomeMetricLabelStyle}" HorizontalTextAlignment="Start"/><Label Text="{Binding Goals.Count}" Style="{StaticResource HomeMetricValueStyle}" HorizontalTextAlignment="Start"/></VerticalStackLayout></Border>
+    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource EliteMetricStyle}"><VerticalStackLayout><Label Text="NOTIFICATIONS" Style="{StaticResource HomeMetricLabelStyle}" HorizontalTextAlignment="Start"/><Label Text="{Binding UnreadCount}" Style="{StaticResource HomeMetricValueStyle}" HorizontalTextAlignment="Start"/></VerticalStackLayout></Border>
    </Grid>
-   <FlexLayout Wrap="Wrap" JustifyContent="SpaceBetween" AlignItems="Stretch" Direction="Row">
-    <Border Style="{StaticResource EliteMetricStyle}" Margin="0,0,8,8"><VerticalStackLayout><Label Text="CURRENT RANK" Style="{StaticResource HomeMetricLabelStyle}" HorizontalTextAlignment="Start"/><Label Text="{Binding Progression.OverallRank}" Style="{StaticResource HomeMetricValueStyle}" HorizontalTextAlignment="Start"/></VerticalStackLayout></Border>
-    <Border Style="{StaticResource EliteMetricStyle}" Margin="0,0,8,8"><VerticalStackLayout><Label Text="STREAK" Style="{StaticResource HomeMetricLabelStyle}" HorizontalTextAlignment="Start"/><Label Text="{Binding Progression.CurrentStreak, StringFormat='{0} DAYS'}" Style="{StaticResource HomeMetricValueStyle}" HorizontalTextAlignment="Start"/></VerticalStackLayout></Border>
-    <Border Style="{StaticResource EliteMetricStyle}" Margin="0,0,8,8"><VerticalStackLayout><Label Text="ACTIVE GOALS" Style="{StaticResource HomeMetricLabelStyle}" HorizontalTextAlignment="Start"/><Label Text="{Binding Goals.Count}" Style="{StaticResource HomeMetricValueStyle}" HorizontalTextAlignment="Start"/></VerticalStackLayout></Border>
-    <Border Style="{StaticResource EliteMetricStyle}" Margin="0,0,8,8"><VerticalStackLayout><Label Text="NOTIFICATIONS" Style="{StaticResource HomeMetricLabelStyle}" HorizontalTextAlignment="Start"/><Label Text="{Binding UnreadCount}" Style="{StaticResource HomeMetricValueStyle}" HorizontalTextAlignment="Start"/></VerticalStackLayout></Border>
-   </FlexLayout>
    <Border Style="{StaticResource EliteSurfaceStyle}"><Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="8">
     <VerticalStackLayout><Label Text="TODAY'S TRAINING" Style="{StaticResource PageEyebrowStyle}"/><Label Text="{Binding TrainingTitle}" Style="{StaticResource SectionTitleStyle}"/><Label Text="{Binding TrainingSummary}" Style="{StaticResource PageSubtitleStyle}"/></VerticalStackLayout>
     <Label Grid.Column="1" Text="{Binding TrainingStatus}" TextColor="#91C4F4" FontAttributes="Bold" CharacterSpacing="1.4" VerticalTextAlignment="Center"/>
     <CollectionView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Assignments}" EmptyView="NO TRAINING ASSIGNED" MaximumHeightRequest="88"><CollectionView.ItemTemplate><DataTemplate><Grid Padding="0,8" ColumnDefinitions="*,Auto"><Label Text="{Binding Instructions}" Style="{StaticResource SecondaryTextStyle}"/><Label Grid.Column="1" Text="{Binding Drill.Sport}" TextColor="#91C4F4" FontAttributes="Bold"/></Grid></DataTemplate></CollectionView.ItemTemplate></CollectionView>
     <Button Grid.Row="2" Grid.ColumnSpan="2" Text="OPEN TRAINING" Clicked="QuickActionClicked" CommandParameter="Training" Style="{StaticResource ElitePrimaryButtonStyle}" HorizontalOptions="Start"/>
    </Grid></Border>
-   <Label Text="PRIMARY AREAS" Style="{StaticResource PageEyebrowStyle}"/>
+   <Label Text="PRIMARY AREAS" Style="{StaticResource PageEyebrowStyle}" BackgroundColor="#A80C121A" Padding="10,6" Margin="0,4,0,0" HorizontalOptions="Start"/>
    <FlexLayout Wrap="Wrap" JustifyContent="Center" Direction="Row">
     <Button Text="ATHLETE PROFILE" Clicked="QuickActionClicked" CommandParameter="Profile" Style="{StaticResource EliteButtonStyle}" Margin="6" MinimumWidthRequest="190"/>
     <Button Text="TRAINING" Clicked="QuickActionClicked" CommandParameter="Training" Style="{StaticResource EliteButtonStyle}" Margin="6" MinimumWidthRequest="190"/>

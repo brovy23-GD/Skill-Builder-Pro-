@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using SkillBuilderPro.API.Authentication;
 using SkillBuilderPro.API.Data;
 using SkillBuilderPro.API.Middleware;
+using SkillBuilderPro.API.DrillImport;
 using SkillBuilderPro.API.Security;
 using SkillBuilderPro.API.Services;
 using SkillBuilderPro.Core.Data;
@@ -184,6 +185,7 @@ public class Program
         // for an explicit, validated import operation.
         // It is NOT automatically executed at application startup.
         builder.Services.AddScoped<DrillExcelSeeder>();
+        builder.Services.AddScoped<DrillImportService>();
 
         builder.Services.AddScoped<IScheduleService, ScheduleService>();
 
@@ -230,6 +232,16 @@ public class Program
         // ==========================================
 
         var app = builder.Build();
+
+        if (args.Length > 0
+            && string.Equals(args[0], "import-drills", StringComparison.OrdinalIgnoreCase))
+        {
+            Environment.ExitCode = await DrillImportCommand.RunAsync(
+                app.Services,
+                app.Environment,
+                args.Skip(1).ToArray());
+            return;
+        }
 
         // ==========================================
         // 7. MIDDLEWARE PIPELINE
@@ -362,11 +374,6 @@ public class Program
                 logger.LogInformation(
                     "Verifying SkillBuilderPro database infrastructure...");
 
-                // Existing test-account recovery is independent of the pending
-                // Administrator audit migration and never creates accounts.
-                await DevelopmentExistingAccountResetInitializer.InitializeAsync(
-                    scope.ServiceProvider);
-
                 var pendingMigrations =
                     (await dbContext.Database.GetPendingMigrationsAsync())
                     .ToArray();
@@ -389,10 +396,7 @@ public class Program
 
                 if (app.Environment.IsDevelopment())
                 {
-                    await DevelopmentAdminInitializer.InitializeAsync(
-                        scope.ServiceProvider);
-
-                    await DevelopmentCoachInitializer.InitializeAsync(
+                    await DevelopmentTestAccountInitializer.InitializeAsync(
                         scope.ServiceProvider);
                 }
 

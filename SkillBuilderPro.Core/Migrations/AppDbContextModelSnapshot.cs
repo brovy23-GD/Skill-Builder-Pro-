@@ -751,6 +751,11 @@ namespace SkillBuilderPro.Core.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasJsonPropertyName("duration");
 
+                    b.Property<string>("ExternalSourceKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasJsonPropertyName("externalSourceKey");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -770,6 +775,10 @@ namespace SkillBuilderPro.Core.Migrations
                         .HasJsonPropertyName("videoUrl");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExternalSourceKey")
+                        .IsUnique()
+                        .HasFilter("[ExternalSourceKey] IS NOT NULL");
 
                     b.ToTable("Drills");
                 });
